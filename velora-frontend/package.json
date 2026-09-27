@@ -9,8 +9,11 @@
     "build": "vite build --mode public",
     "build:admin": "vite build",
     "preview": "vite preview",
-    "cf:dev": "wrangler pages dev dist --compatibility-date=2024-09-01",
-    "cf:deploy": "wrangler pages deploy dist --project-name=velorasit"
+    "build:worker": "vite build --mode public && vite build --outDir dist/admin --base /admin/ && node -e \"require('fs').rmSync('dist/admin/media',{recursive:true,force:true})\"",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy",
+    "d1:migrate": "wrangler d1 migrations apply veloradb_sit --remote",
+    "d1:seed": "node ../tools/d1-seed.mjs && wrangler d1 execute veloradb_sit --remote --file ../build/d1-seed.sql"
   },
   "dependencies": {
     "@lucide/vue": "^1.37.0",

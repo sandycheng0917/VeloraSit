@@ -88,8 +88,13 @@ python design/crop-exports.py         # 把長圖切成區段
 
 - **不使用 Tailwind**。設計 token 直接寫在 `src/style.css`，
   因為每個字距、行距、髮絲線都被精確指定，utility class 反而要大量 arbitrary value。
-- 商品資料唯一來源：`src/data/catalog.js`。新增一條商品線只需在 `categories` 加一筆，
+- 商品資料的介面層是 `src/data/catalog.js`，但**資料本身在 Cloudflare D1** ——
+  它執行時打 `/api/catalog`。新增一條商品線是在 D1 的 `categories` 表加一筆，
   導覽列、品類格、後台 Tab 都會自動跟上。
+- `products` / `featured` / `categories` / `houses` 是 **computed ref**，不是陣列。
+  樣板裡直接用沒問題（`script setup` 的頂層 import 會自動解包），
+  但在 `<script>` 裡要寫 `.value`。漏掉不會報錯 —— 你會對一個 RefImpl 呼叫
+  `.filter()`，錯誤指向的地方跟原因差很遠。
 - 圖片路徑由 `media-manifest.js` 提供，**不要手寫檔名**。
 
 ## 🔴 機密資料
@@ -102,20 +107,27 @@ python design/crop-exports.py         # 把長圖切成區段
 公開展示頁顯示的價格是 Sheet 的 `price`，而且只在 `price_public` 勾選時才輸出。
 FOB 出口單價（`cost`）與供應商資訊是另一個層級，永遠不進任何前端檔案。
 
-## 三語 (i18n)
+## 語言：只有繁體中文
 
-展示頁支援繁中／英／韓，`src/i18n.js`：
+**2026-09-28 拿掉三語切換。** 導覽列的切換器、`localStorage` 偏好、
+依瀏覽器語言自動選擇全部移除，`<html lang="zh-Hant-TW">` 寫死在 `index.html`。
 
-- `t('key')` 取介面字串；新增字串要**同時補齊 zh / en / ko 三個值**
-- `pick(field)` 取商品資料的 `{ zh, en, ko }` 欄位，缺該語時自動回退中文
-- **後台不做三語**，維持中文
+- `t('key')` 取介面字串（`src/i18n.js` 的 `UI` 表，只有中文）
+- `pick(field)` 取商品資料的 `{ zh, en, ko }` 欄位，一律回 `zh`
+- **`pick()` 的 `zh → en → ko` fallback 鏈不要砍。** Sheet 與 D1 的 `en`／`ko`
+  欄位還在，後台也還在收；砍掉的是前台的呈現，不是別人已經輸入的內容。
+  某件商品只填了 `en` 沒填 `zh` 時，退到 `en` 至少看得到東西
+- 要加語言的話是把切換器加回來，不是在元件裡寫 `if (lang === 'en')`
 
-新增商品時三語品名與描述都要給。驗證：
+新增商品時中文品名與描述必填。驗證要打 API，不能 import `catalog.js` ——
+商品資料 2026-09-28 起在 Cloudflare D1，`catalog.js` 的 `products` 是一個
+**執行時才填的 Vue ref**，node 裡 import 它只會拿到空陣列：
 
 ```bash
-node --input-type=module -e "import('./velora-frontend/src/data/catalog.js').then(m=>{
-  const bad=m.products.filter(p=>!p.name?.zh||!p.name?.en||!p.name?.ko);
-  console.log(bad.length?'缺語系: '+bad.map(p=>p.id).join(', '):'OK')})"
+curl -s https://velorasit.chenghsuanno1.workers.dev/api/catalog | node -e "
+let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{
+  const bad=JSON.parse(s).products.filter(p=>!p.name?.zh);
+  console.log(bad.length?'缺中文品名: '+bad.map(p=>p.id).join(', '):'OK')})"
 ```
 
 ## 截圖的坑

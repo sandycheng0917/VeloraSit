@@ -6,42 +6,64 @@ Velora International CO., LTD ——「韓國選品代理」形象網站與後�
 ## 專案結構
 
 ```
-velora-frontend/     Vue 3 + Vite 前端
+velora-frontend/     Vue 3 + Vite 前端，也是部署單位
   src/admin/         後台（商品管理），只在 build:admin 進 bundle
-  src/data/          catalog.js 是介面層，*.generated.js 由建置產生
-velora2/             提案站（靜態，無建置流程）
-site/                三站入口的選單頁
-apps-script/         Google Apps Script 後端（路由、認證、匯出、讀寫）
-tools/               建置期工具（產生器、注入器、遷移、退化檢查）
+  src/data/          catalog.js 是介面層，執行時向 /api/catalog 取資料
+  worker/            Cloudflare Worker 入口：/api/* 與 SPA fallback
+  migrations/        D1 的 schema（wrangler d1 migrations）
+  wrangler.toml      Worker 設定（不是 Pages —— 見下方部署）
+apps-script/         Google Apps Script 後端（後台仍走這條）
+tools/               建置期工具（產生器、D1 種子、遷移、退化檢查）
 design/              設計交付：.pen 設計檔、規格書、素材管線
 check-public.mjs     公開前稽核：哪些會進 Git、哪些會上網站
+velora2/             舊的靜態提案站，2026-09-28 退場（尚未刪除）
 ```
 
-**商品資料在 Google Sheet，不在程式碼裡。**
-Apps Script 以擁有者身分執行，所以整套架構裡沒有「Sheet 存取金鑰」這種東西。
-建置時由 `tools/build-catalog.mjs` 打匯出端點取回，產生
-`src/data/products.generated.js` 與 `site.generated.js`；
-`catalog.js` 只剩一層形狀轉換，前台元件不知道資料從哪來。
+**商品資料在 Cloudflare D1（`veloradb_sit`），前台執行時才取回來。**
+2026-09-28 之前是建置時由 `tools/build-catalog.mjs` 從 Google Sheet 取回、
+烤進 `src/data/*.generated.js`，改一筆商品要重跑整條建置才看得到。
+現在 `catalog.js` 打 `/api/catalog`，由 `worker/index.js` 查 D1。
 
-`*.generated.js` 進版控，讓離線 `npm run dev` 有東西可看。但 **CI 讀不到 Sheet 時
-必須硬失敗中止部署**，不可靜默回退到那份種子 —— 那會讓「按了發布、跑完了、
-內容卻沒變」，是最糟的失敗模式。
+`*.generated.js` 還在 repo 裡，但**前台不再 import 它們** ——
+它們現在只有一個用途：當 `tools/d1-seed.mjs` 的輸入。
+
+🔴 **沒有種子檔退路。** API 掛掉時前台顯示錯誤與重試，不會靜默拿種子頂上 ——
+那會讓「資料庫壞了」長得跟「一切正常」一模一樣，而使用者看到的是一份
+沒人知道有多舊的目錄。同理，`tools/build-catalog.mjs` 讀不到 Sheet 也必須硬失敗。
+
+Sheet → D1 的搬運目前是手動的：跑 `build-catalog` 更新 `*.generated.js`，
+再跑 `npm run d1:seed` 灌進 D1。要自動化的話接在 `build-catalog` 後面即可。
 
 ## 常用指令
 
 ```bash
-cd velora-frontend && npm run dev        # 開發（5173），對外版本
-cd velora-frontend && npm run dev:admin  # 後台（也是 5173，但根路徑就是後台）
-cd velora-frontend && npm run build      # 公開版建置，必須通過
+cd velora-frontend
+npm run dev          # 開發（5173）。/api/* 由 vite proxy 轉給線上 Worker，
+                     # 所以本機看得到真實的 D1 資料，不必另開 wrangler
+npm run dev:admin    # 後台（也是 5173，但根路徑就是後台）
+npm run build        # 公開版建置，必須通過
+npm run build:worker # 部署用：公開版 + 後台疊成一份 dist/（Cloudflare 跑這個）
 
+npm run d1:migrate   # 套用 migrations/ 到遠端 D1
+npm run d1:seed      # 由 *.generated.js 產生種子 SQL 並灌進遠端 D1
+npm run cf:deploy    # 手動部署（等同 npx wrangler deploy）
+```
+
+```bash
 node tools/build-catalog.mjs --from tools/fixture.json --images tools/images.json --out build/site
 node tools/check-regression.mjs       # 內容有沒有比上一版少
-node tools/inject-velora2.mjs --check # velora2 卡片注入的乾跑
-node check-public.mjs --dist build/site
+node tools/check-admin-css.mjs        # 後台有沒有跟公開版全域樣式撞 class 名
+node tools/d1-seed.mjs                # 只產生 SQL，不灌
+node check-public.mjs --dist velora-frontend/dist
 
 python design/build-assets.py         # 重建圖庫（改了 sample/ 之後）
 node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
 ```
+
+**驗手機版不要直接用 `--window-size=390` 截圖。** headless Chrome 的視窗尺寸
+不等於版面視埠，截出來會像是右側被切掉 —— 那是假象，會讓人去修一個不存在的
+溢出。要量就開一個同源頁面、用 `<iframe width="390">` 載入站台，
+再讀 `contentDocument.documentElement.scrollWidth` 與各元素的 `getBoundingClientRect()`。
 
 ## 開始動手前
 
@@ -80,22 +102,48 @@ node check-public.mjs 自訂關鍵字     # 用自己想到的字搜
 git ls-files                       # 會被推送的完整清單（只有這些）
 ```
 
-### 部署
+### 部署：Cloudflare Worker
 
-推到 `main` 由 `.github/workflows/deploy.yml` 自動建置並發布到 GitHub Pages。
+站台是 **Cloudflare 上的一個 Worker**，名字叫 `velorasit`，
+網址 `https://velorasit.chenghsuanno1.workers.dev`。
 
-前置設定（只需一次）：repo 設為 Public，
-然後 Settings → Pages → Source 選 "GitHub Actions"。
+🔴 **它是 Worker，不是 Pages。** 兩者的設定檔形狀不一樣，混用會靜默失效：
 
-網址為 `https://<帳號>.github.io/<repo>/`；
-子路徑由 workflow 以 `VITE_BASE` 自動代入，不需手動改設定。
+| Pages 的寫法（❌ 不要用） | Worker 的寫法（✅） |
+|---|---|
+| `pages_build_output_dir = "./dist"` | `[assets] directory = "./dist"` |
+| `functions/api/*.js` 資料夾慣例 | `main = "worker/index.js"` 自己分路由 |
+| `wrangler pages deploy` | `wrangler deploy` |
 
-後台程式碼在 `velora-frontend/src/admin/`，**進版控**（2026-09-06 改）。
-公開版與後台版是兩個獨立站台，各自的根路由不同：
-`npm run build` 的根是展示頁（部署在 `/v1/`），
-`npm run build:admin` 的根是後台（部署在 `/admin/`）。
+2026-09-28 修過一次：當時設定是 Pages 形狀而專案是 Worker，
+加上 `wrangler.toml`／`package.json`／dashboard 三處寫了三種專案名，
+而且 `package-lock.json` 與 `package.json` 不同步讓 `npm ci` 直接中止。
+改名或搬設定的時候三處要一起改。
+
+Cloudflare 的建置設定（Workers Builds，接 GitHub）：
+
+```
+Build command     npm run build:worker
+Deploy command    npx wrangler deploy
+Root directory    velora-frontend
+```
+
+`npm run build:worker` 把兩個建置疊成一份 `dist/`：
+公開版在根、後台版在 `dist/admin/`（順便刪掉後台那份重複的 `media/`）。
 路由用 `IS_PUBLIC` 分支，Rollup 會把不需要的那一半整段移除 ——
 公開版的 bundle 裡沒有後台的任何一行。
+
+`worker/index.js` 的分工：靜態檔由 Cloudflare 的 assets 層直接回，
+`/api/*` 落到 Worker 查 D1，其餘沒有對應檔案的路徑回 `index.html` 給前端路由。
+
+🔴 `[assets]` 的 `not_found_handling` 必須維持預設的 `"none"`。
+設成 `"single-page-application"` 的話靜態層會在找不到檔案時直接回 `index.html`，
+`/api/*` 也一樣 —— Worker 永遠不會執行，前端拿到 200 加一份 HTML，
+然後在 `JSON.parse` 才炸，錯誤訊息會指向完全無關的地方。
+
+`.github/workflows/deploy.yml` 還在，但它發布的是 GitHub Pages 上的舊三站配置
+（含已退場的 velora2）。**那條路已經不是正式站**，要嘛更新它、要嘛刪掉 ——
+留著一條會失敗又沒人看的流水線，只會讓人以為部署壞了。
 
 ## 語言：只有繁體中文
 

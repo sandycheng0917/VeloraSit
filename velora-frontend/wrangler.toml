@@ -1,4 +1,14 @@
-name = "velora-test-site"
+# Cloudflare Pages 的設定檔。
+#
+# 🔴 name 必須等於 Cloudflare 上的專案名稱，否則部署階段會被拒絕。
+#    目前專案是 velorasit（dash.cloudflare.com → Workers & Pages）。
+#    改專案名的時候這裡、package.json 的 cf:deploy 兩處要一起改 ——
+#    2026-09-28 之前這三個地方寫了三種名字，部署一直失敗。
+#
+# 🔴 這個檔案的位置決定 Pages 的「Root directory」必須設成 velora-frontend。
+#    wrangler.toml 與 functions/ 都只在 Root directory 那一層會被找到；
+#    設錯的話 /api/* 與 D1 綁定會靜悄悄失效 —— 只會 404，不會報錯。
+name = "velorasit"
 compatibility_date = "2024-09-01"
 pages_build_output_dir = "./dist"
 
@@ -7,6 +17,20 @@ APP_NAME = "velora"
 ENVIRONMENT = "production"
 
 [[d1_databases]]
+binding = "DB"
+database_name = "veloradb_sit"
+database_id = "2726836e-da8e-4535-ac15-74e8855d2277"
+
+# ── 預覽部署 ────────────────────────────────────────────────────────
+# Pages 只有 production 與 preview 兩個環境。preview 沒有明確宣告綁定的話，
+# 預覽網址上的 /api/products 會走進「env.DB 不存在」那條路，
+# 回傳 source: "mock" 的假資料 —— 而它回 200，看起來完全正常。
+# 你會在預覽上看到兩筆 Demo Product，然後以為是資料庫空的。
+[env.preview.vars]
+APP_NAME = "velora"
+ENVIRONMENT = "preview"
+
+[[env.preview.d1_databases]]
 binding = "DB"
 database_name = "veloradb_sit"
 database_id = "2726836e-da8e-4535-ac15-74e8855d2277"

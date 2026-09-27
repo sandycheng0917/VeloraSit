@@ -10,7 +10,7 @@
     "build:admin": "vite build",
     "preview": "vite preview",
     "cf:dev": "wrangler pages dev dist --compatibility-date=2024-09-01",
-    "cf:deploy": "wrangler pages deploy dist --project-name=test-hsuan-site"
+    "cf:deploy": "wrangler pages deploy dist --project-name=velorasit"
   },
   "dependencies": {
     "@lucide/vue": "^1.37.0",

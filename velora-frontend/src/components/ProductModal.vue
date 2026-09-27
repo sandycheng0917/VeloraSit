@@ -11,7 +11,7 @@ const shot = ref(0)
 watch(() => props.product, () => (shot.value = 0))
 
 const cat = computed(() => findCategory(props.product?.category))
-const house = computed(() => houses[props.product?.house])
+const house = computed(() => houses.value[props.product?.house])
 const cutout = computed(() => isCutout(props.product?.gallery?.[shot.value]))
 
 function onKey(e) {

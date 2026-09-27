@@ -6,12 +6,14 @@ import ProductModal from '@/components/ProductModal.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import SiteHeader from '@/components/SiteHeader.vue'
 import {
+  catalogState,
   categories,
   categoryCount,
   featured,
   findCategory,
   houses,
   isCutout,
+  loadCatalog,
   mediaUrl,
   products,
 } from '@/data/catalog.js'
@@ -37,6 +39,14 @@ function restart() {
 onMounted(restart)
 onBeforeUnmount(() => clearInterval(timer))
 
+/* ── 目錄資料 ──────────────────────────────────────────── */
+/*
+ * 商品在 Cloudflare D1，執行時才取回來（2026-09-28 之前是建置時烤進 bundle）。
+ * 主視覺那一段的圖是寫死的靜態檔，不等資料 —— 所以首屏不會空白，
+ * 只有品類與商品格會走載入狀態。
+ */
+onMounted(() => loadCatalog())
+
 /* ── 品類篩選與搜尋 ────────────────────────────────────── */
 const filter = ref('all')
 const query = ref('')
@@ -60,7 +70,7 @@ function onSearch(q) {
   if (q.trim()) scrollToGrid()
 }
 
-const listed = computed(() => products.filter((p) => p.listed))
+const listed = computed(() => products.value.filter((p) => p.listed))
 const activeCat = computed(() => findCategory(filter.value))
 
 /** 搜尋比對三種語言的品名、品類與編號 —— 使用者用哪種語言輸入都找得到 */
@@ -231,7 +241,9 @@ function askOnLine() {
             <p class="k">{{ gridKicker }}</p>
             <h2>
               {{ query.trim() || (activeCat ? pick(activeCat.name) : t('allSelections')) }}
-              <em>{{ shown.length }}</em>
+              <!-- 還在載入的時候不要印數字。印 0 是在還不知道有幾件的時候謊報一個
+                   確定的答案，而那個 0 跟「真的一件都沒有」長得一模一樣 -->
+              <em v-if="!catalogState.loading">{{ shown.length }}</em>
             </h2>
             <hr class="hair" />
           </div>
@@ -250,7 +262,25 @@ function askOnLine() {
           </div>
         </header>
 
-        <div v-if="shown.length" class="grid">
+        <!-- 載入中：骨架。不要用 spinner —— 骨架撐住版面高度，
+             資料到了之後頁面不會整個往下跳 -->
+        <div v-if="catalogState.loading" class="grid" aria-busy="true">
+          <span v-for="i in 8" :key="i" class="tile skel" aria-hidden="true">
+            <span class="plate" />
+            <span class="t-meta"><i class="sk sk-s" /><i class="sk sk-l" /></span>
+          </span>
+        </div>
+
+        <!-- 壞掉要講清楚是壞掉，並且給重試。原始訊息也印出來 ——
+             這支 API 只回公開的商品資料，沒有什麼好藏的，
+             而藏起來只會讓回報變成「就打不開啊」 -->
+        <div v-else-if="catalogState.error" class="empty">
+          <p>{{ t('loadFailed') }}</p>
+          <p class="hint">{{ catalogState.error }}</p>
+          <button class="link-gold" @click="loadCatalog({ force: true })">{{ t('retry') }} →</button>
+        </div>
+
+        <div v-else-if="shown.length" class="grid">
           <button v-for="p in shown" :key="p.id" class="tile" @click="detail = p">
             <span class="plate" :class="{ 'is-cutout': isCutout(p.image) }">
               <img :src="p.image" :alt="pick(p.name)" loading="lazy" />
@@ -711,6 +741,53 @@ h1 .i {
   font-size: 13.5px;
   letter-spacing: 0.08em;
   color: var(--ink-soft);
+}
+
+/* ── 載入骨架 ──────────────────────────────────────────
+   .skel 沿用 .tile 的外框與比例，所以資料到了之後版面不會位移。
+   顏色只用 --line 這一階，不做高對比的閃爍 —— 這是形象站，
+   骨架應該像還沒印好的版，不像系統在跑。 */
+.tile.skel {
+  cursor: default;
+  pointer-events: none;
+}
+.tile.skel:hover {
+  border-color: var(--line);
+  transform: none;
+}
+.tile.skel .plate {
+  display: block;
+  background: var(--line);
+}
+.sk {
+  display: block;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.sk-s {
+  width: 34%;
+}
+.sk-l {
+  width: 72%;
+  height: 13px;
+  margin-top: 10px;
+}
+/* prefers-reduced-motion 的人不需要這個脈動，靜態的灰塊一樣傳達得了「還沒好」 */
+@media (prefers-reduced-motion: no-preference) {
+  .tile.skel .plate,
+  .sk {
+    animation: skel-pulse 1.6s ease-in-out infinite;
+  }
+}
+@keyframes skel-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }
 
 .empty {

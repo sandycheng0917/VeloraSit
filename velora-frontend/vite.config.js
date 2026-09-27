@@ -11,6 +11,24 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   base: process.env.VITE_BASE || '/',
   plugins: [vue()],
+  /**
+   * 開發時 /api/* 轉給線上的 Worker。
+   *
+   * 商品資料 2026-09-28 起在 Cloudflare D1，前台是執行時去拿的 ——
+   * vite dev server 自己沒有那個端點，不轉的話開發環境會一直停在
+   * 載入失敗，而錯誤訊息會像是程式壞了。
+   *
+   * 要打本機的 D1 就改成 http://127.0.0.1:8787 並另外跑 npm run cf:dev。
+   * 預設指向線上是因為多數時候在改版面，不想為了看商品先開兩個終端機。
+   */
+  server: {
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_ORIGIN || 'https://velorasit.chenghsuanno1.workers.dev',
+        changeOrigin: true,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

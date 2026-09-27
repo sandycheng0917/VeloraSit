@@ -233,37 +233,6 @@ function submit() {
   flex: none;
 }
 
-/* 三個語言只有一兩個字寬，本來就是全站最小的可點目標 ——
-   字級、字重、顏色都不能再退讓，未選中的也要看得清楚。 */
-.lang {
-  display: flex;
-  align-items: center;
-  font-family: var(--f-mono);
-  font-size: 13px;
-  letter-spacing: 0.06em;
-}
-.lang button {
-  color: var(--ink-soft);
-  font-weight: 500;
-  padding: 6px 2px;
-  transition: color 0.3s ease;
-}
-.lang button:hover {
-  color: var(--ink);
-}
-.lang button.on {
-  color: var(--ink);
-  font-weight: 700;
-  background: var(--gold-leaf) bottom / 100% 1px no-repeat;
-}
-.lang i {
-  font-style: normal;
-  font-weight: 400;
-  /* --line-strong 是線條色，當文字只有 1.43:1 —— 分隔線幾乎看不見 */
-  color: var(--ink-faint);
-  margin: 0 6px;
-}
-
 .line-btn {
   width: 32px;
   height: 32px;
@@ -352,16 +321,6 @@ function submit() {
   .logo span {
     font-size: 14.5px;
     letter-spacing: 0.3em;
-  }
-  /* 手機上這是最小的可點目標，字再放大一階，並撐出 40px 的觸控高度 */
-  .lang {
-    font-size: 14.5px;
-  }
-  .lang button {
-    padding: 10px 3px;
-  }
-  .lang i {
-    margin: 0 5px;
   }
   .div {
     display: none;

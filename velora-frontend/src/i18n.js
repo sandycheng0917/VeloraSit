@@ -1,12 +1,17 @@
 /**
- * 單語版介面字串：簡單、穩定、好維護。
+ * 介面字串：全站只有繁體中文。
  *
- * 這個站不需要多語切換，所以所有字串都固定為繁體中文。
- * 仍保留 `t()` 與 `pick()` 兩個小工具，讓其餘元件不用大改。
+ * 2026-09-28 拿掉三語切換。語言不再是狀態 —— 沒有 ref、沒有 watch、
+ * 沒有 localStorage，`<html lang="zh-Hant-TW">` 寫死在 index.html 裡。
+ *
+ * 兩個工具照舊：
+ *   t('key', ...args)   介面字串（下面的 UI 表，%s 為插入點）
+ *   pick(field)         商品資料的語言欄位，形如 { zh, en, ko }
+ *
+ * 🔴 pick() 的 fallback 鏈不要砍。Sheet 的 en / ko 欄位還在，也還有人在填 ——
+ *    砍掉的是前台的呈現，不是別人已經輸入的內容。某件商品只填了 en 沒填 zh
+ *    的時候，退到 en 至少看得到東西；直接回 field.zh 會變成空白的商品卡。
  */
-
-export const LANGS = [{ key: 'zh', label: '繁', htmlLang: 'zh-Hant-TW', name: '繁體中文' }]
-export const lang = 'zh'
 
 export const pick = (field) => {
   if (field == null) return ''

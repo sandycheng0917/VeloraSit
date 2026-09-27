@@ -1,0 +1,12 @@
+name = "velora-test-site"
+compatibility_date = "2024-09-01"
+pages_build_output_dir = "./dist"
+
+[vars]
+APP_NAME = "velora"
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "veloradb_sit"
+database_id = "2726836e-da8e-4535-ac15-74e8855d2277"

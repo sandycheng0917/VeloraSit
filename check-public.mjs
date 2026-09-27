@@ -9,9 +9,28 @@
  *   ② 哪些檔案會進 GitHub？（git 追蹤中的檔案 —— 這是唯一會被推送的東西）
  *   ③ 有沒有不該外流的東西混進去？
  *
- * ⚠️ 這支腳本本身也會被公開，所以**不能把機密字串寫在裡面**。
+ * ⚠️ 這支腳本本身也會進版控，所以**不能把機密字串寫在裡面**。
  *    確切的機密字串放在 .secret-watch.txt（已被 .gitignore 擋住，只存在你本機）。
  *    沒有那個檔案時，仍會用下方不含機密的通用樣式做基本檢查。
+ *
+ * ══ repo 轉 private 之後這支還要不要跑？要。══════════════════════
+ *
+ * 它做兩件事，只有一件跟「公開」有關：
+ *
+ *   ① 哪些會上網站（build/site 的內容清單）
+ *      —— 跟 repo 可見性完全無關。網站永遠是公開的，這一項的價值不減。
+ *
+ *   ② 哪些進 Git、有沒有機密
+ *      —— 風險降低但不歸零：CI 會把整個 repo clone 進第三方建置容器、
+ *         git 歷史是永久的、而可見性只是一個會被按錯的開關。
+ *
+ * 寫在這裡是為了擋住「已經 private 了，這支不用跑了」那個推論。
+ *
+ * ══ 這支看不見的東西 ═══════════════════════════════════════════════
+ *
+ * 機密掃描只讀 git 追蹤中的**文字**檔（第 174 行跳過二進位副檔名）。
+ * 所以 .wrangler/state/v3/d1/*.sqlite 這種「二進位 + 含成本」的檔案，
+ * 它抓不到 —— 唯一的防線是 .gitignore。第 ⑥ 節就是在驗那條防線還在。
  *
  * 本腳本不修改任何東西，可以隨時重跑。
  */
@@ -48,6 +67,12 @@ const PATTERNS = [
   // 因此一律放 .secret-watch.txt（不進版控）。
   [/[가-힣]{2,4}\s*(과장|대리|부장|차장|사장|팀장|이사)\b/, '疑似韓文姓名＋職稱'],
   [/[가-힣]*\s*(단가|등록번호|담당자)\s*[:：]?\s*[\w\d]/, '疑似表格欄位＋值'],
+  // Cloudflare 的憑證形狀。只放低誤報的兩條 ——
+  // account id 與 D1 的 database_id 刻意不列：它們本來就該寫在 wrangler.toml
+  // 裡（沒有 API token 就用不了），列進來只會製造每次都要人工忽略的雜訊。
+  [/\bv1\.0-[0-9a-f]{40,}/, '疑似 Access service token 的密鑰'],
+  [/(CF_ACCESS_CLIENT_SECRET|CLOUDFLARE_API_TOKEN)\s*[:=]\s*["']?[\w.-]{20,}/i,
+    '疑似寫死的 Cloudflare 憑證'],
 ]
 
 const bytes = (n) =>
@@ -237,4 +262,44 @@ console.log(
       : '  ✗ admin/ 存在但找不到後台字串 —— 後台可能根本沒建出來'
     : '  – 這份輸出沒有 admin/（本機跑公開版建置時就是這樣，正常）'
 )
+
+/* ⑥ 機密掃描看不見的那些路徑，.gitignore 還擋著嗎 ──────────── */
+line('═')
+console.log('⑥  二進位機密路徑的忽略規則（第 ④ 節的掃描看不進去）')
+line()
+
+/**
+ * 🔴 這一節不是重複第 ③ 節。
+ *
+ *    第 ③ 節列「現在本機有什麼被擋住」—— 檔案不存在時它什麼都不會說。
+ *    這一節問的是「規則還在嗎」，不管檔案存不存在。
+ *
+ *    為什麼只驗這幾條：它們指向的是**二進位或明文機密檔**，
+ *    而第 ④ 節的掃描會跳過二進位副檔名（第 193 行）。
+ *    也就是說，這幾條規則一旦失效，**沒有任何其他關卡會發現**。
+ *    其餘規則（*.xlsx、design/sample/ 之類）漏掉時第 ④ 節還抓得到內容。
+ */
+const MUST_IGNORE = [
+  ['.wrangler/state/v3/d1/velora.sqlite', '本機 D1，含 FOB 成本與供應商手機（二進位）'],
+  ['.dev.vars', 'wrangler dev 的本機 secrets'],
+  ['tools/migrate-out/02-private.sql', '遷移輸出，含成本的明文 SQL'],
+  ['backup/velora-2026-01-01.sql', 'd1 export 的備份，含 products_private'],
+  ['x.private.sql', '任何位置的 *.private.sql'],
+  ['.secret-watch.txt', '監看清單本身就是機密'],
+  ['design/sample/x.xlsx', '供應商原始素材'],
+]
+let unguarded = 0
+for (const [p, why] of MUST_IGNORE) {
+  let ok = false
+  try {
+    execSync(`git check-ignore -q "${p}"`, { cwd: ROOT, stdio: 'ignore' })
+    ok = true
+  } catch { /* 非零＝沒被擋住 */ }
+  if (!ok) unguarded++
+  console.log('  %s %s', ok ? '✓' : '✗ 沒擋住！', `${p}  —— ${why}`)
+}
+console.log(unguarded
+  ? `\n  ⚠ 有 ${unguarded} 條規則失效。這幾條沒有第二道網，請立刻修 .gitignore。`
+  : '\n  ✓ 七條都還在')
+
 line('═')

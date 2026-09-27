@@ -2,7 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { categories, company } from '@/data/catalog.js'
-import { LANGS, lang, t } from '@/i18n.js'
+import { t } from '@/i18n.js'
 
 const props = defineProps({
   active: { type: String, default: 'all' },
@@ -87,19 +87,6 @@ function submit() {
       </div>
 
       <span class="div" />
-
-      <div class="lang" role="group" :aria-label="t('langLabel')">
-        <button
-          v-for="(l, i) in LANGS"
-          :key="l.key"
-          :class="{ on: lang === l.key }"
-          :aria-pressed="lang === l.key"
-          :title="l.name"
-          @click="lang = l.key"
-        >
-          {{ l.label }}<i v-if="i < LANGS.length - 1" aria-hidden="true">/</i>
-        </button>
-      </div>
 
       <button class="line-btn" :aria-label="t('lineConsult')" @click="emit('line')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="#06C755">

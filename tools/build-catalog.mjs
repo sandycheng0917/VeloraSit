@@ -30,6 +30,12 @@ import { existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+// 這四個模組是與遷移腳本、驗證腳本共用的。抽出去的理由寫在各自的檔頭 ——
+// 簡言之：chunk 組裝與 sha256 校驗複製三份的話，遲早有一份寫漏，
+// 而症狀是網站破圖，不是任何一支腳本報錯。
+import { load } from './lib/export-client.mjs'
+import { bool, str } from './lib/normalize.mjs'
+import { MIME_EXT, imageFileName, webpHasAlpha } from './lib/assemble.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DATA = join(ROOT, 'velora-frontend', 'src', 'data')
@@ -61,65 +67,7 @@ const FORBIDDEN_KEY = /^(cost|cost_ccy|cost_updated|fob|unit_?price|supplier|단
 
 const CATEGORY_ORDER = ['fragrance', 'scarf', 'jewelry', 'phonebag']
 
-/* ══ 讀資料 ═══════════════════════════════════════════════════════════ */
-
-async function load(args) {
-  const fromIdx = args.indexOf('--from')
-  if (fromIdx !== -1 && args[fromIdx + 1]) {
-    const path = args[fromIdx + 1]
-    return { src: path, data: JSON.parse(await readFile(path, 'utf8')) }
-  }
-
-  const url = process.env.EXEC_URL
-  const key = process.env.CI_EXPORT_KEY
-  if (!url || !key) {
-    throw new Error(
-      '需要 EXEC_URL 與 CI_EXPORT_KEY 兩個環境變數，或用 --from <fixture.json>。\n' +
-      '離線開發請跑：node tools/build-catalog.mjs --from tools/fixture.json')
-  }
-
-  const post = async (body) => {
-    // text/plain 是唯一能用的 Content-Type —— Apps Script 沒有 doOptions，
-    // application/json 會觸發 preflight 而失敗。詳見 apps-script/Code.gs 檔頭。
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) throw new Error(`匯出端點回 HTTP ${res.status}`)
-    const j = await res.json()
-    if (!j.ok) throw new Error(`匯出端點回 ${j.err}`)
-    return j
-  }
-
-  const meta = await post({ op: 'export', key, part: 'meta' })
-
-  // 影像分頁可能很大，分頁拉完
-  const images = []
-  for (let page = 0; ; page++) {
-    const r = await post({ op: 'export', key, part: 'images', page, size: 40 })
-    images.push(...r.images)
-    if (!r.more) break
-  }
-  meta.images = images
-  return { src: url.replace(/\/[^/]+$/, '/…'), data: meta }
-}
-
 /* ══ 過濾與正規化 ═════════════════════════════════════════════════════ */
-
-/** Sheet 的核取方塊回 boolean，手打的可能是字串 */
-const bool = (v) => v === true || String(v).trim().toUpperCase() === 'TRUE'
-/*
- * 文字欄位一律走這裡。
- *
- * 🔴 布林值視為空白。Sheet 的儲存格如果殘留核取方塊，讀回來會是
- *    true / false，String() 之後就變成字面的「false」印在商品頁上 ——
- *    2026-09-07 新增 detail_* 時真的發生過，14 件商品的「用法」
- *    全部印著 false。文字欄位收到布林值一定是資料錯了，
- *    與其把錯誤原樣印給客人看，不如當成沒填。
- */
-const str = (v) =>
-  v === null || v === undefined || typeof v === 'boolean' ? '' : String(v).trim()
 
 /**
  * 逐欄挑出白名單裡的欄位。
@@ -153,87 +101,6 @@ function assertNoCost(node, path = '$') {
   }
 }
 
-/* ══ 影像 ═════════════════════════════════════════════════════════════ */
-
-/**
- * 把 images 分頁的列組回檔案。
- *
- * 一個 key 可能拆成多個 chunk（Sheet 單格上限 50,000 字元），
- * 依 chunk 序號串接。data 欄有 'w:' 前綴要剝掉 —— 那是為了避開
- * Google Sheets 把 + - = 開頭的儲存格當公式解析。
- */
-function assembleImages(rows) {
-  const byKey = new Map()
-  for (const r of rows) {
-    const key = str(r.key)
-    if (!key) continue
-    if (!byKey.has(key)) byKey.set(key, [])
-    byKey.get(key).push(r)
-  }
-
-  const out = new Map()
-  for (const [key, parts] of byKey) {
-    parts.sort((a, b) => Number(a.chunk) - Number(b.chunk))
-    const total = Number(parts[0].total || parts.length)
-    if (parts.length !== total) {
-      throw new Error(`影像 ${key} 的 chunk 不完整：有 ${parts.length} 段，宣告 ${total} 段`)
-    }
-    const b64 = parts.map((p) => {
-      const d = String(p.data || '')
-      if (!d.startsWith('w:')) throw new Error(`影像 ${key} 的 data 少了 w: 前綴`)
-      return d.slice(2)
-    }).join('')
-
-    const buf = Buffer.from(b64, 'base64')
-    const sha = createHash('sha256').update(buf).digest('hex')
-    const want = str(parts[0].sha256)
-    // 端到端校驗：chunk 順序錯亂、遺漏、被 Sheets 改寫，都在這裡被抓到，
-    // 而不是變成網站上的破圖
-    if (want && sha !== want) {
-      throw new Error(`影像 ${key} 雜湊不符：Sheet 記 ${want.slice(0, 12)}…，實得 ${sha.slice(0, 12)}…`)
-    }
-    out.set(key, { buf, sha, alpha: bool(parts[0].alpha), mime: str(parts[0].mime) || 'image/webp' })
-  }
-  return out
-}
-
-/**
- * WebP 容器有沒有 alpha 通道。零依賴，直接讀標頭。
- *
- * 判定 alpha 是為了決定要不要套 .plate.is-cutout（去背圖用 contain、
- * 淺底、不壓暗角）。前台原本靠副檔名 .png 判斷，換成 WebP 之後那招失效，
- * 所以改成把判定結果編進檔名（.cut.webp）。
- *
- * 以這裡讀出來的為準，不信 Sheet 的 alpha 欄 —— 瀏覽器端的偵測可能因為
- * canvas 被跨域污染而失敗。
- */
-function webpHasAlpha(buf) {
-  if (buf.length < 32) return false
-  if (buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') return false
-  const fourcc = buf.toString('ascii', 12, 16)
-  if (fourcc === 'VP8X') return (buf[20] & 0x10) !== 0   // 擴充格式的 ALPHA flag
-  if (fourcc === 'VP8 ') return false                    // 有損簡單格式，定義上無 alpha
-  if (fourcc === 'VP8L') return ((buf[24] >> 4) & 1) !== 0
-  return false
-}
-
-/**
- * 檔名用內容定址：<id>-<slot>-<sha8>[.cut].webp
- *
- * 內容沒變 → 檔名沒變 → 瀏覽器與 CDN 完全命中快取。
- * 內容變了 → 檔名必變 → 立刻失效。
- * 這在 GitHub Pages 上特別重要：它送 Cache-Control: max-age=600，
- * 固定檔名的圖片改版後最多要等十分鐘才會更新。
- */
-/** mime → 副檔名。Sheet 的 images 分頁有 mime 欄，那是唯一可靠的來源 */
-const MIME_EXT = {
-  'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif',
-}
-
-function imageFileName(key, sha, alpha, ext = 'webp') {
-  return `${key}-${sha.slice(0, 8)}${alpha ? '.cut' : ''}.${ext}`
-}
-
 /* ══ 主流程 ═══════════════════════════════════════════════════════════ */
 
 async function main() {
@@ -241,7 +108,11 @@ async function main() {
   const outIdx = args.indexOf('--out')
   const OUT = outIdx !== -1 && args[outIdx + 1] ? args[outIdx + 1] : join(ROOT, 'build', 'site')
 
-  const { src, data } = await load(args)
+  // assembled 是 Map<影像鍵, { buf, sha, alpha, mime }>。
+  // 它從哪裡來由 --source 決定（Apps Script 的 base64 chunk，或 Worker 的
+  // 中繼資料＋逐張 GET），但兩條路都跑過同一道 sha256 端到端校驗，
+  // 而且回傳同一個型別 —— 所以下面的流程不需要知道資料來自哪裡。
+  const { src, data, images: assembled } = await load(args)
   console.error(`資料來源：${src}`)
 
   // 🔴 斷言要放在白名單「之前」。
@@ -318,7 +189,7 @@ async function main() {
   if (!rows.length) throw new Error('匯出的商品是空的 —— 中止，不要產生一個沒有商品的網站')
 
   // ── 影像 ────────────────────────────────────────────────────────
-  const assembled = assembleImages(data.images || [])
+  // （位元組已經由 load() 組好並驗過雜湊，見上面 assembled 的說明）
 
   /*
    * repo 素材的退路 —— **只在離線開發時生效**。
@@ -411,11 +282,29 @@ async function main() {
   assertNoCost(rows, 'products.generated')
 
   // ── 寫檔 ────────────────────────────────────────────────────────
+  /*
+   * 產生時間可由 SOURCE_DATE_EPOCH（Unix 秒數）覆寫。
+   *
+   * 這不是為了「可重現建置」這種抽象的好處，是為了一個具體的驗收動作：
+   * 遷移到 D1 之後要能證明「換了資料來源但輸出一個位元組都沒變」——
+   *
+   *   SOURCE_DATE_EPOCH=0 node tools/build-catalog.mjs --source apps   --out /tmp/a
+   *   SOURCE_DATE_EPOCH=0 node tools/build-catalog.mjs --source worker --out /tmp/b
+   *   diff -r /tmp/a /tmp/b
+   *
+   * 時間戳是這兩份輸出唯一會不同的地方。不釘住它，diff 就永遠有雜訊，
+   * 而有雜訊的 diff 等於沒有 diff —— 真正的差異會被淹掉。
+   */
+  const epoch = process.env.SOURCE_DATE_EPOCH
+  const stamp = epoch && /^\d+$/.test(epoch)
+    ? new Date(Number(epoch) * 1000).toISOString()
+    : new Date().toISOString()
+
   const banner = (what) =>
     `/**\n * ${what}\n *\n` +
     ` * 由 tools/build-catalog.mjs 從 Google Sheet 產生，請勿手動編輯 ——\n` +
     ` * 下次建置就會被覆蓋。要改內容請改 Sheet。\n` +
-    ` *\n * 產生時間：${new Date().toISOString()}\n */\n\n`
+    ` *\n * 產生時間：${stamp}\n */\n\n`
 
   await writeFile(join(DATA, 'products.generated.js'),
     banner('商品資料（扁平欄位，由 catalog.js 組成前台要的形狀）') +

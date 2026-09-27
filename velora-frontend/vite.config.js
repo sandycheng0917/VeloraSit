@@ -4,9 +4,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 /**
- * base 由環境變數決定，預設為根目錄。
- * 部署到 GitHub Pages 的子路徑時（https://<帳號>.github.io/<repo>/），
- * 需要 VITE_BASE=/<repo>/ —— 部署流程會自動代入。
+ * base 由環境變數（或 CLI 的 --base）決定，預設為根目錄。
+ *
+ * 公開站在 Worker 的根目錄，所以用預設值。後台建置時由
+ * `npm run build:worker` 以 `--base /admin/` 覆寫 —— 兩個建置疊成同一份
+ * dist/，公開版在根、後台在 dist/admin/。
  */
 export default defineConfig({
   base: process.env.VITE_BASE || '/',

@@ -141,9 +141,15 @@ Root directory    velora-frontend
 `/api/*` 也一樣 —— Worker 永遠不會執行，前端拿到 200 加一份 HTML，
 然後在 `JSON.parse` 才炸，錯誤訊息會指向完全無關的地方。
 
-`.github/workflows/deploy.yml` 還在，但它發布的是 GitHub Pages 上的舊三站配置
-（含已退場的 velora2）。**那條路已經不是正式站**，要嘛更新它、要嘛刪掉 ——
-留著一條會失敗又沒人看的流水線，只會讓人以為部署壞了。
+**GitHub Actions 的部署流程已於 2026-09-28 刪除**（`.github/workflows/deploy.yml`）。
+它發布的是 GitHub Pages 上的舊三站配置（`/`、`/v1/`、`/v2/`、`/admin/`，含已退場的
+velora2），跟現在的單一 Worker 沒有關係，留著只會一直失敗。
+
+它跑的七道稽核關卡（後台字串隔離、成本誘餌、憑證形狀…）也跟著消失了 ——
+那些關卡是有價值的，只是當時寫在 workflow 的 `run:` 區塊裡而不是腳本裡。
+要恢復的話從 git 歷史把 `deploy.yml` 撈出來，把關卡抽成一支 `node` 腳本
+（Cloudflare 的建置指令是一行字串，放不下十幾個步驟），
+再接到 `build:worker` 後面。在那之前，公開前請手動跑 `node check-public.mjs`。
 
 ## 語言：只有繁體中文
 

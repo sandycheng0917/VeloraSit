@@ -51,10 +51,22 @@ const DIST = join(ROOT, DIST_REL)
 const API = arg('--api')
 
 let failed = 0
+const skipped = []
 const pass = (n, msg) => console.log(`  ${n}／7　✓ ${msg}`)
 const fail = (n, msg) => {
   console.error(`  ${n}／7　✗ ${msg}`)
   failed++
+}
+/**
+ * 「未執行」是第三種結果，不是「通過」的一種。
+ *
+ * 🔴 沒有這個區分的話，缺了比對來源的關卡會印一行看起來無害的訊息，
+ *    然後被結尾那句「全部通過」蓋過去 —— 而那句話就變成謊話。
+ *    所以未執行的關卡要記下來，結尾逐一列出。
+ */
+const skip = (n, why) => {
+  console.log(`  ${n}／7　－ 未執行：${why}`)
+  skipped.push(`${n}／7 ${why}`)
 }
 
 /** 列出目錄下所有檔案的相對路徑（正斜線） */
@@ -157,12 +169,32 @@ async function main() {
     source = source ? source + ' + COST_CANARY' : 'COST_CANARY'
   }
   if (!needles.length) {
-    fail(
-      3,
-      '沒有機密字串可比對，這是外洩的主要防線，不允許跳過。\n' +
-        '        本機：放一份 .secret-watch.txt（一行一個字串，該檔不進版控）\n' +
-        '        CI：設 COST_CANARY 環境變數'
-    )
+    /*
+     * 🔴 CI 上允許缺比對來源，但那是一個**被明確宣告**的缺口，不是預設行為。
+     *
+     * .secret-watch.txt 是機密本身，不進版控，所以 Cloudflare 的建置容器
+     * 拿不到它。把它放進 CI 的環境變數等於多開一個機密存放點 ——
+     * 2026-09-28 決定不那樣做，改由本機發布前把關。
+     *
+     * 要跳過就得明確設 GATES_ALLOW_NO_SECRETS=1，而不是靠偵測 CI 環境。
+     * 偵測的話，本機哪天少了那個檔案也會被當成 CI 而默默放行 ——
+     * 那正是這道關卡要防的事。
+     */
+    if (process.env.GATES_ALLOW_NO_SECRETS === '1') {
+      skip(
+        3,
+        '這個環境沒有監看清單（GATES_ALLOW_NO_SECRETS=1）\n' +
+          '        🔴 機密外洩的主防線在這裡沒有執行。\n' +
+          '        發布前請在本機跑 npm run audit —— 那裡才有 .secret-watch.txt'
+      )
+    } else {
+      fail(
+        3,
+        '沒有機密字串可比對，這是外洩的主要防線，不允許跳過。\n' +
+          '        本機：放一份 .secret-watch.txt（一行一個字串，該檔不進版控）\n' +
+          '        CI：設 GATES_ALLOW_NO_SECRETS=1，並改由本機把關'
+      )
+    }
   } else {
     const hit = await scan(files, needles)
     hit.length
@@ -176,7 +208,7 @@ async function main() {
     const hit = await scan(files, [process.env.SHEET_ID])
     hit.length ? fail(4, `試算表 ID 出現在輸出裡：${hit[0]}`) : pass(4, '試算表 ID 沒有出現')
   } else {
-    console.log('  4／7　－ 略過：沒有設定 SHEET_ID（選用）')
+    skip(4, '沒有設定 SHEET_ID（選用）')
   }
 
   /* ── 5 ── */
@@ -202,7 +234,7 @@ async function main() {
    *    對回應本身跑同一套成本檢查。
    */
   if (!API) {
-    console.log('  7／7　－ 略過：沒有給 --api（發布後請補跑一次）')
+    skip(7, '沒有給 --api —— 發布後請補跑 node tools/check-gates.mjs --api <網址>')
   } else {
     try {
       const res = await fetch(`${API.replace(/\/$/, '')}/api/catalog`, {
@@ -231,7 +263,20 @@ async function main() {
     console.error(`\n✗ ${failed} 道關卡沒過，中止發布。\n`)
     process.exit(1)
   }
-  console.log('\n✓ 全部通過\n')
+  /*
+   * 🔴 有關卡沒跑就不要說「全部通過」。
+   *
+   * 那句話會被當成「這份輸出檢查過了」，而實際上少了一道 ——
+   * 一份看起來乾淨的建置日誌比一份有警告的更危險，
+   * 因為沒有人會再去確認。
+   */
+  if (skipped.length) {
+    console.log(`\n✓ 執行的都通過，但有 ${skipped.length} 道未執行：`)
+    for (const s of skipped) console.log(`    · ${s.split('\n')[0]}`)
+    console.log('')
+  } else {
+    console.log('\n✓ 七道全部通過\n')
+  }
 }
 
 main().catch((e) => {

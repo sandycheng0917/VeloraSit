@@ -189,10 +189,22 @@ git ls-files                       # 會被推送的完整清單（只有這些�
 Cloudflare 的建置設定（Workers Builds，接 GitHub）：
 
 ```
+Root directory    velora-frontend
 Build command     npm run build:worker
 Deploy command    npx wrangler deploy
-Root directory    velora-frontend
 ```
+
+Settings → Build → Variables 要加一個（非機密）：
+
+```
+GATES_ALLOW_NO_SECRETS = 1
+```
+
+沒加的話建置會停在稽核關卡 3 —— 見下方「稽核關卡」。
+
+🔴 `Root directory` 設錯不會報錯。`wrangler.toml` 與 `worker/` 都在
+`velora-frontend/` 底下，Cloudflare 只在那一層找它們；設成 repo 根的話
+`/api/*` 與 D1 綁定會靜悄悄失效，只會 404。
 
 `npm run build:worker` 把兩個建置疊成一份 `dist/`：
 公開版在根、後台版在 `dist/admin/`（順便刪掉後台那份重複的 `media/`）。
@@ -224,9 +236,28 @@ node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 
 🔴 **關卡 3 比對 `.secret-watch.txt`** 的 16 個真實機密字串
 （供應商姓名、手機、事業登記號、FOB 數字）。那個檔案本身就是機密，
-被 .gitignore 擋住、只存在本機。沒有它也沒有 `COST_CANARY` 的話
-關卡會**失敗**而不是跳過 —— 一道沒有比對來源的關卡會安靜地永遠通過，
-那比沒有關卡更糟。
+被 .gitignore 擋住、只存在本機。
+
+所以 **Cloudflare 的建置容器拿不到它**。2026-09-28 決定不把清單複製到
+CI 的環境變數（那等於多開一個機密存放點），改成：
+
+| 環境 | 關卡 3 |
+|---|---|
+| 本機 `npm run audit` | 執行，比對 16 個真實字串 |
+| Cloudflare 建置 | **不執行**，但建置日誌會大聲印出這個缺口 |
+
+CI 要設 `GATES_ALLOW_NO_SECRETS=1`（非機密，明文變數即可）。
+
+🔴 **這是刻意用紀律換存放點的取捨，代價要講清楚：忘了在本機跑 audit，
+就沒有人擋。** 所以 push 之前養成跑一次 `npm run audit` 的習慣。
+
+🔴 **沒設那個變數就會失敗，而不是跳過。** 而且用明確的變數而不是偵測 CI
+環境 —— 偵測的話，本機哪天少了那個檔案也會被當成 CI 默默放行，
+那正是這道關卡要防的事。
+
+**「未執行」不算「通過」。** 有關卡沒跑的時候，結尾不會說「七道全部通過」，
+而是列出哪幾道沒跑。一份看起來乾淨的建置日誌比一份有警告的更危險 ——
+因為沒有人會再去確認。
 
 第 7 道換過了。原本是「velora2 原始檔沒被弄髒」，velora2 退場後改成
 **打線上 `/api/catalog` 對回應跑同一套成本檢查**。

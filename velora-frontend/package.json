@@ -13,6 +13,7 @@
     "audit": "node ../tools/check-gates.mjs && node ../check-public.mjs --dist velora-frontend/dist",
     "cf:dev": "wrangler dev",
     "cf:deploy": "wrangler deploy",
+    "set-password": "node ../tools/set-password.mjs",
     "d1:migrate": "wrangler d1 migrations apply veloradb_sit --remote",
     "d1:seed": "node ../tools/d1-seed.mjs && wrangler d1 execute veloradb_sit --remote --file ../build/d1-seed.sql"
   },

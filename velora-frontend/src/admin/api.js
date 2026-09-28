@@ -128,8 +128,13 @@ export const imageIndex = (token) => call('imageIndex', { token })
 /** 回填既有影像的縮圖。只寫 thumb 欄，不動位元組 */
 export const saveThumb = (token, key, thumb) => call('saveThumb', { token, key, thumb })
 export const putImage = (token, payload) => call('upload', { token, ...payload }, { timeout: 120000 })
-export const publish = (token) => call('publish', { token })
-export const status = (token) => call('status', { token })
+/*
+ * publish 與 status 2026-09-28 移除。
+ *
+ * 資料在 D1，後台按儲存的那一刻網站就改了 —— 沒有「發布」這個步驟，
+ * 也就沒有建置狀態可以查。留著一顆按了沒反應的按鈕比沒有按鈕更糟：
+ * 使用者會以為自己沒存成功，然後重複按。
+ */
 
 /* 品牌。上限四家由伺服器擋，前端只是先攔一次讓錯誤來得早一點 */
 /** 改商品編號。伺服器會連影像鍵一起搬，所以圖片不會失聯 */

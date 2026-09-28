@@ -204,13 +204,6 @@
   align-items: flex-end;
   gap: 12px;
 }
-.vadmin .stamp {
-  font-family: var(--f-mono);
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  color: var(--ink-faint);
-}
-
 .vadmin button.go {
   display: inline-flex;
   align-items: center;
@@ -225,18 +218,6 @@
   cursor: pointer;
 }
 .vadmin button.go:disabled { opacity: 0.45; cursor: default; }
-.vadmin button.go i {
-  width: 1px;
-  height: 14px;
-  background: #5a4c36;
-}
-.vadmin button.go em {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  font-style: normal;
-  letter-spacing: 0.04em;
-  color: var(--sidebar-ink);
-}
 
 .vadmin button.ghost {
   padding: 5px 12px;
@@ -353,7 +334,6 @@
   color: var(--ink-faint);
 }
 /* 自上次發布後改過的：左邊一道金色短邊，掃一眼就找得到 */
-.vadmin .row.dirty { box-shadow: inset 3px 0 0 var(--gold-deep); }
 .vadmin .row .n {
   font-family: var(--f-mono);
   font-size: 13.5px;
@@ -478,8 +458,6 @@
 .vadmin .st { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
 .vadmin .st i { width: 6px; height: 6px; flex: none; }
 .vadmin .st.live i { background: var(--gold-deep); }
-.vadmin .st.dirty i { border: 1px solid var(--gold-deep); }
-.vadmin .st.dirty { color: var(--gold-deep); }
 .vadmin .st.off i { background: var(--line-strong); }
 .vadmin .st.off { color: var(--ink-faint); }
 .vadmin .chev { color: var(--line-strong); }

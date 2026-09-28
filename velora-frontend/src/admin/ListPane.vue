@@ -69,7 +69,6 @@ const props = defineProps({
   categories: { type: Array, required: true },
   houses: { type: Array, required: true },
   imgIndex: { type: Object, default: () => ({}) },
-  isDirty: { type: Function, required: true },
 })
 
 /**
@@ -234,9 +233,15 @@ function missing(p) {
   return out
 }
 
+/*
+ * 只有兩種狀態了。
+ *
+ * 2026-09-28 之前還有第三種「已修改」——「存了但還沒發布」。
+ * 資料搬進 D1 之後那個狀態不存在了：按儲存的那一刻網站就改了，
+ * 沒有一段「已經改了但還沒上線」的空窗期可以標示。
+ */
 function state(p) {
   if (!truthy(p.listed)) return { cls: 'off', text: '未上架' }
-  if (props.isDirty(p)) return { cls: 'dirty', text: '已修改' }
   return { cls: 'live', text: '已上線' }
 }
 
@@ -281,7 +286,6 @@ const priceText = (p) =>
         v-for="(p, i) in shown"
         :key="p.id"
         class="row"
-        :class="{ dirty: isDirty(p) }"
         @click="$emit('open', p)"
       >
         <span class="n">{{ String(from + i).padStart(2, '0') }}</span>

@@ -76,6 +76,51 @@ node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
 溢出。要量就開一個同源頁面、用 `<iframe width="390">` 載入站台，
 再讀 `contentDocument.documentElement.scrollWidth` 與各元素的 `getBoundingClientRect()`。
 
+## 怎麼直接看資料庫
+
+資料全部在 Cloudflare D1，沒有 Google 試算表可以打開了。要看內容或 schema：
+
+```bash
+cd velora-frontend
+
+npx wrangler d1 info veloradb_sit          # 大小、資料表數、近 24 小時的讀寫量
+npx wrangler d1 list                       # 這個帳號有哪些資料庫
+
+# 有哪些表
+npx wrangler d1 execute veloradb_sit --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
+
+# 某張表的完整 schema（欄位、型別、CHECK 條件）
+npx wrangler d1 execute veloradb_sit --remote --command "SELECT sql FROM sqlite_master WHERE name='products'"
+
+# 查資料
+npx wrangler d1 execute veloradb_sit --remote --command "SELECT id, ref, name_zh, listed, price FROM products"
+```
+
+目前有七張表：`products`、`houses`、`categories`、`images`、
+`admin_state`、`audit`，加上 wrangler 自己的 `d1_migrations`。
+
+🔴 **`--remote` 不能省。** 省略的話打的是 `.wrangler/state/` 底下的**本機**
+SQLite 檔，那是 `wrangler dev` 用的空殼 —— 你會看到一個結構正確但內容不同
+（或完全是空的）的資料庫，然後以為線上資料出問題了。
+
+**dashboard 也可以**：Cloudflare → Workers & Pages → D1 → `veloradb_sit`
+有一個 Console 分頁可以直接下 SQL，適合臨時查一下。
+
+**整份倒出來**（改任何東西之前都該先做一次）：
+
+```bash
+npx wrangler d1 export veloradb_sit --remote --output ../backup/velora-YYYY-MM-DD.sql
+```
+
+`backup/` 已經被 .gitignore 擋住 —— 那份倒出來的東西含後台密碼雜湊與
+HMAC 簽章密鑰（`admin_state`），不要提交，也不要丟進聊天室。
+
+🔴 **不要直接 UPDATE `products` 來改商品。** 後台會做的事不只寫一列：
+影像鍵要跟著商品編號走、`updated` 要更新、寫完要讀回來確認。
+手動 SQL 繞過那些，最容易造成的後果是圖片失聯 —— 而那是靜默的，
+編輯頁顯示「找不到這張圖」，但原圖還躺在資料庫裡。
+要批次改就走 `/api/admin` 的 `save`。
+
 ## 開始動手前
 
 **要改版面、色票、字體、文案或素材，先載入 `velora-design` skill**
@@ -86,9 +131,9 @@ node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
 ## 硬性規則
 
 1. **展示頁不出現購物車或下單按鈕。** 唯一轉換是 LINE。
-   價格則**逐件由 Sheet 的 `price_public` 決定** —— 這條在 2026-09-06 改了。
-   沒勾的商品，產生器連 `price` 欄位都不會輸出到前台檔案，不是輸出了再隱藏。
-   （成本 `cost` 是另一回事：它在 `products_private` 分頁，永遠不進任何輸出。）
+   價格**逐件由 `products.price_public` 決定**。沒勾的商品，
+   `/api/catalog` 連 `price` 這個鍵都不會輸出 —— 不是輸出了再讓前端隱藏。
+   輸出了再隱藏的話價格仍然在網路回應裡，打開 devtools 就看得到。
 2. **`#C5A880` 不可用於文字**（對比僅 1.9:1）。金色文字一律 `#A8875C`。
 3. **不使用 Tailwind。** 設計 token 寫在 `velora-frontend/src/style.css`。
 4. **Excel 的 FOB 出口單價與供應商聯絡資訊不得進入前端。**
@@ -176,9 +221,11 @@ cd velora-frontend && npm run audit     # 七道關卡 + check-public
 node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 ```
 
-🔴 **需要 `COST_CANARY` 環境變數**（Sheet 的 `products_private` 第 2 列 B 欄）。
-沒設會**失敗**而不是跳過 —— 那是成本外洩的主防線。
-本機用 `$env:COST_CANARY="…"`，Cloudflare 在 Settings → Build → Variables 加。
+🔴 **關卡 3 比對 `.secret-watch.txt`** 的 16 個真實機密字串
+（供應商姓名、手機、事業登記號、FOB 數字）。那個檔案本身就是機密，
+被 .gitignore 擋住、只存在本機。沒有它也沒有 `COST_CANARY` 的話
+關卡會**失敗**而不是跳過 —— 一道沒有比對來源的關卡會安靜地永遠通過，
+那比沒有關卡更糟。
 
 第 7 道換過了。原本是「velora2 原始檔沒被弄髒」，velora2 退場後改成
 **打線上 `/api/catalog` 對回應跑同一套成本檢查**。

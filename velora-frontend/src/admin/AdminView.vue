@@ -1,6 +1,6 @@
 <script setup>
 /**
- * 後台外殼：登入、側欄、分頁切換、發布。
+ * 後台外殼：登入、側欄、分頁切換。
  *
  * 資料只在這裡載入一次（op:list），下面的面板都吃同一份 —— 每個面板
  * 各自去打 API 的話，改完商品回到清單會看到舊資料，而那種不一致
@@ -42,18 +42,6 @@ const houses = ref([])
  * 而不必為了縮圖把四萬字元的 base64 拉回來。
  */
 const imgIndex = ref({})
-const lastPublish = ref('')
-const buildState = ref('')
-/**
- * status 回來了沒有。
- *
- * 🔴 不能用 lastPublish 是不是空的來判斷。status 改成不擋畫面之後，
- *    清單會先畫出來、發布時間才到 —— 而 isDirty() 的規則是
- *    「沒有發布時間就全部算改過」，於是 13 列會先全部亮起金色的
- *    「已修改」再跳掉。那個閃爍看起來像資料錯了。
- *    「還不知道」與「從來沒發布過」是兩件事，要分開。
- */
-const statusKnown = ref(false)
 
 /*
  * 頁尾的版權年份。
@@ -62,42 +50,6 @@ const statusKnown = ref(false)
  * 前台主視覺那幾個件數數字就是這樣說謊了一整段時間。
  */
 const year = new Date().getFullYear()
-
-/**
- * 發布時間轉成台北時間。
- *
- * 伺服器存的是 UTC 的 ISO 字串（nowIso_()），那是對的 —— 沒有時區的
- * 時間戳遲早會被讀錯。要換的是「顯示」，不是「儲存」。
- *
- * 🔴 日期那一半也要用台北的。isDirty() 拿它去比 p.updated，
- *    而 updated 是 Apps Script 用 Asia/Taipei 產生的（today_()）。
- *    直接切 ISO 的前十碼是 UTC 日期，台灣時間早上八點前會差一天 ——
- *    症狀是剛發布完，清單上一批商品仍然標著「已修改」。
- *
- * @returns {{date: string, text: string}} 'YYYY-MM-DD' 與 'YYYY-MM-DD HH:mm'
- */
-function inTaipei(iso) {
-  if (!iso) return { date: '', text: '' }
-  const d = new Date(iso)
-  // 解析不出來就原樣顯示，不要因為格式沒見過就變成空白
-  if (Number.isNaN(d.getTime())) {
-    const raw = String(iso)
-    return { date: raw.slice(0, 10), text: raw.slice(0, 16).replace('T', ' ') }
-  }
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Taipei',
-    // h23 而不是 hour12:false —— 後者在某些引擎上午夜會印成 24:00
-    hourCycle: 'h23',
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit',
-  }).formatToParts(d)
-  const g = (t) => (parts.find((x) => x.type === t) || {}).value || ''
-  const date = `${g('year')}-${g('month')}-${g('day')}`
-  return { date, text: `${date} ${g('hour')}:${g('minute')}` }
-}
-
-/** 畫面上那兩處都用這個。空的時候是破折號 */
-const publishedAt = computed(() => inTaipei(lastPublish.value).text || '—')
 
 const toast = ref(null)
 let toastTimer = null
@@ -108,19 +60,6 @@ function say(text, bad = false) {
 }
 
 const signedIn = computed(() => !!session.token.value)
-const dirtyCount = computed(() => products.value.filter(isDirty).length)
-
-/**
- * 「自上次發布後改過」的判準：updated 比 last_publish 新。
- * 兩邊都可能沒有值 —— 沒發布過就全部算改過，那是對的：確實都還沒上線。
- */
-function isDirty(p) {
-  // 還不知道上次發布時間時一律當成沒改過 —— 寧可少標，不要先亮一片再收回
-  if (!statusKnown.value) return false
-  if (!lastPublish.value) return true
-  // 兩邊都是台北日期才比得準（updated 由 Apps Script 的 today_() 產生）
-  return String(p.updated || '') > inTaipei(lastPublish.value).date
-}
 
 async function doLogin() {
   loginErr.value = ''
@@ -191,16 +130,6 @@ async function load() {
     categories.value = r.categories || []
     houses.value = r.houses || []
     ready.value = true
-
-    api
-      .status(session.token.value)
-      .then((st) => {
-        lastPublish.value = st.last_publish || ''
-        buildState.value = st.state || ''
-      })
-      // GitHub 沒設定不該擋住整個後台 —— 商品照樣能編，只是不知道發布狀態
-      .catch(() => (buildState.value = 'unknown'))
-      .finally(() => (statusKnown.value = true))
   } catch (e) {
     if (e.code === 'auth') {
       session.clear()
@@ -228,43 +157,6 @@ async function afterSave(msg) {
   pane.value = 'list'
   editing.value = null
   await load()
-}
-
-const publishing = ref(false)
-async function doPublish() {
-  if (!(await session.keepAlive())) { say('登入已失效，請重新登入。', true); return }
-  publishing.value = true
-  try {
-    await api.publish(session.token.value)
-    buildState.value = 'queued'
-    say('已送出發布。網站約 3 分鐘後更新，這段時間可以繼續編輯。')
-    poll()
-  } catch (e) {
-    say(e.message + (e.detail ? '　' + e.detail : ''), true)
-  } finally {
-    publishing.value = false
-  }
-}
-
-let pollTimer = null
-function poll() {
-  clearTimeout(pollTimer)
-  pollTimer = setTimeout(async () => {
-    try {
-      const s = await api.status(session.token.value)
-      buildState.value = s.state
-      lastPublish.value = s.last_publish || lastPublish.value
-      if (s.state === 'queued' || s.state === 'in_progress') poll()
-      else if (s.state === 'success') say('網站已更新。')
-      else if (s.state === 'failure') say('建置失敗。到 GitHub 的 Actions 頁看是哪一關擋下來的。', true)
-    } catch { /* 查不到就不再追，不要因為查狀態把畫面弄壞 */ }
-  }, 15000)
-}
-
-const STATE_TEXT = {
-  queued: '排隊中', in_progress: '發布中', success: '已上線',
-  failure: '發布失敗', cancelled: '已取消', superseded: '已被新的取代',
-  none: '尚未發布過', unknown: '未設定 GitHub',
 }
 
 function signOut() {
@@ -322,8 +214,8 @@ onMounted(async () => {
       <div class="fill" />
       <div class="foot">
         <span class="legal">© {{ year }}　維羅拉國際有限公司</span>
-        資料源　<span class="v">Google Sheet</span><br />
-        最後發布　<span class="v">{{ publishedAt }}</span><br />
+        資料源　<span class="v">Cloudflare D1</span><br />
+        儲存即生效<br />
         <button class="link quiet" style="font-family: inherit; font-size: 10.5px" @click="signOut">
           登出（票剩 {{ session.remaining() }}）
         </button>
@@ -369,22 +261,7 @@ onMounted(async () => {
         <header class="head">
           <div>
             <h1>商品清單</h1>
-            <p class="sub">
-              共 {{ products.length }} 件商品<template v-if="dirtyCount">，其中 {{ dirtyCount }} 件自上次發布後有變動</template>。
-            </p>
-          </div>
-          <div class="right">
-            <p class="stamp">
-              上次發布　{{ publishedAt }}
-              　·　{{ STATE_TEXT[buildState] || buildState || '—' }}
-            </p>
-            <button
-              class="go"
-              :disabled="publishing || buildState === 'queued' || buildState === 'in_progress'"
-              @click="doPublish"
-            >
-              發布<i /><em>約 3 分鐘</em>
-            </button>
+            <p class="sub">共 {{ products.length }} 件商品。儲存後網站立即生效。</p>
           </div>
         </header>
         <ListPane
@@ -392,7 +269,6 @@ onMounted(async () => {
           :categories="categories"
           :houses="houses"
           :img-index="imgIndex"
-          :is-dirty="isDirty"
           @open="openEdit"
           @refresh-index="reloadIndex"
           @said="(m) => say(m)"

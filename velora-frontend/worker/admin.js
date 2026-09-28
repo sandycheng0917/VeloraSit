@@ -483,22 +483,14 @@ const OPS = {
     return ok({ key, sha256: sha, bytes: bytes.length })
   },
 
-  /**
-   * 「發布」。
+  /*
+   * 這裡原本有 publish 與 status 兩個 op。2026-09-28 一起移除。
    *
-   * 🔴 現在什麼都不用做，而這正是重點：前台是即時讀 D1 的，
-   *    儲存的那一刻網站就已經改了。保留這個 op 只是為了讓舊的前端
-   *    不會拿到 bad-op —— UI 上那顆按鈕應該拿掉，不是留著假裝有用。
+   * 🔴 publish 一度被改成「什麼都不做但回 ok」，想讓舊前端不要拿到
+   *    bad-op。那是錯的：一個回報成功卻什麼都沒做的端點，
+   *    正是這個專案反覆警告的失敗模式。前端那顆按鈕已經拿掉了，
+   *    端點也跟著拿掉 —— 真的有人打它的話，回 bad-op 才是誠實的。
    */
-  async publish(db) {
-    await audit(db, 'publish', true, '無動作：前台即時讀 D1')
-    return ok({ at: new Date().toISOString(), noop: true, note: '儲存即生效，不需要發布' })
-  },
-
-  async status(db) {
-    const n = await db.prepare('SELECT COUNT(*) AS n FROM products WHERE deleted = 0').first()
-    return ok({ state: 'live', live: true, products: n?.n ?? 0, last_publish: null })
-  },
 }
 
 /** 不需要令牌的 op。其餘一律要 */

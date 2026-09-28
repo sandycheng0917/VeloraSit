@@ -64,8 +64,10 @@ node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 node check-public.mjs --dist velora-frontend/dist
 node tools/compress-images.mjs        # 影像壓縮（產出到 tools/media-src/）
 
+node tools/set-password.mjs           # 改後台密碼（互動輸入，不碰任何商品資料）
+
 # 🔴 一次性遷移，會清空 D1 再重灌。正常情況下永遠不需要跑
-node tools/d1-seed.mjs --force --pw "新密碼"
+node tools/d1-seed.mjs --force
 
 python design/build-assets.py         # 重建圖庫（改了 sample/ 之後）
 node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
@@ -251,6 +253,16 @@ OWASP 建議 31 萬，所以這裡比建議值低三倍 —— 代價是 D1 內�
 
 🔴 令牌要整批撤銷就把 `admin_state.token_epoch` +1，
 所有已發出的令牌立刻失效，不必等它們自己過期。
+
+**改密碼**用 `node tools/set-password.mjs`（在 repo 根目錄跑）。
+它互動式問兩次密碼、只改 `admin_state` 的那幾列、順便把 `token_epoch` +1
+讓所有現有登入失效，然後刪掉暫存的 SQL 檔。
+
+🔴 **不要用 `d1-seed.mjs` 改密碼。** 它也能設，但會連商品一起清空重灌 ——
+那是一次性遷移工具，不是維運工具。
+
+實測過的四件事：舊密碼失效、改密碼前發出的令牌被撤銷、新密碼可用、
+商品資料一筆都沒動。
 
 **「發布」鍵已經沒有意義** —— 儲存即生效。`publish` 這個 op 還留著
 （回 `noop: true`）只是為了讓舊的前端不會拿到 `bad-op`；

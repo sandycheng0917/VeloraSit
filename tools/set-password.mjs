@@ -28,7 +28,6 @@ import { spawnSync } from 'node:child_process'
 import { pbkdf2Sync, randomBytes } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
-import { createInterface } from 'node:readline'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -59,21 +58,73 @@ function askHidden(prompt) {
   return new Promise((resolve, reject) => {
     const input = process.stdin
     if (!input.isTTY) {
-      reject(new Error('不是互動式終端機，無法隱藏輸入。請用 --pw，並記得清掉 shell 歷史紀錄。'))
+      reject(new Error(
+        '這個終端機不是互動式的，讀不到鍵盤輸入。\n' +
+        '  改用：npm run set-password -- --pw "你的通行句"\n' +
+        '  （用完請清掉 shell 歷史紀錄）'
+      ))
       return
     }
-    const rl = createInterface({ input, output: process.stdout, terminal: true })
-    // 把回顯關掉：_writeToOutput 是 readline 的內部掛勾，
-    // 沒有公開 API 可以做這件事，但它從 Node 0.x 就存在且穩定
-    rl._writeToOutput = (s) => {
-      if (s.includes(prompt)) process.stdout.write(prompt)
-    }
+
+    /*
+     * 🔴 一定要回顯遮罩字元，不能什麼都不顯示。
+     *
+     * 第一版完全不回顯（照 sudo 的做法），結果使用者打字看不到任何反應，
+     * 回報「好像卡住了」—— 而那個判斷是對的：一個沒有任何回饋的提示，
+     * 跟當掉在畫面上是同一件事。安全性來自「別人看不到內容」，
+     * 不是「連你自己都看不到有沒有在輸入」。
+     *
+     * 用原始模式逐字元處理，不用 readline 的 _writeToOutput 掛勾 ——
+     * 那是內部 API，而且在不同終端機上行為不一致。
+     */
     process.stdout.write(prompt)
-    rl.question('', (answer) => {
-      rl.close()
+    input.setRawMode(true)
+    input.resume()
+    input.setEncoding('utf8')
+
+    let buf = ''
+    const done = (err, value) => {
+      input.setRawMode(false)
+      input.pause()
+      input.removeListener('data', onData)
       process.stdout.write('\n')
-      resolve(answer)
-    })
+      err ? reject(err) : resolve(value)
+    }
+
+    /*
+     * 🔴 吞掉開頭那個落單的換行。
+     *
+     * Windows 的 Enter 在原始模式下可能送 \r\n 兩個字元。第一個 \r 讓
+     * 這一輪結束，而 \n 還留在串流裡 —— 下一輪 askHidden（「再輸入一次」）
+     * 一 resume 就收到它，立刻以空字串結束。
+     * 症狀是第二個提示閃過去、然後說「兩次輸入不一致」，
+     * 而使用者根本沒有機會打第二次。
+     */
+    let first = true
+
+    function onData(ch) {
+      for (const c of ch) {
+        if (first && c === '\n' && buf === '') { first = false; continue }
+        first = false
+        if (c === '\r' || c === '\n') return done(null, buf)
+        if (c === '\u0003') return done(new Error('已取消，沒有做任何變更。')) // Ctrl+C
+        if (c === '\u0004') return done(null, buf)                              // Ctrl+D
+        if (c === '\u007f' || c === '\b') {
+          if (buf) {
+            buf = buf.slice(0, -1)
+            // 退格、蓋掉、再退格 —— 只寫 \b 的話星號還留在畫面上
+            process.stdout.write('\b \b')
+          }
+          continue
+        }
+        // 其餘控制字元忽略（方向鍵之類的會送 escape 序列，不要收進密碼裡）
+        if (c < ' ') continue
+        buf += c
+        process.stdout.write('*')
+      }
+    }
+
+    input.on('data', onData)
   })
 }
 
@@ -83,7 +134,7 @@ async function readPassword() {
     console.error('⚠ 用 --pw 傳密碼會留在 shell 歷史紀錄裡，記得清掉。\n')
     return given
   }
-  const a = await askHidden('新密碼（輸入時不會顯示）：')
+  const a = await askHidden('新密碼（會顯示為 *，至少 12 字元）：')
   const b = await askHidden('再輸入一次：')
   if (a !== b) throw new Error('兩次輸入不一致，沒有做任何變更。')
   return a

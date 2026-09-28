@@ -1,0 +1,10 @@
+# 🔴 git hook 必須是 LF。
+#
+# Windows 的 autocrlf 會在 checkout 時把它轉成 CRLF，而 shebang 那一行
+# 結尾的 \r 會讓 /bin/sh 變成 "/bin/sh\r" —— 報錯是
+# "bad interpreter: No such file or directory"，完全看不出是換行字元。
+# 症狀是 hook 在某些人的機器上靜靜地不執行。
+.githooks/* text eol=lf
+
+# SQL 遷移檔同理：交給 wrangler 跑，不需要平台換行
+*.sql text eol=lf

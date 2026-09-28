@@ -164,8 +164,24 @@ HMAC 簽章密鑰（`admin_state`），不要提交，也不要丟進聊天室�
 
 ```bash
 node check-public.mjs              # 哪些進 Git、哪些上網站、有無機密
+node check-public.mjs --strict     # 通用樣式命中也視為失敗（pre-push hook 用）
 node check-public.mjs 自訂關鍵字     # 用自己想到的字搜
 git ls-files                       # 會被推送的完整清單（只有這些）
+```
+
+離開碼分三種，因為誤報率完全不同：
+
+| 情況 | 行為 |
+|---|---|
+| 監看清單的確切字串命中 | **一定失敗**。那是你列出的字串，不可能是誤報 |
+| `.gitignore` 規則失效 | **一定失敗**。那幾條沒有第二道網 |
+| 通用樣式命中（10 位數字之類） | 預設只警告，`--strict` 才失敗 |
+
+🔴 2026-09-28 之前這支**永遠回 0**，它只印警告。那在「人會看輸出」的
+前提下沒問題，但接進 hook 或 CI 就等於沒接 —— 一個永遠成功的檢查
+擋不住任何東西，而且會讓人**以為**有在擋。
+
+```bash
 ```
 
 ### 部署：Cloudflare Worker
@@ -248,8 +264,22 @@ CI 的環境變數（那等於多開一個機密存放點），改成：
 
 CI 要設 `GATES_ALLOW_NO_SECRETS=1`（非機密，明文變數即可）。
 
-🔴 **這是刻意用紀律換存放點的取捨，代價要講清楚：忘了在本機跑 audit，
-就沒有人擋。** 所以 push 之前養成跑一次 `npm run audit` 的習慣。
+🔴 **這是刻意用紀律換存放點的取捨。** 而紀律不可靠，所以補了一個
+**pre-push hook**（`.githooks/pre-push`）把它自動化：
+
+```bash
+git config core.hooksPath .githooks     # 每個 clone 只需設定一次
+```
+
+它在 `git push` 之前跑 `node check-public.mjs --strict`，
+掃**要推出去的那些檔案**有沒有機密。確定是誤報的話 `git push --no-verify`。
+
+為什麼是 pre-push 不是 pre-commit：commit 是本機的事，推出去才不可逆 ——
+git 歷史是永久的，事後刪掉也還在。
+
+為什麼只跑 check-public 不跑 check-gates：後者掃的是 `dist/`，
+那份產物跟這次 push 的內容不一定對應（可能是三天前建的），
+拿過期的輸出來驗，綠燈沒有意義。它已經接在 `build:worker` 裡。
 
 🔴 **沒設那個變數就會失敗，而不是跳過。** 而且用明確的變數而不是偵測 CI
 環境 —— 偵測的話，本機哪天少了那個檔案也會被當成 CI 默默放行，

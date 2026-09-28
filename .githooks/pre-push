@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# push 之前掃一次：要推出去的檔案裡有沒有機密。
+#
+# ── 為什麼是 pre-push 而不是 pre-commit ────────────────────────────
+#
+# commit 是本機的事，推出去才不可逆 —— git 歷史是永久的，
+# 事後刪掉也還在。所以擋在最後一刻，而不是每次 commit 都跑。
+#
+# ── 為什麼只跑 check-public，不跑 check-gates ──────────────────────
+#
+# check-public 掃的是 **git 追蹤中的檔案**，也就是「你正要推什麼」——
+# 那正是這個時機點該問的問題。
+#
+# check-gates 掃的是 velora-frontend/dist/，那是建置產物，跟這次 push
+# 的內容不一定對應（dist 可能是三天前建的）。拿一份過期的輸出來驗，
+# 得到的綠燈沒有意義。它已經接在 npm run build:worker 裡，擋在部署路徑上。
+#
+# ── 🔴 Cloudflare 的建置不會做這件事 ───────────────────────────────
+#
+# .secret-watch.txt 是機密本身，不進版控，所以 CI 拿不到它 ——
+# 稽核關卡 3 在 Cloudflare 上是明確不執行的（GATES_ALLOW_NO_SECRETS=1）。
+# 這個 hook 就是那個缺口的補償。拿掉它等於沒有人在擋。
+#
+# 啟用（每個 clone 只需一次）：
+#   git config core.hooksPath .githooks
+#
+# 真的要略過（你確定那是誤報）：
+#   git push --no-verify
+
+set -e
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push：找不到 node，跳過機密掃描。" >&2
+  echo "          這不是通過 —— 請自己跑一次 node check-public.mjs --strict" >&2
+  exit 0
+fi
+
+echo "pre-push：掃描要推送的檔案有沒有機密…"
+
+# --strict 讓通用樣式的命中也擋下來。
+# 監看清單的確切命中與 .gitignore 失效本來就一定擋，不受這個旗標影響。
+if node check-public.mjs --strict > /tmp/velora-prepush.log 2>&1; then
+  echo "pre-push：✓ 沒有命中"
+  rm -f /tmp/velora-prepush.log
+  exit 0
+fi
+
+echo "" >&2
+# 只印命中與判決。整份報表有六節、上百行，把重點倒進去等於沒印 ——
+# 要看完整的自己跑 node check-public.mjs
+# 🔴 不要抓所有的 ✗。第 ③ 節用 ✗ 表示「已被 .gitignore 擋住」——
+#    那是好消息，在這個情境印出來會被讀成一長串失敗。
+#    只要：命中（⚠）、命中的位置（→）、行首的判決（^✗）、失效的規則。
+grep -E '⚠|^✗|→|沒擋住' /tmp/velora-prepush.log >&2 || cat /tmp/velora-prepush.log >&2
+echo "" >&2
+echo "🔴 pre-push 擋下了這次推送。" >&2
+echo "   確認是誤報的話：git push --no-verify" >&2
+rm -f /tmp/velora-prepush.log
+exit 1

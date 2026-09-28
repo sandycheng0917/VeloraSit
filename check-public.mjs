@@ -99,8 +99,13 @@ function sh(cmd) {
 }
 
 const line = (c = '─') => console.log(c.repeat(68))
+/** --strict：讓通用樣式的命中也變成非零離開碼（pre-push hook 用） */
+const STRICT = process.argv.includes('--strict')
+
 const CUSTOM = process.argv.slice(2).filter(Boolean).filter((a, i, all) => {
-  if (a === '--dist') return false
+  // 旗標不是關鍵字。漏掉這個過濾的話，--strict 會被當成要搜尋的字串，
+  // 然後這支工具就只搜 "--strict"，什麼機密都不掃 —— 而且看起來一切正常
+  if (a === '--dist' || a === '--strict') return false
   return all[i - 1] !== '--dist'
 })
 
@@ -161,9 +166,20 @@ console.log('④  機密掃描（掃 git 追蹤中的所有檔案，包含本腳
 line()
 
 let bad = 0
-function report(label, why, hits) {
+/**
+ * 確切的機密字串命中 —— 跟通用樣式分開算。
+ *
+ * 🔴 監看清單的命中**不可能是誤報**：那是你自己列出來的確切字串，
+ *    出現在 git 追蹤中的檔案裡就是真的要外洩了。
+ *    通用樣式（10 位數字、韓國手機形狀）才有誤報空間。
+ *    混在同一個計數裡的話，唯一的處理方式只剩「全部當警告」，
+ *    而那讓真正的命中也失去了擋下來的能力。
+ */
+let exact = 0
+function report(label, why, hits, isExact = false) {
   if (!hits.length) return
   bad++
+  if (isExact) exact++
   console.log('  ⚠ %s（%s）', label, why)
   for (const h of hits) console.log('      ' + h)
 }
@@ -184,7 +200,7 @@ if (CUSTOM.length) {
     console.log('  監看清單 .secret-watch.txt：%d 個字串（此檔不進版控）', words.length)
     for (const w of words) {
       const hits = sh(`git grep -lI -e "${w.replace(/"/g, '\\"')}"`).trim()
-      report(w.slice(0, 4) + '…（已遮蔽）', '監看清單命中', hits ? hits.split('\n') : [])
+      report(w.slice(0, 4) + '…（已遮蔽）', '監看清單命中', hits ? hits.split('\n') : [], true)
     }
   } else {
     console.log('  找不到 .secret-watch.txt —— 只做通用樣式檢查。')
@@ -210,8 +226,11 @@ if (CUSTOM.length) {
   }
 }
 
-console.log(bad ? `\n  ⚠ ${bad} 項命中，公開前請逐一確認是否為誤報。`
-                : '\n  ✓ 全部 0 命中')
+console.log(
+  bad
+    ? `\n  ⚠ ${bad} 項命中${exact ? `，其中 ${exact} 項是監看清單的確切字串` : '，請逐一確認是否為誤報'}。`
+    : '\n  ✓ 全部 0 命中'
+)
 
 /* ⑤ 後台只能出現在 admin/ ─────────────────────────────────── */
 line('═')
@@ -303,3 +322,33 @@ console.log(unguarded
   : '\n  ✓ 七條都還在')
 
 line('═')
+
+/* ── 離開碼 ─────────────────────────────────────────────────────────
+ *
+ * 🔴 2026-09-28 之前這支永遠回 0 —— 它只印警告。
+ *
+ *    那在「人會看輸出」的前提下沒問題，但接進 pre-push hook 或 CI
+ *    之後就等於沒有接：一個永遠成功的檢查擋不住任何東西，
+ *    而且它還會讓人**以為**有在擋。
+ *
+ * 分三種，因為它們的誤報率完全不同：
+ *
+ *   監看清單命中    一定失敗。那是你自己列出的確切字串，
+ *                   出現在 git 追蹤的檔案裡就是真的要外洩了
+ *   .gitignore 失效 一定失敗。那幾條規則沒有第二道網
+ *   通用樣式命中    預設只警告（「10 位數字」本來就會誤報），
+ *                   --strict 才失敗 —— pre-push hook 用那個
+ */
+const heuristic = bad - exact
+if (exact || unguarded) {
+  const why = [
+    exact ? `${exact} 項監看清單的確切字串出現在 git 追蹤的檔案裡` : '',
+    unguarded ? `${unguarded} 條 .gitignore 規則失效` : '',
+  ].filter(Boolean).join('，且 ')
+  console.error(`\n✗ ${why}。中止。\n`)
+  process.exit(1)
+}
+if (STRICT && heuristic) {
+  console.error(`\n✗ --strict：${heuristic} 項通用樣式命中。確認是誤報之後再推。\n`)
+  process.exit(1)
+}

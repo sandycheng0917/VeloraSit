@@ -552,7 +552,7 @@ export async function handleMedia(request, env, url) {
   const [, key, sha8] = m
 
   const r = await env.DB
-    .prepare('SELECT mime, data, sha256 FROM images WHERE key = ?')
+    .prepare('SELECT mime, data, sha256, bytes FROM images WHERE key = ?')
     .bind(key).first()
   if (!r || String(r.sha256).slice(0, 8) !== sha8) {
     return new Response('not found', { status: 404 })

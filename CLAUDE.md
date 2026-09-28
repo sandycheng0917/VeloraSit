@@ -9,29 +9,38 @@ Velora International CO., LTD ——「韓國選品代理」形象網站與後�
 velora-frontend/     Vue 3 + Vite 前端，也是部署單位
   src/admin/         後台（商品管理），只在 build:admin 進 bundle
   src/data/          catalog.js 是介面層，執行時向 /api/catalog 取資料
-  worker/            Cloudflare Worker 入口：/api/* 與 SPA fallback
+  worker/            Cloudflare Worker：index.js 路由 + admin.js 後台後端
   migrations/        D1 的 schema（wrangler d1 migrations）
   wrangler.toml      Worker 設定（不是 Pages —— 見下方部署）
-apps-script/         Google Apps Script 後端（後台仍走這條）
-tools/               建置期工具（產生器、D1 種子、遷移、退化檢查）
+tools/               建置期工具（稽核關卡、D1 種子、影像壓縮）
+  media-src/         影像來源檔。**刻意不在 public/**，見下方硬性規則
 design/              設計交付：.pen 設計檔、規格書、素材管線
 check-public.mjs     公開前稽核：哪些會進 Git、哪些會上網站
 ```
 
-**商品資料在 Cloudflare D1（`veloradb_sit`），前台執行時才取回來。**
-2026-09-28 之前是建置時由 `tools/build-catalog.mjs` 從 Google Sheet 取回、
-烤進 `src/data/*.generated.js`，改一筆商品要重跑整條建置才看得到。
-現在 `catalog.js` 打 `/api/catalog`，由 `worker/index.js` 查 D1。
+## 唯一真相是 Cloudflare D1
 
-`*.generated.js` 還在 repo 裡，但**前台不再 import 它們** ——
-它們現在只有一個用途：當 `tools/d1-seed.mjs` 的輸入。
+**商品、品牌、品類、影像位元組、後台密碼全部在 D1（`veloradb_sit`）。**
+整個系統不依賴任何外部服務 —— 2026-09-28 Google 全面退場：
+Apps Script 後端、兩份 Google Sheet、`repository_dispatch` 的發布流程都刪了。
 
-🔴 **沒有種子檔退路。** API 掛掉時前台顯示錯誤與重試，不會靜默拿種子頂上 ——
+```
+前台  catalog.js ──fetch──> /api/catalog ──> worker/index.js ──> D1
+後台  api.js     ──fetch──> /api/admin   ──> worker/admin.js  ──> D1
+圖片  <img src>  ────────> /media/<內容定址檔名> ──> worker/admin.js ──> D1
+```
+
+**沒有「發布」這個步驟。** 後台按儲存的那一刻網站就改了（前台的快取是 60 秒）。
+以前要跑三分鐘的 GitHub Actions，現在是一次資料庫寫入。
+
+🔴 **沒有種子檔退路。** API 掛掉時前台顯示錯誤與重試，不會靜默拿舊資料頂上 ——
 那會讓「資料庫壞了」長得跟「一切正常」一模一樣，而使用者看到的是一份
-沒人知道有多舊的目錄。同理，`tools/build-catalog.mjs` 讀不到 Sheet 也必須硬失敗。
+沒人知道有多舊的目錄。
 
-Sheet → D1 的搬運目前是手動的：跑 `build-catalog` 更新 `*.generated.js`，
-再跑 `npm run d1:seed` 灌進 D1。要自動化的話接在 `build-catalog` 後面即可。
+🔴 **`tools/d1-seed.mjs` 是一次性遷移，不是同步工具。** 它會清空再重灌，
+再跑一次等於把 2026-09-07 的舊快照蓋回去、洗掉所有後台編輯。
+所以它要 `--force` 才會動。備份：
+`npx wrangler d1 export veloradb_sit --remote --output backup.sql`
 
 ## 常用指令
 
@@ -43,18 +52,20 @@ npm run dev:admin    # 後台（也是 5173，但根路徑就是後台）
 npm run build        # 公開版建置，必須通過
 npm run build:worker # 部署用：公開版 + 後台疊成一份 dist/（Cloudflare 跑這個）
 
+npm run audit        # 七道稽核關卡 + check-public（build:worker 會自動跑）
 npm run d1:migrate   # 套用 migrations/ 到遠端 D1
-npm run d1:seed      # 由 *.generated.js 產生種子 SQL 並灌進遠端 D1
 npm run cf:deploy    # 手動部署（等同 npx wrangler deploy）
 ```
 
 ```bash
-node tools/build-catalog.mjs --from tools/fixture.json --images tools/images.json
-node tools/check-regression.mjs       # 內容有沒有比上一版少
 node tools/check-admin-css.mjs        # 後台有沒有跟公開版全域樣式撞 class 名
-node tools/d1-seed.mjs                # 只產生 SQL，不灌
-node tools/check-gates.mjs             # 七道關卡（需 COST_CANARY）
+node tools/check-gates.mjs            # 七道關卡（比對 .secret-watch.txt）
+node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 node check-public.mjs --dist velora-frontend/dist
+node tools/compress-images.mjs        # 影像壓縮（產出到 tools/media-src/）
+
+# 🔴 一次性遷移，會清空 D1 再重灌。正常情況下永遠不需要跑
+node tools/d1-seed.mjs --force --pw "新密碼"
 
 python design/build-assets.py         # 重建圖庫（改了 sample/ 之後）
 node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
@@ -81,7 +92,16 @@ node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
 2. **`#C5A880` 不可用於文字**（對比僅 1.9:1）。金色文字一律 `#A8875C`。
 3. **不使用 Tailwind。** 設計 token 寫在 `velora-frontend/src/style.css`。
 4. **Excel 的 FOB 出口單價與供應商聯絡資訊不得進入前端。**
+   D1 的 schema 裡**沒有 cost 欄位，而且不打算有** —— 不設欄位跟
+   「設了但查詢時不 SELECT」是兩回事，後者只要有人寫一次 `SELECT *`
+   就外洩，而那行程式碼看起來無害到不會有人在 review 時停下來。
 5. 圖片路徑一律取自 `src/data/media-manifest.js`，不要手寫檔名。
+6. **建置素材不要放進 `velora-frontend/public/`。** 那個目錄是原樣複製到
+   網站上的，放進去就等於公開，即使沒被引用。影像來源檔放 `tools/media-src/`。
+7. **內容定址的檔名規則有三份拷貝**（`tools/lib/assemble.mjs` 的
+   `imageFileName()`、`src/admin/imgurl.js` 的 `publicUrl()`、
+   `worker/index.js` 的 `fileNameOf()`）。三個 runtime 各一份，無法共用 ——
+   改任何一處都要同步另外兩處，否則算出來的網址對不到圖。
 
 ## 部署：什麼會上網站
 
@@ -166,18 +186,32 @@ node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 關卡的涵蓋範圍在那天縮水了，而沒有任何東西會提醒你。
 這一道把稽核補回資料真正流出去的那條路。
 
-### 🔴 後台的「發布」鍵目前沒有作用
+### 後台
 
-它走 Apps Script → GitHub `repository_dispatch` → `deploy.yml`，
-而 `deploy.yml` 已經刪除。GitHub 仍然會回 **204 成功**，
-Apps Script 照樣記下 `last_publish`，後台照樣顯示「已發布」—— 網站不會變。
+`https://velorasit.chenghsuanno1.workers.dev/admin/`
 
-這正是本文件反覆警告的那種失敗模式。修法有兩條，還沒決定：
-- 在 Worker 上開一個認證過的 `/api/sync`，由它從匯出端點拉資料寫進 D1，
-  「發布」改打那裡（前台是即時讀 D1 的，本來就不需要重建網站，約數秒）
-- 或恢復一個只做 Sheet → D1 同步的 GitHub Actions workflow
+後端是 `worker/admin.js`，資料在 D1。認證是密碼 → PBKDF2 → HMAC 簽章令牌
+（8 小時），連錯五次鎖十五分鐘。祕密存在 `admin_state` 表。
 
-在那之前，改完商品要手動跑 `build-catalog` + `npm run d1:seed`。
+🔴 `admin_state` **沒有任何讀取端點**，每個 op 都不回傳它的內容。
+新增 op 的時候不要為了除錯「先把 state 印出來看看」。
+
+🔴 密碼的 PBKDF2 只有 **10 萬輪**，那是 Cloudflare Workers 的硬上限
+（超過會回 `iteration counts above 100000 are not supported`）。
+OWASP 建議 31 萬，所以這裡比建議值低三倍 —— 代價是 D1 內容外洩時
+離線破解快三倍。唯一能補回來的是密碼長度，**請用長通行句**。
+輪數存在 `admin_state.pw_iters`，Cloudflare 放寬了改那一列即可。
+
+🔴 令牌要整批撤銷就把 `admin_state.token_epoch` +1，
+所有已發出的令牌立刻失效，不必等它們自己過期。
+
+**「發布」鍵已經沒有意義** —— 儲存即生效。`publish` 這個 op 還留著
+（回 `noop: true`）只是為了讓舊的前端不會拿到 `bad-op`；
+UI 上那顆按鈕應該拿掉，不是留著假裝有用。
+
+**換圖仍然需要後台上傳**（位元組直接進 D1），不需要重新部署。
+只有改了 `public/media/` 底下的固定素材（品類封面、主視覺輪播）
+才要重跑 `npm run build:worker && npx wrangler deploy`。
 
 ## 語言：只有繁體中文
 

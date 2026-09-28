@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 /**
- * 一次性遷移：把 Google Sheet 的內容搬進 Cloudflare D1。
+ * 一次性遷移：把 Google Sheet 的最後一份快照灌進 Cloudflare D1。
  *
- *   node tools/d1-seed.mjs                 # 產生 build/d1-seed.sql
- *   node tools/d1-seed.mjs --pw "密碼"      # 順便設後台密碼
+ *   node tools/d1-seed.mjs --force                 # 產生 build/d1-seed.sql
+ *   node tools/d1-seed.mjs --force --pw "密碼"      # 順便設後台密碼
+ *
+ * 🔴 **這支會把 D1 現有的商品、品牌、品類、影像整個洗掉再重灌。**
+ *
+ *    2026-09-28 之後 D1 就是唯一真相，後台的每一次儲存都直接寫進去。
+ *    再跑一次這支等於把 Sheet 那份 2026-09-07 的舊快照蓋回去 ——
+ *    所有後台的編輯全部消失，而且沒有備份。
+ *
+ *    所以要明確加 --force 才會動。遷移已經做完了，正常情況下
+ *    你永遠不需要再跑它；留著是為了災難復原與「從零重建」的可驗證性。
+ *    要先備份的話：npx wrangler d1 export veloradb_sit --remote --output backup.sql
  *
  * 然後（在 velora-frontend/ 底下）：
  *   npx wrangler d1 execute veloradb_sit --remote --file ../build/d1-seed.sql
@@ -51,6 +61,7 @@ const arg = (n) => {
 }
 const OUT = join(ROOT, arg('--out') || join('build', 'd1-seed.sql'))
 const PW = arg('--pw')
+const FORCE = args.includes('--force')
 
 /* ── 🔴 成本欄位的斷言 ─────────────────────────────────────────── */
 const FORBIDDEN = /^(cost|cost_[a-z]+|fob|fob_[a-z]+|unit_price|supplier|supplier_[a-z]+)$/i
@@ -81,6 +92,17 @@ const DETAIL = ['detail']
 const NOTES = ['notes_top', 'notes_mid', 'notes_base']
 
 async function main() {
+  if (!FORCE) {
+    throw new Error(
+      [
+        '這支會清空 D1 的 products / houses / categories / images 再重灌，',
+        '  而 D1 現在是唯一真相 —— 後台的編輯會全部消失。',
+        '  確定要覆蓋就加 --force。',
+        '  先備份：npx wrangler d1 export veloradb_sit --remote --output backup.sql',
+      ].join('\n')
+    )
+  }
+
   const fixture = JSON.parse(await readFile(join(ROOT, 'tools', 'fixture.json'), 'utf8'))
   const imgMap = JSON.parse(await readFile(join(ROOT, 'tools', 'images.json'), 'utf8'))
 

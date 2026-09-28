@@ -9,15 +9,20 @@
  * ── 輸出 ────────────────────────────────────────────────────────────
  *   velora-frontend/src/data/products.generated.js   商品陣列（扁平欄位）
  *   velora-frontend/src/data/site.generated.js       company / houses / categories
- *   <out>/v1/media/*.webp                            Vue 版的圖
- *   <out>/assets/media/*.webp                        velora2 的圖（根目錄）
+ *   velora-frontend/public/media/*.webp              商品圖
+ *
+ * 🔴 這三個輸出現在都不是網站直接吃的東西。2026-09-28 起商品資料在
+ *    Cloudflare D1，前台執行時才取。這支的角色變成「Sheet → D1 的上游」：
+ *    產生 *.generated.js，再由 tools/d1-seed.mjs 轉成 SQL 灌進 D1。
+ *    圖仍然是靜態檔（走 CDN 比走資料庫快，也不吃 D1 容量）。
  *
  * ── 成本絕不外流：這裡是第 2 與第 3 層 ──────────────────────────────
  *
  *   1. 資料層隔離   cost 在 products_private，匯出端點讀不到（Apps Script 端）
  *   2. 欄位白名單   ↓ 這支：逐欄挑，絕不用 {...row} 展開
  *   3. 輸出前斷言   ↓ 這支：遞迴掃描，命中 cost 形狀就 throw
- *   4. 誘餌字串     CI 對整個輸出 grep（deploy.yml）
+ *   4. 誘餌字串     發布前對整個輸出 grep（原本在 deploy.yml，該檔 2026-09-28
+ *                  刪除後這一層目前是手動的：node check-public.mjs）
  *   5. Sheet 保護   products_private 設保護範圍
  *
  *   第 2 層用白名單而不是黑名單，是因為黑名單擋不住「日後有人在 Sheet
@@ -105,8 +110,10 @@ function assertNoCost(node, path = '$') {
 
 async function main() {
   const args = process.argv.slice(2)
-  const outIdx = args.indexOf('--out')
-  const OUT = outIdx !== -1 && args[outIdx + 1] ? args[outIdx + 1] : join(ROOT, 'build', 'site')
+
+  // 2026-09-28 拿掉了 --out。它唯一的用途是把商品圖多寫一份到
+  // <out>/assets/media/ 給 velora2，而 velora2 已經退場。留著一個
+  // 不做事的旗標比沒有更糟 —— 下一個人會以為輸出位置可以換。
 
   // assembled 是 Map<影像鍵, { buf, sha, alpha, mime }>。
   // 它從哪裡來由 --source 決定（Apps Script 的 base64 chunk，或 Worker 的
@@ -208,19 +215,14 @@ async function main() {
     for (const e of JSON.parse(await readFile(legacyPath, 'utf8'))) legacy[e.key] = e.path
   }
 
-  // v1 的圖直接寫進 velora-frontend/public/media —— Vite 會原樣複製到 dist，
-  // 所以 npm run build 就產出完整的 v1，deploy.yml 不必再多一步搬檔。
+  // 圖直接寫進 velora-frontend/public/media —— Vite 會原樣複製到 dist/media/，
+  // 所以 npm run build 就產出完整的站，不必再多一步搬檔。
+  // 後台的縮圖也指向同一個位置（src/admin/imgurl.js 的 publicUrl()）。
   //
   // 檔名是內容定址的（<id>-<slot>-<sha8>），內容沒變檔名就沒變，
   // 所以這些檔案進版控也不會每次建置都產生 diff，而且離線 npm run dev
-  // 立刻有圖可看。velora2 沒有建置流程，仍然寫到 <out>。
-  const mediaDirs = [
-    join(ROOT, 'velora-frontend', 'public', 'media'),
-    // velora2 從 2026-09-07 起放在網址根目錄，不再是 /v2/ ——
-    // 這一行忘了跟著改的話，圖片會寫進一個沒有人讀的目錄，
-    // 而卡片的 <img src> 全部對不到檔案（實際發生過，13 張全破）
-    join(OUT, 'assets', 'media'),
-  ]
+  // 立刻有圖可看。
+  const mediaDirs = [join(ROOT, 'velora-frontend', 'public', 'media')]
   for (const d of mediaDirs) await mkdir(d, { recursive: true })
 
   const fileFor = new Map()   // key → 檔名

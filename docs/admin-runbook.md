@@ -5,15 +5,34 @@
 
 ---
 
+> ## 🔴 2026-09-28：「發布」目前沒有作用
+>
+> 網站搬到 Cloudflare 之後，舊的 GitHub Actions 發布流程被刪除了。
+> 後台那顆「發布」鍵送出的請求 GitHub 仍然會**回報成功**，
+> 後台也會顯示新的發布時間 —— 但網站不會更新。
+>
+> 在修好之前，改完商品要請工程師手動跑兩個指令把資料同步到網站。
+> **不要用發布時間判斷有沒有上線**，請直接開網站確認。
+
+---
+
 ## 一分鐘版本
 
-1. 開 `https://<帳號>.github.io/<repo>/admin/`
+1. 開 `https://velorasit.chenghsuanno1.workers.dev/admin/`
 2. 輸入密碼
 3. 改東西、按「儲存」
-4. 回清單按「發布」，等約 3 分鐘
+4. ~~回清單按「發布」，等約 3 分鐘~~ ← 見上方紅字
 
 儲存跟發布是兩件事。**儲存只寫進 Google Sheet，網站不會變**；
-發布才會重新建置網站。這樣你可以連續改十件商品，最後發布一次。
+要讓網站跟上，目前得由工程師執行：
+
+```bash
+node tools/build-catalog.mjs                    # Sheet → 產生檔
+cd velora-frontend && npm run d1:seed           # 產生檔 → Cloudflare D1
+```
+
+商品資料本身不需要重新建置網站（前台是即時向資料庫拿的），
+只有換了圖才需要再跑一次 `npm run build:worker && npx wrangler deploy`。
 
 ---
 

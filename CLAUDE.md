@@ -16,7 +16,6 @@ apps-script/         Google Apps Script 後端（後台仍走這條）
 tools/               建置期工具（產生器、D1 種子、遷移、退化檢查）
 design/              設計交付：.pen 設計檔、規格書、素材管線
 check-public.mjs     公開前稽核：哪些會進 Git、哪些會上網站
-velora2/             舊的靜態提案站，2026-09-28 退場（尚未刪除）
 ```
 
 **商品資料在 Cloudflare D1（`veloradb_sit`），前台執行時才取回來。**
@@ -50,10 +49,11 @@ npm run cf:deploy    # 手動部署（等同 npx wrangler deploy）
 ```
 
 ```bash
-node tools/build-catalog.mjs --from tools/fixture.json --images tools/images.json --out build/site
+node tools/build-catalog.mjs --from tools/fixture.json --images tools/images.json
 node tools/check-regression.mjs       # 內容有沒有比上一版少
 node tools/check-admin-css.mjs        # 後台有沒有跟公開版全域樣式撞 class 名
 node tools/d1-seed.mjs                # 只產生 SQL，不灌
+node tools/check-gates.mjs             # 七道關卡（需 COST_CANARY）
 node check-public.mjs --dist velora-frontend/dist
 
 python design/build-assets.py         # 重建圖庫（改了 sample/ 之後）
@@ -145,11 +145,39 @@ Root directory    velora-frontend
 它發布的是 GitHub Pages 上的舊三站配置（`/`、`/v1/`、`/v2/`、`/admin/`，含已退場的
 velora2），跟現在的單一 Worker 沒有關係，留著只會一直失敗。
 
-它跑的七道稽核關卡（後台字串隔離、成本誘餌、憑證形狀…）也跟著消失了 ——
-那些關卡是有價值的，只是當時寫在 workflow 的 `run:` 區塊裡而不是腳本裡。
-要恢復的話從 git 歷史把 `deploy.yml` 撈出來，把關卡抽成一支 `node` 腳本
-（Cloudflare 的建置指令是一行字串，放不下十幾個步驟），
-再接到 `build:worker` 後面。在那之前，公開前請手動跑 `node check-public.mjs`。
+### 稽核關卡
+
+原本寫在那個 workflow 的 `run:` 區塊裡的七道關卡已經抽成
+**`tools/check-gates.mjs`**，由 `npm run build:worker` 自動執行 ——
+Cloudflare 跑的就是這個指令，所以關卡真的擋在部署路徑上。
+
+```bash
+cd velora-frontend && npm run audit     # 七道關卡 + check-public
+node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
+```
+
+🔴 **需要 `COST_CANARY` 環境變數**（Sheet 的 `products_private` 第 2 列 B 欄）。
+沒設會**失敗**而不是跳過 —— 那是成本外洩的主防線。
+本機用 `$env:COST_CANARY="…"`，Cloudflare 在 Settings → Build → Variables 加。
+
+第 7 道換過了。原本是「velora2 原始檔沒被弄髒」，velora2 退場後改成
+**打線上 `/api/catalog` 對回應跑同一套成本檢查**。
+理由：前六道掃的是 `dist/`，而商品資料 2026-09-28 起不在 `dist/` 裡了 ——
+關卡的涵蓋範圍在那天縮水了，而沒有任何東西會提醒你。
+這一道把稽核補回資料真正流出去的那條路。
+
+### 🔴 後台的「發布」鍵目前沒有作用
+
+它走 Apps Script → GitHub `repository_dispatch` → `deploy.yml`，
+而 `deploy.yml` 已經刪除。GitHub 仍然會回 **204 成功**，
+Apps Script 照樣記下 `last_publish`，後台照樣顯示「已發布」—— 網站不會變。
+
+這正是本文件反覆警告的那種失敗模式。修法有兩條，還沒決定：
+- 在 Worker 上開一個認證過的 `/api/sync`，由它從匯出端點拉資料寫進 D1，
+  「發布」改打那裡（前台是即時讀 D1 的，本來就不需要重建網站，約數秒）
+- 或恢復一個只做 Sheet → D1 同步的 GitHub Actions workflow
+
+在那之前，改完商品要手動跑 `build-catalog` + `npm run d1:seed`。
 
 ## 語言：只有繁體中文
 

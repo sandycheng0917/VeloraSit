@@ -9,7 +9,7 @@
  * ── 為什麼從 workflow 搬進腳本 ──────────────────────────────────────
  *
  * 原本這七道寫在 .github/workflows/deploy.yml 的 run: 區塊裡。站台搬到
- * Cloudflare 之後那個檔案刪掉了，關卡跟著一起消失 —— 包括成本誘餌那道，
+ * Cloudflare 之後那個檔案刪掉了，關卡跟著一起消失 —— 包括機密比對那道，
  * 也就是 B2B 機密外洩的主防線。
  *
  * 寫成腳本還有兩個好處：本機發布前跑得動（以前只有 CI 跑得到，
@@ -22,13 +22,17 @@
  * 只會通過的關卡等於沒有關卡 —— 你分不出它是真的在檢查，
  * 還是條件寫錯了永遠回傳空。所以：
  *   · 關卡 2 是關卡 1 的反向控制（空的 admin 會讓關卡 1 無條件通過）
- *   · 關卡 3 缺環境變數時**失敗**，不是跳過
+ *   · 關卡 3 沒有比對來源時**失敗**，不是跳過
  *   · 關卡 6 是關卡 3 的補網（誘餌列被誤刪時還擋得住）
  *
- * ── 環境變數 ────────────────────────────────────────────────────────
+ * ── 機密字串從哪來 ──────────────────────────────────────────────────
  *
- *   COST_CANARY   必要　products_private 第 2 列 B 欄的誘餌字串
- *   SHEET_ID      選用　有給才跑關卡 4
+ *   .secret-watch.txt   預設　16 個真實機密字串，被 .gitignore 擋住、只存在本機
+ *   COST_CANARY         選用　單一誘餌字串，給沒有那個檔案的環境用
+ *   SHEET_ID            選用　有給才跑關卡 4
+ *
+ * 🔴 兩者都沒有就失敗，不是跳過。一道沒有比對來源的關卡會安靜地永遠通過，
+ *    那比沒有關卡更糟 —— 你會以為有在保護。
  */
 import { readFile, readdir } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
@@ -123,22 +127,47 @@ async function main() {
       : fail(2, 'admin 目錄裡找不到後台字串 —— 後台可能根本沒建出來')
   }
 
-  /* ── 3 ── 最強的一關：把「成本有沒有洩漏」從啟發式猜測變成確定性測試。
-             只要洩漏路徑存在，誘餌必然跟著洩漏。 */
-  const canary = process.env.COST_CANARY
-  if (!canary) {
+  /* ── 3 ── 最強的一關：把「機密有沒有洩漏」從啟發式猜測變成確定性測試。
+   *         只要洩漏路徑存在，那些字串必然跟著洩漏。
+   *
+   * 🔴 2026-09-28 換了來源。原本是 Sheet 的 products_private 第 2 列 B 欄的
+   *    單一誘餌字串（COST_CANARY），但 Google 退場之後那張分頁不存在了 ——
+   *    一道關卡的來源消失，它就會安靜地永遠通過，那比沒有關卡更糟。
+   *
+   *    改讀 .secret-watch.txt：那是 check-public.mjs 一直在用的監看清單，
+   *    16 個**真實的**機密字串（供應商姓名、手機、事業登記號、FOB 數字）。
+   *    它本身就是機密，所以被 .gitignore 擋住、只存在本機。
+   *    這比單一誘餌強：誘餌只證明「那條路徑沒通」，真實字串直接證明
+   *    「這些東西沒有出現在要上線的檔案裡」。
+   *
+   *    COST_CANARY 仍然支援，兩者有一個就算數，但**兩者都沒有就失敗**。 */
+  const watchFile = join(ROOT, '.secret-watch.txt')
+  const needles = []
+  let source = ''
+  if (existsSync(watchFile)) {
+    const words = (await readFile(watchFile, 'utf8'))
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('#'))
+    needles.push(...words)
+    source = `.secret-watch.txt（${words.length} 個字串）`
+  }
+  if (process.env.COST_CANARY) {
+    needles.push(process.env.COST_CANARY)
+    source = source ? source + ' + COST_CANARY' : 'COST_CANARY'
+  }
+  if (!needles.length) {
     fail(
       3,
-      '沒有設定 COST_CANARY，這是成本外洩的主要防線，不允許跳過。\n' +
-        '        誘餌字串在 Sheet 的 products_private 第 2 列 B 欄。\n' +
-        '        本機：export COST_CANARY="…"（PowerShell 用 $env:COST_CANARY="…"）\n' +
-        '        Cloudflare：Settings → Build → Variables 加一個同名變數'
+      '沒有機密字串可比對，這是外洩的主要防線，不允許跳過。\n' +
+        '        本機：放一份 .secret-watch.txt（一行一個字串，該檔不進版控）\n' +
+        '        CI：設 COST_CANARY 環境變數'
     )
   } else {
-    const hit = await scan(files, [canary])
+    const hit = await scan(files, needles)
     hit.length
-      ? fail(3, `誘餌字串出現在輸出裡 —— 成本資料正在外洩：${hit.slice(0, 3).join('、')}`)
-      : pass(3, '誘餌沒有出現')
+      ? fail(3, `機密字串出現在輸出裡：${hit.slice(0, 3).join('、')}`)
+      : pass(3, `監看的字串都沒有出現（${source}）`)
   }
 
   /* ── 4 ── 選用。沒設 SHEET_ID 就跳過，而且要說出來 ——
@@ -156,7 +185,7 @@ async function main() {
     ? fail(5, `輸出裡出現看起來像憑證的字串：${creds.slice(0, 3).join('、')}`)
     : pass(5, '沒有憑證形狀的字串')
 
-  /* ── 6 ── 關卡 3 的補網：誘餌列如果被誤刪，這一關還擋得住 */
+  /* ── 6 ── 關卡 3 的補網：監看清單漏列了某個欄位名時，這一關還擋得住 */
   const costs = await scan(files, [COST_SHAPE], { exclude: ['admin'] })
   costs.length
     ? fail(6, `輸出裡出現成本欄位：${costs.slice(0, 3).join('、')}`)
@@ -184,7 +213,7 @@ async function main() {
         fail(7, `API 回 HTTP ${res.status}：${text.slice(0, 200)}`)
       } else {
         const bad = []
-        if (canary && text.includes(canary)) bad.push('誘餌字串')
+        if (needles.some((n) => text.includes(n))) bad.push('機密字串')
         if (COST_SHAPE.test(text)) bad.push('成本欄位')
         if (CRED_SHAPES.test(text)) bad.push('憑證形狀')
         if (process.env.SHEET_ID && text.includes(process.env.SHEET_ID)) bad.push('試算表 ID')

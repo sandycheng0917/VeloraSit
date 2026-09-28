@@ -181,7 +181,7 @@ for (const [path, info] of bySource) {
     `${String(Math.round(r.bytes / 1024)).padStart(3)}KB  ` +
     `${r.ow}×${r.oh} → ${r.w}×${r.h} q${r.q}  ${name}`
   )
-  for (const key of info.keys) out.push({ key, path: `/media/opt/${name}` })
+  for (const key of info.keys) out.push({ key, path: name })
 }
 
 ws.close()

@@ -1,35 +1,32 @@
 /**
  * 後台的傳輸層。**全專案只有這個檔案直接呼叫 fetch。**
  *
- * ══ Apps Script 的三條硬限制（不是風格選擇，是天花板）══════════════
+ * ══ 2026-09-28：從 Google Apps Script 搬到同源的 Worker ═══════════
  *
- * 1. 沒有 doOptions。Apps Script 只暴露 doGet / doPost，CORS 的 preflight
- *    由 Google 前端處理，你無法回應它。所以每一個請求都必須是
- *    「simple request」，也就是：
- *      · Content-Type 只能是 text/plain;charset=utf-8
- *        （application/json 會觸發 preflight，整個後台連不上）
- *      · 不得帶任何自訂標頭。Authorization、X-Token 都不行 ——
- *        加了就 preflight。所以令牌放在 JSON body 裡，不放標頭。
+ * 後端現在是 velora-frontend/worker/admin.js，資料在 Cloudflare D1。
+ * op 名稱與回應形狀刻意跟舊後端一模一樣 —— 四個面板一行都沒有改。
+ * 搬後端跟改 UI 是兩件事，混在一起就分不出是誰弄壞的。
  *
- * 2. ContentService 無法設定任何回應標頭。TextOutput 只有 setContent /
- *    setMimeType，沒有 setHeader。所以也不能用 Set-Cookie 發 session。
+ * 三條限制跟著 Apps Script 一起消失了，這裡記下來是因為它們的痕跡
+ * 還留在程式碼的形狀裡，日後有人會想「為什麼不用標頭帶令牌」：
  *
- * 3. /exec 一定會 302 轉到 script.googleusercontent.com。
- *    /admin/ 的 CSP connect-src 必須「同時」列出這兩個網域 ——
- *    只寫 script.google.com 的話，Chrome 會擋掉轉址後的那一跳，
- *    而錯誤訊息只說 CSP 擋了，不會說是哪一跳。
+ *   1. 以前每個請求都必須是 CORS simple request（Apps Script 沒有
+ *      doOptions 可以回應 preflight），所以 Content-Type 只能是
+ *      text/plain、不得帶任何自訂標頭。**現在同源，兩者都解除了** ——
+ *      下面已經改回 application/json。
+ *   2. 以前不能設回應標頭，所以不能用 cookie 發 session。現在可以，
+ *      但令牌仍然放在 body 裡：改成 cookie 要一併處理 CSRF，
+ *      而那是另一件事，不順手做。
+ *   3. 以前 /exec 一定 302 轉址，CSP 要列兩個 Google 網域。現在不用了。
  *
- * 這三條已於 2026-09-06 在真的瀏覽器裡實測確認過
- * （text/plain 200、application/json 被 preflight 擋、自訂標頭被 preflight 擋）。
+ * ══ 不再需要 VITE_EXEC_URL ═════════════════════════════════════════
  *
- * ══ 端點網址不是機密 ═══════════════════════════════════════════════
- *
- * VITE_EXEC_URL 是這個 bundle 裡唯一的外部字串。它等同任何網站的
- * POST /api/login —— 安全性來自密碼與 HMAC 簽章，不來自網址保密。
- * 公開版（v1）刻意不傳這個變數：對外的站台不需要知道端點存在。
+ * 端點是同源的固定路徑，沒有建置期變數。之前 build:worker 沒有帶
+ * VITE_EXEC_URL，後台一打開就是「沒有設定端點網址」——
+ * 一個只在部署後才會出現的錯誤，本機開發永遠看不到。
  */
 
-const EXEC = import.meta.env.VITE_EXEC_URL || ''
+const EXEC = '/api/admin'
 
 /** 呼叫失敗的統一形狀。UI 只看 code，訊息給人看 */
 export class ApiError extends Error {
@@ -42,20 +39,17 @@ export class ApiError extends Error {
 
 /** 錯誤碼 → 給人看的中文。看不懂的錯誤訊息等於沒有錯誤訊息 */
 const MESSAGES = {
-  'no-config': '沒有設定端點網址。建置時要給 VITE_EXEC_URL。',
-  network: '連不上伺服器。檢查網路，或端點是否還在部署中。',
-  'bad-json': '伺服器回了看不懂的東西。通常是 Apps Script 拋了未捕捉的例外。',
+  network: '連不上伺服器。檢查網路，或 Worker 是否還在部署中。',
+  'bad-json': '伺服器回了看不懂的東西。通常是 Worker 拋了未捕捉的例外，或路由沒對到 /api/admin。',
   busy: '伺服器正忙，請幾秒後再試。',
   locked: '暫時無法登入，請稍後再試。',
   'bad-pw': '密碼不正確。',
-  'not-initialised': '後端還沒初始化。請先在 Apps Script 編輯器執行 initSecrets。',
+  'not-initialised': '後台密碼還沒設定。執行 node tools/d1-seed.mjs --pw "密碼" 並灌進 D1。',
   auth: '登入已失效，請重新登入。',
   'bad-op': '這個版本的後端不認得這個操作，可能是部署版本太舊。',
   invalid: '有欄位沒有通過檢查。',
   'not-found': '找不到這件商品。',
   'write-failed': '寫入後讀回來對不上，資料可能沒存進去。請再試一次。',
-  'not-configured': 'GitHub 設定不完整，無法發布。',
-  github: 'GitHub 拒絕了這個請求。',
   incomplete: '影像資料不完整，可能上傳到一半中斷了。',
   // 這幾個以前沒有對應的中文，畫面上只會顯示「未預期的錯誤：bad-key」。
   // 一個看不懂的錯誤碼等於沒有錯誤訊息 —— 使用者不知道要去改哪裡
@@ -64,9 +58,6 @@ const MESSAGES = {
   'no-key': '沒有指定影像鍵。',
   'no-id': '沒有指定商品編號。',
   'no-data': '沒有收到影像資料。',
-  'no-sheet': '找不到對應的試算表分頁，後端可能還沒初始化。',
-  'chunk-too-big': '單一區塊超過 Sheet 一格的字元上限。',
-  'no-thumb-col': 'images 分頁還沒有 thumb 欄。請在 Apps Script 編輯器執行 addThumbColumn()。',
   'bad-house': '品牌資料的格式不對。',
   'too-many': '品牌數量已達上限。',
   'house-in-use': '還有商品掛著這個品牌，不能刪。',
@@ -85,8 +76,6 @@ export const describe = (code, fallback) => MESSAGES[code] || fallback || `未�
  * 那個請求仍然在背景跑完，連按幾次就會累積一堆看不見的在途請求。
  */
 export async function call(op, body = {}, { timeout = 45000 } = {}) {
-  if (!EXEC) throw new ApiError('no-config', describe('no-config'))
-
   const ctl = new AbortController()
   const timer = setTimeout(() => ctl.abort(), timeout)
 
@@ -94,11 +83,9 @@ export async function call(op, body = {}, { timeout = 45000 } = {}) {
   try {
     res = await fetch(EXEC, {
       method: 'POST',
-      // 🔴 這個 Content-Type 不能改。改成 application/json 會觸發 preflight，
-      // 而 Apps Script 沒有 doOptions 可以回應，整個後台會連不上。
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      // 同源，沒有 preflight 的問題了（Apps Script 時代這裡只能是 text/plain）
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ op, ...body }),
-      redirect: 'follow',
       signal: ctl.signal,
     })
   } catch (e) {
@@ -113,8 +100,8 @@ export async function call(op, body = {}, { timeout = 45000 } = {}) {
   try {
     json = JSON.parse(text)
   } catch {
-    // Apps Script 的未捕捉例外會回一頁 HTML 錯誤畫面。把開頭幾個字帶出來，
-    // 否則畫面上只會寫「失敗」，沒有人知道發生什麼事
+    // 路由沒對到時 Worker 會回 index.html（SPA fallback），那是一份 HTML。
+    // 把開頭幾個字帶出來，否則畫面上只會寫「失敗」，沒有人知道發生什麼事
     throw new ApiError('bad-json', describe('bad-json'), text.slice(0, 200))
   }
 

@@ -145,11 +145,7 @@
  * 顏色跟上面幾行同色（4.77:1），層級靠字級與間距拉開 ——
  * 再暗一階就掉到 4.5 以下，深色側欄沒有那個餘裕。
  */
-/*
- * 側欄只有 232px，「最後發布　2026-09-08 00:27」放不下一行。
- * 不處理的話會折在日期中間變成「2026-09- / 08 00:27」——
- * 讓值整串不折，標籤自己先換行，就變成刻意的兩行。
- */
+/* 側欄只有 232px。讓值整串不折，標籤自己先換行，就變成刻意的兩行 */
 .vadmin .foot .v { white-space: nowrap; }
 
 .vadmin .foot .legal {
@@ -197,12 +193,6 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-}
-.vadmin .head .right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
 }
 .vadmin button.go {
   display: inline-flex;
@@ -333,7 +323,6 @@
   letter-spacing: 0.2em;
   color: var(--ink-faint);
 }
-/* 自上次發布後改過的：左邊一道金色短邊，掃一眼就找得到 */
 .vadmin .row .n {
   font-family: var(--f-mono);
   font-size: 13.5px;

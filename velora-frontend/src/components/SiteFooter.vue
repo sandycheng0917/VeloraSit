@@ -10,7 +10,7 @@ defineEmits(['select'])
   <footer class="ft">
     <div class="grid">
       <div>
-        <b class="mark disp">{{ company.wordmark }}</b>
+        <b class="ft-mark disp">{{ company.wordmark }}</b>
         <p class="co">{{ pick(company.name) }}</p>
         <p class="co-en">{{ company.nameEn }}</p>
         <dl>
@@ -62,9 +62,10 @@ defineEmits(['select'])
 <style scoped>
 .ft {
   position: relative;
-  background: var(--surface);
+  /* 深粉表尾，跟表頭成對。底色與字色調整見 style.css 的 --band */
+  background: var(--band);
   padding: clamp(56px, 7vw, 88px) var(--gutter) 0;
-  --ring: #f2efe9;
+  --green-deep: #02612a;
 }
 .ft::before {
   content: '';
@@ -72,8 +73,8 @@ defineEmits(['select'])
   left: 0;
   right: 0;
   top: 0;
-  height: 1px;
-  background: var(--gold-leaf);
+  height: 2px;
+  background: var(--band-rule);
 }
 
 .grid {
@@ -82,7 +83,7 @@ defineEmits(['select'])
   gap: 40px;
 }
 
-.mark {
+.ft-mark {
   display: block;
   font-size: 25px;
   letter-spacing: 0.24em;
@@ -111,7 +112,7 @@ dl div {
 dt {
   width: 46px;
   flex: none;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   color: var(--ink-faint);
   padding-top: 2px;
@@ -126,7 +127,7 @@ h5 {
   margin-bottom: 22px;
   font-family: var(--f-mono);
   font-weight: 400;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold-deep);
@@ -157,7 +158,7 @@ ul button:hover {
   border: 1px solid transparent;
   border-radius: var(--r-sm);
   background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--gold-leaf) border-box;
-  outline: 1px solid rgba(197, 168, 128, 0.32);
+  outline: 1px solid rgba(185, 142, 120, 0.5);
   outline-offset: 4px;
 }
 .qr-note {
@@ -195,7 +196,7 @@ ul button:hover {
 .btm {
   margin-top: clamp(48px, 6vw, 76px);
   padding: 26px 0 34px;
-  background: var(--gold-leaf) top / 100% 1px no-repeat;
+  background: linear-gradient(var(--band-rule), var(--band-rule)) top / 100% 1px no-repeat;
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -239,6 +240,21 @@ ul button:hover {
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  /* 觸控目標至少 44px（實測原本連結只有 21px 高、加入好友 36px）。
+     字距與版面不變，只把可點的範圍撐大 */
+  ul li {
+    margin-top: 0;
+  }
+  ul a,
+  ul button,
+  dd a {
+    display: inline-block;
+    padding: 10px 0;
+  }
+  .green {
+    height: 44px;
   }
 }
 </style>

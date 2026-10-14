@@ -29,11 +29,17 @@ description: 維羅拉國際（Velora）專案的設計系統與素材管線。�
 
 ### 🔴 金色規則（不可違反）
 
-`#C5A880` 在 `#FDFBF7` 上對比僅 1.9:1，**不可承載任何文字**。
+2026-10-14 起色系改為**粉紅、金、奶油**（設計稿：`design/pen.pen` 的「粉紅色系」三張畫板；
+token 在 `src/style.css` 的 `:root`）。玫瑰金 `#C9A37D` 在奶油底上對比約 2.2:1，**不可承載任何文字**。
 
-- `#C5A880` → 只做線、框、實心按鈕底、Toggle 開啟態
-- `#A8875C` → 所有金色文字（對比 4.6:1，達 WCAG AA）
-- `#D4AF37` → 僅稀有標記
+- `--gold` `#C9A37D` → 只做線、框、實心按鈕底、Toggle 開啟態
+- `--gold-deep` `#74533D` → 所有金色文字（最深的玫瑰粉底上 4.73:1）
+- `--gold-leaf` 系列 → 金箔漸層，線、書脊、卡片外框（`padding-box` 疊 `border-box`）
+- `.gframe` → 雙層金框 + 四角菱形飾釘（主視覺、LINE 詢問帶）
+- `--rose-btn` `#9E5F63` → **只給「用 LINE 詢問」**，上面放奶油字（4.70:1）
+- `--rose-ink` `#8E5257` → 粉色文字，**不可放在 `--rose` 底上**（4.13:1）
+
+金色要「多而細」：線、框、飾釘、字徽，不要大面積塗金 —— 那會從低調奢華掉到俗氣。
 
 ### 🔴 字體：拉丁與中文刻意不同臉
 
@@ -68,7 +74,7 @@ description: 維羅拉國際（Velora）專案的設計系統與素材管線。�
 ```bash
 python design/extract-pdf.py     # PDF → sample/extracted/（零安裝）
 python design/extract-xlsx.py    # xlsx → sample/xlsx_media/（零安裝，保留儲存格對應）
-python design/build-assets.py    # 去背合成 · 統一影調 · 壓縮 → public/media/ + media-manifest.js
+python design/build-assets.py --public  # 去背合成 · 統一影調 · 壓縮 → public/media/（只留 PUBLIC_SET）
 python design/build-ep.py        # → design/velora_design.ep（Pencil 設計檔）
 ```
 
@@ -95,7 +101,7 @@ python design/crop-exports.py         # 把長圖切成區段
   樣板裡直接用沒問題（`script setup` 的頂層 import 會自動解包），
   但在 `<script>` 裡要寫 `.value`。漏掉不會報錯 —— 你會對一個 RefImpl 呼叫
   `.filter()`，錯誤指向的地方跟原因差很遠。
-- 圖片路徑由 `media-manifest.js` 提供，**不要手寫檔名**。
+- 商品圖由 `/api/catalog` 提供，**不要手寫檔名**。版面固定素材在 `public/media/`，新增要同步 `build-assets.py` 的 `PUBLIC_SET`。
 
 ## 🔴 機密資料
 

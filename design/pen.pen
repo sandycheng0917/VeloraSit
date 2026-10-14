@@ -1,5 +1,5 @@
 {
-  "version": "2.17",
+  "version": "2.20",
   "children": [
     {
       "type": "frame",
@@ -845,7 +845,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1660853142320-33ee03871bc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTU5ODB8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -1093,7 +1093,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1695048401357-b15d664bea59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTU5ODF8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -1336,7 +1336,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1785062811118-3a5e1da9a1df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTY3Njh8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -1576,7 +1576,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1524048914400-67614a52ffc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTU5ODN8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -1814,7 +1814,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1777027517844-5720f89a5916?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTU5ODN8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -2057,7 +2057,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1607779142745-5254831701f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTU5ODR8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -2554,7 +2554,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1771098206663-9967a01cabd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTcyNjZ8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -2792,7 +2792,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1776297845298-4d2b813b7e9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTY3ODh8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -3280,7 +3280,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1588444968576-f8fe92ce56fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTYwMTd8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -3518,7 +3518,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1571261072052-5ae2598af2e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTcyNjd8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -3756,7 +3756,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1722410180687-b05b50922362?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTcyNjh8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -6375,7 +6375,7 @@
                         "type": "image",
                         "enabled": true,
                         "url": "https://images.unsplash.com/photo-1766984702231-e36415fcaeeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTg3Nzh8&ixlib=rb-4.1.0&q=80&w=1080",
-                        "mode": "fill"
+                        "mode": "cover"
                       },
                       "stroke": "$line-strong",
                       "strokeWidth": 1,
@@ -6464,7 +6464,7 @@
                             "type": "image",
                             "enabled": true,
                             "url": "https://images.unsplash.com/photo-1777107857537-61ebcd60bf73?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODg2OTg3Nzl8&ixlib=rb-4.1.0&q=80&w=1080",
-                            "mode": "fill"
+                            "mode": "cover"
                           },
                           "stroke": "$line-strong",
                           "strokeWidth": 1,
@@ -9867,6 +9867,4370 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "eqirU",
+      "x": 0,
+      "y": 1900,
+      "name": "粉紅色系 · 色票",
+      "clip": true,
+      "width": 1440,
+      "fill": "$pk-cream",
+      "layout": "vertical",
+      "gap": 48,
+      "padding": [
+        72,
+        96
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "B3ZMZ",
+          "name": "標題",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "X7b32",
+              "name": "眉標",
+              "fill": "$pk-gold-text",
+              "content": "VELORA · PALETTE 2026",
+              "fontFamily": "DM Mono",
+              "fontSize": 13,
+              "fontWeight": "normal",
+              "letterSpacing": 3
+            },
+            {
+              "type": "text",
+              "id": "CJMx5",
+              "name": "主標",
+              "fill": "$pk-ink",
+              "content": "粉紅、金與奶油",
+              "fontFamily": "Noto Serif TC",
+              "fontSize": 44,
+              "fontWeight": "300",
+              "letterSpacing": 4
+            },
+            {
+              "type": "text",
+              "id": "Tiv4Z",
+              "name": "說明",
+              "fill": "$pk-ink-soft",
+              "textGrowth": "fixed-width",
+              "width": 720,
+              "content": "奶油色鋪底，粉色做區塊與重點。金色走線條、雙層框、菱形飾件與字徽 —— 用得細而多，不大面積塗金。深玫瑰只留給「用 LINE 詢問」這一個動作。",
+              "lineHeight": 1.8,
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 16,
+              "fontWeight": "300"
+            },
+            {
+              "type": "rectangle",
+              "id": "m2aHr",
+              "name": "金線",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -90,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#C29A77",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.4
+                  },
+                  {
+                    "color": "#C8A07A",
+                    "position": 0.55
+                  },
+                  {
+                    "color": "#E7C6A1",
+                    "position": 0.75
+                  },
+                  {
+                    "color": "#BD9573",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": "fill_container",
+              "height": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "G6V5e5",
+      "x": 0,
+      "y": 3153,
+      "name": "粉紅色系 · 首頁桌機",
+      "clip": true,
+      "width": 1440,
+      "fill": "$pk-cream",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "uzRjA",
+          "name": "導覽列",
+          "width": "fill_container",
+          "stroke": "$pk-line",
+          "padding": [
+            22,
+            96
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "LADg0",
+              "name": "字標",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "VglK2",
+                  "name": "VELORA",
+                  "fill": "$pk-ink",
+                  "content": "VELORA",
+                  "fontFamily": "Marcellus",
+                  "fontSize": 26,
+                  "letterSpacing": 6
+                },
+                {
+                  "type": "text",
+                  "id": "prYY2",
+                  "name": "維羅拉",
+                  "fill": "$pk-ink-faint",
+                  "content": "維 羅 拉",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 11,
+                  "letterSpacing": 4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FKWXF",
+              "name": "選單",
+              "gap": 40,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WIExz",
+                  "name": "全部",
+                  "fill": "$pk-gold-text",
+                  "content": "全部",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "fontWeight": "500",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "qaFAN",
+                  "name": "居家香氛",
+                  "fill": "$pk-ink-soft",
+                  "content": "居家香氛",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "n0qq9",
+                  "name": "真絲長巾",
+                  "fill": "$pk-ink-soft",
+                  "content": "真絲長巾",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "JzGGR",
+                  "name": "純銀飾品",
+                  "fill": "$pk-ink-soft",
+                  "content": "純銀飾品",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "Hxgd6",
+                  "name": "手機包",
+                  "fill": "$pk-ink-soft",
+                  "content": "手機包",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "Hv8VY",
+                  "name": "品牌故事",
+                  "fill": "$pk-ink-soft",
+                  "content": "品牌故事",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 14,
+                  "letterSpacing": 2
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "aEhGK",
+              "name": "LINE 小按鈕",
+              "fill": "$pk-rose-btn",
+              "cornerRadius": 2,
+              "stroke": "$pk-gold-lit",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                10,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "x6aWGc",
+                  "name": "訊息圖示",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "message-circle",
+                  "library": "lucide",
+                  "fill": "#FCF8F4"
+                },
+                {
+                  "type": "text",
+                  "id": "Wm6oh",
+                  "name": "LINE 詢問",
+                  "fill": "#FCF8F4",
+                  "content": "LINE 詢問",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 13,
+                  "fontWeight": "500",
+                  "letterSpacing": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "D5lkWh",
+          "name": "導覽金線",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": -90,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#C29A77",
+                "position": 0
+              },
+              {
+                "color": "#F1DCC0",
+                "position": 0.4
+              },
+              {
+                "color": "#C8A07A",
+                "position": 0.55
+              },
+              {
+                "color": "#E7C6A1",
+                "position": 0.75
+              },
+              {
+                "color": "#BD9573",
+                "position": 1
+              }
+            ]
+          },
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "iBqqZ",
+          "name": "主視覺",
+          "width": "fill_container",
+          "gap": 72,
+          "padding": [
+            88,
+            96,
+            96,
+            96
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "HcG8g",
+              "layoutPosition": "absolute",
+              "x": 520,
+              "y": 40,
+              "name": "V 字徽",
+              "fill": "#C9A37D1F",
+              "content": "V",
+              "fontFamily": "Marcellus",
+              "fontSize": 420
+            },
+            {
+              "type": "frame",
+              "id": "TRgVq",
+              "name": "主視覺文字",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dOlko",
+                  "name": "眉標列",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "i3NAI",
+                      "name": "菱形",
+                      "rotation": 45,
+                      "fill": "$pk-gold",
+                      "width": 7,
+                      "height": 7
+                    },
+                    {
+                      "type": "text",
+                      "id": "dbKQO",
+                      "name": "眉標",
+                      "fill": "$pk-gold-text",
+                      "content": "2026 秋季  ·  韓國選品",
+                      "fontFamily": "DM Mono",
+                      "fontSize": 13,
+                      "letterSpacing": 3
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "ChNKt",
+                  "name": "英文主標",
+                  "fill": "$pk-ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Refined Elegance,\nEveryday Luxury.",
+                  "lineHeight": 1.12,
+                  "fontFamily": "Marcellus",
+                  "fontSize": 68,
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Aut4k",
+                  "name": "標題金線",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -90,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#C29A77",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.4
+                      },
+                      {
+                        "color": "#C8A07A",
+                        "position": 0.55
+                      },
+                      {
+                        "color": "#E7C6A1",
+                        "position": 0.75
+                      },
+                      {
+                        "color": "#BD9573",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 96,
+                  "height": 1
+                },
+                {
+                  "type": "text",
+                  "id": "zv6XR",
+                  "name": "中文副標",
+                  "fill": "$pk-ink-soft",
+                  "textGrowth": "fixed-width",
+                  "width": 520,
+                  "content": "來自韓國的居家香氛、真絲長巾、純銀飾品與設計師手機包。\n每一件都經手挑過，才放進這裡。",
+                  "lineHeight": 1.9,
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 17,
+                  "fontWeight": "300"
+                },
+                {
+                  "type": "frame",
+                  "id": "QFnt5",
+                  "name": "按鈕列",
+                  "gap": 20,
+                  "padding": [
+                    12,
+                    0,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FoEmB",
+                      "name": "主按鈕",
+                      "fill": "$pk-rose-btn",
+                      "cornerRadius": 2,
+                      "stroke": "$pk-gold-lit",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        16,
+                        32
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "yC12L",
+                          "name": "訊息圖示",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "message-circle",
+                          "library": "lucide",
+                          "fill": "#FCF8F4"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PT2Iy",
+                          "name": "字",
+                          "fill": "#FCF8F4",
+                          "content": "用 LINE 詢問",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500",
+                          "letterSpacing": 2
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "k876s",
+                      "name": "次按鈕",
+                      "cornerRadius": 2,
+                      "stroke": "$pk-gold",
+                      "strokeWidth": 1,
+                      "padding": [
+                        15,
+                        32
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Q4I3Q",
+                          "name": "字",
+                          "fill": "$pk-gold-text",
+                          "content": "探索系列",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "letterSpacing": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OgJxE",
+              "name": "主視覺圖區",
+              "width": 560,
+              "height": 700,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "aAIzY",
+                  "x": 48,
+                  "y": 40,
+                  "name": "粉色襯底",
+                  "fill": "$pk-rose",
+                  "width": 512,
+                  "height": 660
+                },
+                {
+                  "type": "rectangle",
+                  "id": "mYznw",
+                  "x": 0,
+                  "y": 0,
+                  "name": "主圖",
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "sample/phonebag/bag-pink-python.jpg",
+                    "mode": "cover"
+                  },
+                  "width": 512,
+                  "height": 660
+                },
+                {
+                  "type": "rectangle",
+                  "id": "TuELa",
+                  "x": 16,
+                  "y": 16,
+                  "name": "金框",
+                  "width": 480,
+                  "height": 628,
+                  "stroke": "#F1DCC0",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "J6opjc",
+                  "x": 24,
+                  "y": 604,
+                  "name": "圖說",
+                  "fill": "#FCF8F4E6",
+                  "padding": [
+                    8,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oeVBM",
+                      "name": "圖說字",
+                      "fill": "$pk-rose-text",
+                      "content": "BAG  ·  手機包  ·  新品",
+                      "fontFamily": "DM Mono",
+                      "fontSize": 12,
+                      "letterSpacing": 2
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "NDKne",
+                  "x": -14,
+                  "y": -14,
+                  "name": "外金框",
+                  "width": 540,
+                  "height": 688,
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 2
+                },
+                {
+                  "type": "rectangle",
+                  "id": "RwyLD",
+                  "x": -14,
+                  "y": -21.07,
+                  "name": "角飾",
+                  "rotation": 45,
+                  "fill": "$pk-gold",
+                  "width": 10,
+                  "height": 10,
+                  "stroke": "#FDF9F6",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "rectangle",
+                  "id": "PFlhL",
+                  "x": 526,
+                  "y": -21.07,
+                  "name": "角飾",
+                  "rotation": 45,
+                  "fill": "$pk-gold",
+                  "width": 10,
+                  "height": 10,
+                  "stroke": "#FDF9F6",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "rectangle",
+                  "id": "SCzPX",
+                  "x": -14,
+                  "y": 666.93,
+                  "name": "角飾",
+                  "rotation": 45,
+                  "fill": "$pk-gold",
+                  "width": 10,
+                  "height": 10,
+                  "stroke": "#FDF9F6",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "rectangle",
+                  "id": "CmSAI",
+                  "x": 526,
+                  "y": 666.93,
+                  "name": "角飾",
+                  "rotation": 45,
+                  "fill": "$pk-gold",
+                  "width": 10,
+                  "height": 10,
+                  "stroke": "#FDF9F6",
+                  "strokeWidth": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NXhHK",
+          "name": "四大品類",
+          "width": "fill_container",
+          "fill": "$pk-blush",
+          "layout": "vertical",
+          "gap": 48,
+          "padding": 96,
+          "children": [
+            {
+              "type": "frame",
+              "id": "PvbYq",
+              "name": "區塊標題",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zzhKv",
+                  "name": "眉標",
+                  "fill": "$pk-gold-text",
+                  "content": "韓國選品  ·  4 條商品線",
+                  "fontFamily": "DM Mono",
+                  "fontSize": 12,
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "frame",
+                  "id": "NuwK4",
+                  "name": "標題列",
+                  "gap": 18,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "snwK6",
+                      "name": "中文標",
+                      "fill": "$pk-ink",
+                      "content": "四大品類",
+                      "fontFamily": "Noto Serif TC",
+                      "fontSize": 36,
+                      "fontWeight": "300",
+                      "letterSpacing": 4
+                    },
+                    {
+                      "type": "text",
+                      "id": "iHXKt",
+                      "name": "英文標",
+                      "fill": "$pk-gold-text",
+                      "content": "Curated",
+                      "fontFamily": "Marcellus",
+                      "fontSize": 30,
+                      "letterSpacing": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RVVst",
+                  "name": "飾線",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "HwobL",
+                      "name": "線",
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": -90,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#C29A77",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F1DCC0",
+                            "position": 0.4
+                          },
+                          {
+                            "color": "#C8A07A",
+                            "position": 0.55
+                          },
+                          {
+                            "color": "#E7C6A1",
+                            "position": 0.75
+                          },
+                          {
+                            "color": "#BD9573",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "width": 28,
+                      "height": 1
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "f6ttVE",
+                      "name": "菱形",
+                      "rotation": 45,
+                      "fill": "$pk-gold",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "EjO5W",
+                      "name": "線",
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": -90,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#C29A77",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F1DCC0",
+                            "position": 0.4
+                          },
+                          {
+                            "color": "#C8A07A",
+                            "position": 0.55
+                          },
+                          {
+                            "color": "#E7C6A1",
+                            "position": 0.75
+                          },
+                          {
+                            "color": "#BD9573",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "width": 28,
+                      "height": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d9Bkv",
+              "name": "品類格",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VhrQU",
+                  "name": "居家香氛",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "BaEno",
+                      "name": "居家香氛圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../velora-frontend/public/media/vuca/bedroom.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 380
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ynaRF",
+                      "name": "居家香氛字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        20,
+                        22,
+                        24,
+                        22
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GebrJ",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "FRAGRANCE",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 18,
+                          "letterSpacing": 3
+                        },
+                        {
+                          "type": "frame",
+                          "id": "rBUac",
+                          "name": "行",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Wp7W6",
+                              "name": "中",
+                              "fill": "$pk-ink-soft",
+                              "content": "居家香氛",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 14,
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "text",
+                              "id": "RWvoL",
+                              "name": "數",
+                              "fill": "$pk-gold-text",
+                              "content": "5 件",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 12,
+                              "letterSpacing": 1
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VuhmR",
+                  "name": "真絲長巾",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "yGzOv",
+                      "name": "真絲長巾圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../velora-frontend/public/media/saintmari/scarf-camel-blazer.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 380
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Aj31I",
+                      "name": "真絲長巾字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        20,
+                        22,
+                        24,
+                        22
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uiJuV",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "SCARF",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 18,
+                          "letterSpacing": 3
+                        },
+                        {
+                          "type": "frame",
+                          "id": "U4vQEf",
+                          "name": "行",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "QAy0C",
+                              "name": "中",
+                              "fill": "$pk-ink-soft",
+                              "content": "真絲長巾",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 14,
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "text",
+                              "id": "g0ZIdO",
+                              "name": "數",
+                              "fill": "$pk-gold-text",
+                              "content": "3 件",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 12,
+                              "letterSpacing": 1
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W401C",
+                  "name": "純銀飾品",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "p8kmG",
+                      "name": "純銀飾品圖",
+                      "fill": [
+                        "#FCF8F4",
+                        {
+                          "type": "image",
+                          "enabled": true,
+                          "url": "../velora-frontend/public/media/saintmari/necklace-01.png",
+                          "mode": "contain"
+                        }
+                      ],
+                      "width": "fill_container",
+                      "height": 380
+                    },
+                    {
+                      "type": "frame",
+                      "id": "elUCE",
+                      "name": "純銀飾品字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        20,
+                        22,
+                        24,
+                        22
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iGG9U",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "JEWELRY",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 18,
+                          "letterSpacing": 3
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Xkws4",
+                          "name": "行",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "X7JPo",
+                              "name": "中",
+                              "fill": "$pk-ink-soft",
+                              "content": "純銀飾品",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 14,
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "text",
+                              "id": "eyIJS",
+                              "name": "數",
+                              "fill": "$pk-gold-text",
+                              "content": "5 件",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 12,
+                              "letterSpacing": 1
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QP2Ic",
+                  "name": "手機包",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "v7Si6B",
+                      "name": "手機包圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "sample/phonebag/bag-snake-tan.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 380
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TAKSD",
+                      "name": "手機包字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        20,
+                        22,
+                        24,
+                        22
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zjN7t",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "PHONE BAG",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 18,
+                          "letterSpacing": 3
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vrXLK",
+                          "name": "行",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "v71eI",
+                              "name": "中",
+                              "fill": "$pk-ink-soft",
+                              "content": "手機包",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 14,
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "text",
+                              "id": "FLSzh",
+                              "name": "數",
+                              "fill": "$pk-rose-text",
+                              "content": "新品",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 12,
+                              "letterSpacing": 1
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "eBNGe",
+          "name": "精選展示",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 48,
+          "padding": 96,
+          "children": [
+            {
+              "type": "frame",
+              "id": "JeHcj",
+              "name": "區塊標題",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "t9Fsh",
+                  "name": "眉標",
+                  "fill": "$pk-gold-text",
+                  "content": "本季精選",
+                  "fontFamily": "DM Mono",
+                  "fontSize": 12,
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "frame",
+                  "id": "sFQYj",
+                  "name": "標題列",
+                  "gap": 18,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Szl3J",
+                      "name": "中文標",
+                      "fill": "$pk-ink",
+                      "content": "精選展示",
+                      "fontFamily": "Noto Serif TC",
+                      "fontSize": 36,
+                      "fontWeight": "300",
+                      "letterSpacing": 4
+                    },
+                    {
+                      "type": "text",
+                      "id": "B1Noh",
+                      "name": "英文標",
+                      "fill": "$pk-gold-text",
+                      "content": "Showcase",
+                      "fontFamily": "Marcellus",
+                      "fontSize": 30,
+                      "letterSpacing": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PyqHp",
+                  "name": "飾線",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "TYAqR",
+                      "name": "線",
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": -90,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#C29A77",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F1DCC0",
+                            "position": 0.4
+                          },
+                          {
+                            "color": "#C8A07A",
+                            "position": 0.55
+                          },
+                          {
+                            "color": "#E7C6A1",
+                            "position": 0.75
+                          },
+                          {
+                            "color": "#BD9573",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "width": 28,
+                      "height": 1
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "GhYTF",
+                      "name": "菱形",
+                      "rotation": 45,
+                      "fill": "$pk-gold",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "d3vO5w",
+                      "name": "線",
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": -90,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#C29A77",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F1DCC0",
+                            "position": 0.4
+                          },
+                          {
+                            "color": "#C8A07A",
+                            "position": 0.55
+                          },
+                          {
+                            "color": "#E7C6A1",
+                            "position": 0.75
+                          },
+                          {
+                            "color": "#BD9573",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "width": 28,
+                      "height": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VYpTr",
+              "name": "精選列",
+              "width": "fill_container",
+              "gap": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KJaDw",
+                  "name": "Mauve Twilly Scarf",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "eiYxl",
+                      "name": "圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../velora-frontend/public/media/saintmari/scarf-mauve-pearl.jpg",
+                        "mode": "cover"
+                      },
+                      "width": 260,
+                      "height": 340
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HrWXV",
+                      "name": "文",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 32,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "v1QxjZ",
+                          "name": "標籤列",
+                          "gap": 10,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "hBWXB",
+                              "name": "品牌",
+                              "stroke": "$pk-gold",
+                              "strokeWidth": 1,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Ze4rc",
+                                  "name": "品牌字",
+                                  "fill": "$pk-gold-text",
+                                  "content": "SAINTMARI",
+                                  "fontFamily": "DM Mono",
+                                  "fontSize": 11,
+                                  "letterSpacing": 2
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "LWSby",
+                              "name": "編號",
+                              "fill": "$pk-ink-faint",
+                              "content": "VL · SLK · 003",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 11,
+                              "letterSpacing": 2
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "W9BSZ9",
+                          "name": "英名",
+                          "fill": "$pk-ink",
+                          "content": "Mauve Twilly Scarf",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 26
+                        },
+                        {
+                          "type": "text",
+                          "id": "rzKH5",
+                          "name": "中名",
+                          "fill": "$pk-ink-soft",
+                          "content": "真絲長巾 No.003",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "FJXcZ",
+                          "name": "描述",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "豆沙粉的窄版真絲長巾，可繫在頸間、包帶或綁髮。邊緣手工捲縫收口，垂墜時不會翻捲。",
+                          "lineHeight": 1.8,
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 14,
+                          "fontWeight": "300"
+                        },
+                        {
+                          "type": "text",
+                          "id": "LE1Sv",
+                          "name": "規格",
+                          "fill": "$pk-ink-faint",
+                          "content": "100% 真絲  ·  韓國  ·  約 8 × 120 cm",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 12,
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "WSDSR",
+                          "name": "連結",
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            0,
+                            0,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ef9NU",
+                              "name": "連結字",
+                              "fill": "$pk-rose-text",
+                              "content": "用 LINE 詢問這件",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 13,
+                              "fontWeight": "500",
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "icon",
+                              "id": "ghRjl",
+                              "name": "箭頭",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$pk-rose-text"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ra4hw",
+                  "name": "Rose Cameo Case",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "T625Hs",
+                      "name": "圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "sample/phonebag/case-rose-cameo.jpg",
+                        "mode": "cover"
+                      },
+                      "width": 260,
+                      "height": 340
+                    },
+                    {
+                      "type": "frame",
+                      "id": "byAbT",
+                      "name": "文",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 32,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "LhdDw",
+                          "name": "標籤列",
+                          "gap": 10,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "xzSJn",
+                              "name": "品牌",
+                              "stroke": "$pk-gold",
+                              "strokeWidth": 1,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "buSiz",
+                                  "name": "品牌字",
+                                  "fill": "$pk-gold-text",
+                                  "content": "手機包",
+                                  "fontFamily": "DM Mono",
+                                  "fontSize": 11,
+                                  "letterSpacing": 2
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "kLN1C",
+                              "name": "編號",
+                              "fill": "$pk-ink-faint",
+                              "content": "VL · BAG · 003",
+                              "fontFamily": "DM Mono",
+                              "fontSize": 11,
+                              "letterSpacing": 2
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ahgOd",
+                          "name": "英名",
+                          "fill": "$pk-ink",
+                          "content": "Rose Cameo Case",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 26
+                        },
+                        {
+                          "type": "text",
+                          "id": "MG459",
+                          "name": "中名",
+                          "fill": "$pk-ink-soft",
+                          "content": "[品名待定]",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "AWMmT",
+                          "name": "描述",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "紅玫瑰蕾絲紋翻蓋手機殼，古典浮雕扣，附絲巾編織手繩。",
+                          "lineHeight": 1.8,
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 14,
+                          "fontWeight": "300"
+                        },
+                        {
+                          "type": "text",
+                          "id": "EY6LL",
+                          "name": "規格",
+                          "fill": "$pk-ink-faint",
+                          "content": "[材質待補]  ·  韓國  ·  [適用型號待補]",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 12,
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "znChS",
+                          "name": "連結",
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            0,
+                            0,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OqiW1",
+                              "name": "連結字",
+                              "fill": "$pk-rose-text",
+                              "content": "用 LINE 詢問這件",
+                              "fontFamily": "Noto Sans TC",
+                              "fontSize": 13,
+                              "fontWeight": "500",
+                              "letterSpacing": 2
+                            },
+                            {
+                              "type": "icon",
+                              "id": "ARSZ8",
+                              "name": "箭頭",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$pk-rose-text"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JjSm4",
+          "name": "LINE 詢問帶",
+          "width": "fill_container",
+          "padding": [
+            0,
+            96,
+            96,
+            96
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "IJ8pe",
+              "name": "詢問框",
+              "width": "fill_container",
+              "fill": "$pk-rose",
+              "stroke": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -45,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#B8936E",
+                    "position": 0
+                  },
+                  {
+                    "color": "#E9CFA6",
+                    "position": 0.3
+                  },
+                  {
+                    "color": "#C49B72",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.7
+                  },
+                  {
+                    "color": "#B8936E",
+                    "position": 1
+                  }
+                ]
+              },
+              "strokeWidth": 2,
+              "gap": 48,
+              "padding": [
+                64,
+                72
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "J6lLv",
+                  "name": "詢問文字",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Jb9on",
+                      "name": "眉",
+                      "fill": "$pk-gold-text",
+                      "content": "ASK BEFORE YOU DECIDE",
+                      "fontFamily": "DM Mono",
+                      "fontSize": 12,
+                      "letterSpacing": 3
+                    },
+                    {
+                      "type": "text",
+                      "id": "h1llQ",
+                      "name": "標",
+                      "fill": "$pk-ink",
+                      "content": "每一件都可以先問",
+                      "fontFamily": "Noto Serif TC",
+                      "fontSize": 34,
+                      "fontWeight": "300",
+                      "letterSpacing": 4
+                    },
+                    {
+                      "type": "text",
+                      "id": "Hyy7s",
+                      "name": "內文",
+                      "fill": "$pk-ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "尺寸、材質、庫存與到貨時間，加 LINE 直接問。不需要先下單。",
+                      "lineHeight": 1.8,
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 16,
+                      "fontWeight": "300"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nF3x8",
+                  "name": "按鈕",
+                  "fill": "$pk-rose-btn",
+                  "cornerRadius": 2,
+                  "stroke": "$pk-gold-lit",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    18,
+                    36
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "Awzfi",
+                      "name": "圖示",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "message-circle",
+                      "library": "lucide",
+                      "fill": "#FCF8F4"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Vj5hQ",
+                      "name": "字",
+                      "fill": "#FCF8F4",
+                      "content": "加入 LINE 好友",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 15,
+                      "fontWeight": "500",
+                      "letterSpacing": 2
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "o9xXVS",
+                  "layoutPosition": "absolute",
+                  "x": 10,
+                  "y": 10,
+                  "name": "內金框",
+                  "width": 1228,
+                  "height": 230,
+                  "stroke": "$pk-gold",
+                  "strokeWidth": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KFM5e",
+          "name": "頁尾",
+          "width": "fill_container",
+          "fill": "$pk-blush-deep",
+          "layout": "vertical",
+          "gap": 40,
+          "padding": [
+            72,
+            96,
+            40,
+            96
+          ],
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "CPTPv",
+              "name": "金線",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -90,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#C29A77",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.4
+                  },
+                  {
+                    "color": "#C8A07A",
+                    "position": 0.55
+                  },
+                  {
+                    "color": "#E7C6A1",
+                    "position": 0.75
+                  },
+                  {
+                    "color": "#BD9573",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "I2TV8b",
+              "name": "頁尾欄",
+              "width": "fill_container",
+              "gap": 64,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IAgsK",
+                  "name": "公司",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "i5SWJZ",
+                      "name": "字標",
+                      "fill": "$pk-ink",
+                      "content": "VELORA",
+                      "fontFamily": "Marcellus",
+                      "fontSize": 28,
+                      "letterSpacing": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "TEJIC",
+                      "name": "公司名",
+                      "fill": "$pk-ink",
+                      "content": "維羅拉國際有限公司",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14
+                    },
+                    {
+                      "type": "text",
+                      "id": "BrhYX",
+                      "name": "英文名",
+                      "fill": "$pk-ink-faint",
+                      "content": "Velora International CO., LTD",
+                      "fontFamily": "DM Mono",
+                      "fontSize": 12,
+                      "letterSpacing": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xHdZy",
+                  "name": "品類",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bJfwP",
+                      "name": "品類標",
+                      "fill": "$pk-gold-text",
+                      "content": "品類",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 12,
+                      "fontWeight": "500",
+                      "letterSpacing": 3
+                    },
+                    {
+                      "type": "text",
+                      "id": "Fk56H",
+                      "name": "居家香氛",
+                      "fill": "$pk-ink-soft",
+                      "content": "居家香氛",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "EihrF",
+                      "name": "真絲長巾",
+                      "fill": "$pk-ink-soft",
+                      "content": "真絲長巾",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "w3UUOz",
+                      "name": "純銀飾品",
+                      "fill": "$pk-ink-soft",
+                      "content": "純銀飾品",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "bdUV2",
+                      "name": "手機包",
+                      "fill": "$pk-ink-soft",
+                      "content": "手機包",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D5siMF",
+                  "name": "關於維羅拉",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rWqEG",
+                      "name": "關於維羅拉標",
+                      "fill": "$pk-gold-text",
+                      "content": "關於維羅拉",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 12,
+                      "fontWeight": "500",
+                      "letterSpacing": 3
+                    },
+                    {
+                      "type": "text",
+                      "id": "B6WRu",
+                      "name": "品牌故事",
+                      "fill": "$pk-ink-soft",
+                      "content": "品牌故事",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "qIKXE",
+                      "name": "選件標準",
+                      "fill": "$pk-ink-soft",
+                      "content": "選件標準",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "MPXG0",
+                      "name": "隱私權政策",
+                      "fill": "$pk-ink-soft",
+                      "content": "隱私權政策",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "t04Mw",
+                      "name": "服務條款",
+                      "fill": "$pk-ink-soft",
+                      "content": "服務條款",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300",
+                      "letterSpacing": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UhYaZ",
+                  "name": "LINE",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DkI90",
+                      "name": "LINE標",
+                      "fill": "$pk-gold-text",
+                      "content": "LINE 官方帳號",
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 12,
+                      "fontWeight": "500",
+                      "letterSpacing": 3
+                    },
+                    {
+                      "type": "text",
+                      "id": "bbUki",
+                      "name": "說明",
+                      "fill": "$pk-ink-soft",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "選件問題、庫存與到貨都在 LINE 上回覆。",
+                      "lineHeight": 1.8,
+                      "fontFamily": "Noto Sans TC",
+                      "fontSize": 14,
+                      "fontWeight": "300"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NZkT8",
+                      "name": "帳號",
+                      "fill": "$pk-gold-text",
+                      "content": "@velora",
+                      "fontFamily": "DM Mono",
+                      "fontSize": 13,
+                      "letterSpacing": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KqhaE",
+              "name": "版權列",
+              "width": "fill_container",
+              "stroke": "$pk-gold",
+              "strokeWidth": {
+                "top": 1
+              },
+              "padding": [
+                20,
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "space_between",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "N4zvYW",
+                  "name": "版權",
+                  "fill": "$pk-ink-faint",
+                  "content": "© 2026 Velora International CO., LTD.  版權所有",
+                  "fontFamily": "DM Mono",
+                  "fontSize": 12,
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "text",
+                  "id": "wRfeW",
+                  "name": "代理",
+                  "fill": "$pk-ink-faint",
+                  "content": "代理品牌  VUCA  ·  SAINTMARI（韓國）",
+                  "fontFamily": "DM Mono",
+                  "fontSize": 12,
+                  "letterSpacing": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "c0h9C",
+          "layoutPosition": "absolute",
+          "x": 56,
+          "y": 96,
+          "name": "書脊金線",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 180,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#C29A7700",
+                "position": 0
+              },
+              {
+                "color": "#C9A37D",
+                "position": 0.08
+              },
+              {
+                "color": "#E7C6A1",
+                "position": 0.5
+              },
+              {
+                "color": "#C9A37D",
+                "position": 0.92
+              },
+              {
+                "color": "#C29A7700",
+                "position": 1
+              }
+            ]
+          },
+          "width": 1,
+          "height": 2646
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "I7sLn",
+      "x": 1560,
+      "y": 3153,
+      "name": "粉紅色系 · 首頁手機",
+      "clip": true,
+      "width": 390,
+      "fill": "$pk-cream",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "OmzzC",
+          "name": "導覽列",
+          "width": "fill_container",
+          "stroke": "$pk-line",
+          "padding": [
+            16,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "JD6TQ",
+              "name": "選單",
+              "width": 22,
+              "height": 22,
+              "icon": "menu",
+              "library": "lucide",
+              "fill": "$pk-ink"
+            },
+            {
+              "type": "text",
+              "id": "TwLLV",
+              "name": "VELORA",
+              "fill": "$pk-ink",
+              "content": "VELORA",
+              "fontFamily": "Marcellus",
+              "fontSize": 22,
+              "letterSpacing": 5
+            },
+            {
+              "type": "frame",
+              "id": "tEE7Z",
+              "name": "LINE",
+              "width": 44,
+              "height": 44,
+              "fill": "$pk-rose-btn",
+              "cornerRadius": 22,
+              "stroke": "$pk-gold-lit",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "pIQEw",
+                  "name": "圖示",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "message-circle",
+                  "library": "lucide",
+                  "fill": "#FCF8F4"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "U7FT7",
+          "name": "導覽金線",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": -90,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#C29A77",
+                "position": 0
+              },
+              {
+                "color": "#F1DCC0",
+                "position": 0.4
+              },
+              {
+                "color": "#C8A07A",
+                "position": 0.55
+              },
+              {
+                "color": "#E7C6A1",
+                "position": 0.75
+              },
+              {
+                "color": "#BD9573",
+                "position": 1
+              }
+            ]
+          },
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "SpKAd",
+          "name": "主視覺圖區",
+          "width": "fill_container",
+          "height": 440,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "P3XbzU",
+              "x": 44,
+              "y": 44,
+              "name": "粉色襯底",
+              "fill": "$pk-rose",
+              "width": 326,
+              "height": 396
+            },
+            {
+              "type": "rectangle",
+              "id": "E8gO1X",
+              "x": 20,
+              "y": 20,
+              "name": "主圖",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "sample/phonebag/bag-pink-python.jpg",
+                "mode": "cover"
+              },
+              "width": 326,
+              "height": 396
+            },
+            {
+              "type": "rectangle",
+              "id": "qiv15",
+              "x": 10,
+              "y": 10,
+              "name": "外金框",
+              "width": 346,
+              "height": 416,
+              "stroke": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -45,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#B8936E",
+                    "position": 0
+                  },
+                  {
+                    "color": "#E9CFA6",
+                    "position": 0.3
+                  },
+                  {
+                    "color": "#C49B72",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.7
+                  },
+                  {
+                    "color": "#B8936E",
+                    "position": 1
+                  }
+                ]
+              },
+              "strokeWidth": 2
+            },
+            {
+              "type": "rectangle",
+              "id": "TLbdm",
+              "x": 30,
+              "y": 30,
+              "name": "內金框",
+              "width": 306,
+              "height": 376,
+              "stroke": "$pk-gold-lit",
+              "strokeWidth": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "O5cT6b",
+              "x": 10,
+              "y": 4.344,
+              "name": "角飾",
+              "rotation": 45,
+              "fill": "$pk-gold",
+              "width": 8,
+              "height": 8,
+              "stroke": "#FDF9F6",
+              "strokeWidth": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "u6IJSv",
+              "x": 356,
+              "y": 4.344,
+              "name": "角飾",
+              "rotation": 45,
+              "fill": "$pk-gold",
+              "width": 8,
+              "height": 8,
+              "stroke": "#FDF9F6",
+              "strokeWidth": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "pVhm7",
+              "x": 10,
+              "y": 420.344,
+              "name": "角飾",
+              "rotation": 45,
+              "fill": "$pk-gold",
+              "width": 8,
+              "height": 8,
+              "stroke": "#FDF9F6",
+              "strokeWidth": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "qZzkX",
+              "x": 356,
+              "y": 420.344,
+              "name": "角飾",
+              "rotation": 45,
+              "fill": "$pk-gold",
+              "width": 8,
+              "height": 8,
+              "stroke": "#FDF9F6",
+              "strokeWidth": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gDoqE",
+          "name": "主視覺文字",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 18,
+          "padding": [
+            36,
+            20,
+            48,
+            20
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "pCu7o",
+              "name": "眉標",
+              "fill": "$pk-gold-text",
+              "content": "2026 秋季  ·  韓國選品",
+              "fontFamily": "DM Mono",
+              "fontSize": 12,
+              "letterSpacing": 2
+            },
+            {
+              "type": "text",
+              "id": "dOkzl",
+              "name": "英文主標",
+              "fill": "$pk-ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Refined Elegance,\nEveryday Luxury.",
+              "lineHeight": 1.15,
+              "fontFamily": "Marcellus",
+              "fontSize": 38
+            },
+            {
+              "type": "rectangle",
+              "id": "Krucb",
+              "name": "標題金線",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -90,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#C29A77",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.4
+                  },
+                  {
+                    "color": "#C8A07A",
+                    "position": 0.55
+                  },
+                  {
+                    "color": "#E7C6A1",
+                    "position": 0.75
+                  },
+                  {
+                    "color": "#BD9573",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 72,
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "J5ZtE",
+              "name": "中文副標",
+              "fill": "$pk-ink-soft",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "來自韓國的居家香氛、真絲長巾、純銀飾品與設計師手機包。每一件都經手挑過，才放進這裡。",
+              "lineHeight": 1.85,
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 15,
+              "fontWeight": "300"
+            },
+            {
+              "type": "frame",
+              "id": "e6Lri",
+              "name": "主按鈕",
+              "width": "fill_container",
+              "fill": "$pk-rose-btn",
+              "cornerRadius": 2,
+              "stroke": "$pk-gold-lit",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                16,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "UwjOr",
+                  "name": "圖示",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "message-circle",
+                  "library": "lucide",
+                  "fill": "#FCF8F4"
+                },
+                {
+                  "type": "text",
+                  "id": "U3f2q",
+                  "name": "字",
+                  "fill": "#FCF8F4",
+                  "content": "用 LINE 詢問",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 15,
+                  "fontWeight": "500",
+                  "letterSpacing": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "FmELG",
+          "name": "四大品類",
+          "width": "fill_container",
+          "fill": "$pk-blush",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            48,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "lGKIe",
+              "name": "標",
+              "gap": 12,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ulxAG",
+                  "name": "中",
+                  "fill": "$pk-ink",
+                  "content": "四大品類",
+                  "fontFamily": "Noto Serif TC",
+                  "fontSize": 26,
+                  "fontWeight": "300",
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "text",
+                  "id": "Hd00Q",
+                  "name": "英",
+                  "fill": "$pk-gold-text",
+                  "content": "Curated",
+                  "fontFamily": "Marcellus",
+                  "fontSize": 22
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "m27tCH",
+              "name": "品類列1",
+              "width": "fill_container",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VMSEI",
+                  "name": "居家香氛",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "cpuKV",
+                      "name": "圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../velora-frontend/public/media/vuca/bedroom.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 200
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kpk1y",
+                      "name": "字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        12,
+                        14,
+                        14,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ju2zI",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "FRAGRANCE",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 14,
+                          "letterSpacing": 2
+                        },
+                        {
+                          "type": "text",
+                          "id": "U2cswF",
+                          "name": "中",
+                          "fill": "$pk-ink-soft",
+                          "content": "居家香氛",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vKyXF",
+                  "name": "真絲長巾",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "RSWaN",
+                      "name": "圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../velora-frontend/public/media/saintmari/scarf-camel-blazer.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 200
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QVWxy",
+                      "name": "字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        12,
+                        14,
+                        14,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WQ53C",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "SCARF",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 14,
+                          "letterSpacing": 2
+                        },
+                        {
+                          "type": "text",
+                          "id": "VHIT8",
+                          "name": "中",
+                          "fill": "$pk-ink-soft",
+                          "content": "真絲長巾",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "x6EqAB",
+              "name": "品類列2",
+              "width": "fill_container",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "erdKA",
+                  "name": "純銀飾品",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "NZ67L",
+                      "name": "圖",
+                      "fill": [
+                        "#FCF8F4",
+                        {
+                          "type": "image",
+                          "enabled": true,
+                          "url": "../velora-frontend/public/media/saintmari/necklace-01.png",
+                          "mode": "contain"
+                        }
+                      ],
+                      "width": "fill_container",
+                      "height": 200
+                    },
+                    {
+                      "type": "frame",
+                      "id": "l3hCO",
+                      "name": "字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        12,
+                        14,
+                        14,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "X8IYp6",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "JEWELRY",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 14,
+                          "letterSpacing": 2
+                        },
+                        {
+                          "type": "text",
+                          "id": "P94i9F",
+                          "name": "中",
+                          "fill": "$pk-ink-soft",
+                          "content": "純銀飾品",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "V8tdm",
+                  "name": "手機包",
+                  "width": "fill_container",
+                  "fill": "$pk-cream",
+                  "stroke": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": -45,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#B8936E",
+                        "position": 0
+                      },
+                      {
+                        "color": "#E9CFA6",
+                        "position": 0.3
+                      },
+                      {
+                        "color": "#C49B72",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#F1DCC0",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#B8936E",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "uPuOI",
+                      "name": "圖",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "sample/phonebag/bag-snake-tan.jpg",
+                        "mode": "cover"
+                      },
+                      "width": "fill_container",
+                      "height": 200
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Tv4eJ",
+                      "name": "字",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        12,
+                        14,
+                        14,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "e3WEU9",
+                          "name": "英",
+                          "fill": "$pk-ink",
+                          "content": "PHONE BAG",
+                          "fontFamily": "Marcellus",
+                          "fontSize": 14,
+                          "letterSpacing": 2
+                        },
+                        {
+                          "type": "text",
+                          "id": "NFowD",
+                          "name": "中",
+                          "fill": "$pk-ink-soft",
+                          "content": "手機包",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "R1A9W",
+          "name": "LINE 詢問",
+          "width": "fill_container",
+          "fill": "$pk-rose",
+          "stroke": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": -90,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#B8936E",
+                "position": 0
+              },
+              {
+                "color": "#E9CFA6",
+                "position": 0.3
+              },
+              {
+                "color": "#C49B72",
+                "position": 0.5
+              },
+              {
+                "color": "#F1DCC0",
+                "position": 0.7
+              },
+              {
+                "color": "#B8936E",
+                "position": 1
+              }
+            ]
+          },
+          "strokeWidth": {
+            "top": 2,
+            "bottom": 2
+          },
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            44,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "N9i1U",
+              "name": "標",
+              "fill": "$pk-ink",
+              "content": "每一件都可以先問",
+              "fontFamily": "Noto Serif TC",
+              "fontSize": 24,
+              "fontWeight": "300",
+              "letterSpacing": 3
+            },
+            {
+              "type": "text",
+              "id": "eqd67",
+              "name": "內文",
+              "fill": "$pk-ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "尺寸、材質、庫存與到貨時間，加 LINE 直接問。",
+              "lineHeight": 1.8,
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 15,
+              "fontWeight": "300"
+            },
+            {
+              "type": "frame",
+              "id": "J3aequ",
+              "name": "按鈕",
+              "width": "fill_container",
+              "fill": "$pk-rose-btn",
+              "cornerRadius": 2,
+              "stroke": "$pk-gold-lit",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                16,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Uo160",
+                  "name": "圖示",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "message-circle",
+                  "library": "lucide",
+                  "fill": "#FCF8F4"
+                },
+                {
+                  "type": "text",
+                  "id": "I8GXO",
+                  "name": "字",
+                  "fill": "#FCF8F4",
+                  "content": "加入 LINE 好友",
+                  "fontFamily": "Noto Sans TC",
+                  "fontSize": 15,
+                  "fontWeight": "500",
+                  "letterSpacing": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "upc9C",
+          "name": "頁尾",
+          "width": "fill_container",
+          "fill": "$pk-blush-deep",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": [
+            40,
+            24
+          ],
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "z14Gg",
+              "name": "金線",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": -90,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#C29A77",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F1DCC0",
+                    "position": 0.4
+                  },
+                  {
+                    "color": "#C8A07A",
+                    "position": 0.55
+                  },
+                  {
+                    "color": "#E7C6A1",
+                    "position": 0.75
+                  },
+                  {
+                    "color": "#BD9573",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "MZfsd",
+              "name": "字標",
+              "fill": "$pk-ink",
+              "content": "VELORA",
+              "fontFamily": "Marcellus",
+              "fontSize": 24,
+              "letterSpacing": 5
+            },
+            {
+              "type": "text",
+              "id": "MGyo7",
+              "name": "公司名",
+              "fill": "$pk-ink",
+              "content": "維羅拉國際有限公司",
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 13
+            },
+            {
+              "type": "text",
+              "id": "aIUqw",
+              "name": "版權",
+              "fill": "$pk-ink-faint",
+              "content": "© 2026 Velora International CO., LTD.",
+              "fontFamily": "DM Mono",
+              "fontSize": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ncV00",
+      "x": 440,
+      "y": 2174,
+      "name": "色票列",
+      "width": "fill_container(1248)",
+      "height": 780,
+      "layout": "vertical",
+      "gap": 40,
+      "children": [
+        {
+          "type": "frame",
+          "id": "dCByn",
+          "name": "底色與區塊",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "ZdFYm",
+              "name": "底色與區塊標",
+              "fill": "$pk-ink-faint",
+              "content": "底色與區塊",
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "letterSpacing": 2
+            },
+            {
+              "type": "frame",
+              "id": "gNsMm",
+              "name": "底色與區塊列",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VEqXA",
+                  "name": "奶油",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "P4BUWj",
+                      "name": "奶油色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-cream"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TNmEB",
+                      "name": "奶油文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "M1AJtb",
+                          "name": "奶油名",
+                          "fill": "$pk-ink",
+                          "content": "奶油",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dGOda",
+                          "name": "奶油碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#FDF9F6",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "RMVkY",
+                          "name": "奶油用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "頁面底色",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D5pAK",
+                  "name": "淡粉",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pMC7L",
+                      "name": "淡粉色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-blush"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Frz8C",
+                      "name": "淡粉文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wUqAN",
+                          "name": "淡粉名",
+                          "fill": "$pk-ink",
+                          "content": "淡粉",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Dz11r",
+                          "name": "淡粉碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#FCEBE7",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZVquD",
+                          "name": "淡粉用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "交替區塊",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gf8IW",
+                  "name": "粉",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "XaZEd",
+                      "name": "粉色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-blush-deep"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vjHE1",
+                      "name": "粉文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kns1w",
+                          "name": "粉名",
+                          "fill": "$pk-ink",
+                          "content": "粉",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xzZcc",
+                          "name": "粉碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#F9E1DB",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "HiRxr",
+                          "name": "粉用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "卡片、頁尾",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q87aZ",
+                  "name": "玫瑰粉",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "umLtt",
+                      "name": "玫瑰粉色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-rose"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TUpFH",
+                      "name": "玫瑰粉文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jdgmi",
+                          "name": "玫瑰粉名",
+                          "fill": "$pk-ink",
+                          "content": "玫瑰粉",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "EeZc4",
+                          "name": "玫瑰粉碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#F2CEC6",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "xkmfG",
+                          "name": "玫瑰粉用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "裝飾面、標籤",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dCWlW",
+          "name": "金與重點",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "K7ziT",
+              "name": "金與重點標",
+              "fill": "$pk-ink-faint",
+              "content": "金與重點",
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "letterSpacing": 2
+            },
+            {
+              "type": "frame",
+              "id": "wFvOX",
+              "name": "金與重點列",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "awNxo",
+                  "name": "玫瑰金",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H2DiDU",
+                      "name": "玫瑰金色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-gold"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zPA6O",
+                      "name": "玫瑰金文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A5Qhw",
+                          "name": "玫瑰金名",
+                          "fill": "$pk-ink",
+                          "content": "玫瑰金",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "coAMj",
+                          "name": "玫瑰金碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#C9A37D",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "o9al0G",
+                          "name": "玫瑰金用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "線條與框（不放文字）",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ypad1",
+                  "name": "亮金",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "J8l5O",
+                      "name": "玫瑰金色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-gold-lit"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a5Dyz",
+                      "name": "玫瑰金文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d9rCNB",
+                          "name": "玫瑰金名",
+                          "fill": "$pk-ink",
+                          "content": "亮金",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E8V5j",
+                          "name": "玫瑰金碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#E7C9A0",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "s4tKs",
+                          "name": "玫瑰金用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "內框、按鈕描邊",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xZurk",
+                  "name": "金箔",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xVyHv",
+                      "name": "玫瑰金色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": -90,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#C29A77",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F1DCC0",
+                            "position": 0.4
+                          },
+                          {
+                            "color": "#C8A07A",
+                            "position": 0.55
+                          },
+                          {
+                            "color": "#E7C6A1",
+                            "position": 0.75
+                          },
+                          {
+                            "color": "#BD9573",
+                            "position": 1
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wlTQ5",
+                      "name": "玫瑰金文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Takex",
+                          "name": "玫瑰金名",
+                          "fill": "$pk-ink",
+                          "content": "金箔漸層",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "tF3AH",
+                          "name": "玫瑰金碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#C29A77 → #F1DCC0",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "OMGCu",
+                          "name": "玫瑰金用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "分隔線、書脊、頁尾線",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "P2A7XE",
+                  "name": "金字",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KV5LM",
+                      "name": "金字色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-gold-text"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Z58Moc",
+                      "name": "金字文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OjhLA",
+                          "name": "金字名",
+                          "fill": "$pk-ink",
+                          "content": "金字",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vi1yo",
+                          "name": "金字碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#74533D",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "mB90J",
+                          "name": "金字用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "金色文字 · 4.8:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VEMjm",
+                  "name": "深玫瑰",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "HFA1b",
+                      "name": "深玫瑰色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-rose-btn"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "d6JbK",
+                      "name": "深玫瑰文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cUyEI",
+                          "name": "深玫瑰名",
+                          "fill": "$pk-ink",
+                          "content": "深玫瑰",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "euTGZ",
+                          "name": "深玫瑰碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#9E5F63",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "h1vXS",
+                          "name": "深玫瑰用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "LINE 按鈕 · 奶油字 4.7:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "dFtaI",
+                  "name": "玫瑰字",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "O4bHy",
+                      "name": "玫瑰字色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-rose-text"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MWgql",
+                      "name": "玫瑰字文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BBfVZ",
+                          "name": "玫瑰字名",
+                          "fill": "$pk-ink",
+                          "content": "玫瑰字",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "bB0LO",
+                          "name": "玫瑰字碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#8E5257",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "ogHep",
+                          "name": "玫瑰字用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "粉色文字 · 4.8:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "nySLI",
+          "name": "文字",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "njFQF",
+              "name": "文字標",
+              "fill": "$pk-ink-faint",
+              "content": "文字",
+              "fontFamily": "Noto Sans TC",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "letterSpacing": 2
+            },
+            {
+              "type": "frame",
+              "id": "LgICf",
+              "name": "文字列",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wVCf0",
+                  "name": "主文字",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "jiZCZ",
+                      "name": "主文字色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-ink"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xEdJN",
+                      "name": "主文字文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UovyO",
+                          "name": "主文字名",
+                          "fill": "$pk-ink",
+                          "content": "主文字",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gubHE",
+                          "name": "主文字碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#2B2224",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "SYBOc",
+                          "name": "主文字用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "標題、品名 · 10.8:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uBVVx",
+                  "name": "內文",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nxaEM",
+                      "name": "內文色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-ink-soft"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "oUzmg",
+                      "name": "內文文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CGghO",
+                          "name": "內文名",
+                          "fill": "$pk-ink",
+                          "content": "內文",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "X6Nwve",
+                          "name": "內文碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#4A3C3E",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "OvkJA",
+                          "name": "內文用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "段落 · 7.3:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RI9Yl",
+                  "name": "輔助",
+                  "clip": true,
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": "$pk-line",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VHOq5",
+                      "name": "輔助色塊",
+                      "width": "fill_container",
+                      "height": 96,
+                      "fill": "$pk-ink-faint"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MFXW8",
+                      "name": "輔助文字",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EovML",
+                          "name": "輔助名",
+                          "fill": "$pk-ink",
+                          "content": "輔助",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "d6WBg",
+                          "name": "輔助碼",
+                          "fill": "$pk-ink-faint",
+                          "content": "#665555",
+                          "fontFamily": "DM Mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "me8pN",
+                          "name": "輔助用途",
+                          "fill": "$pk-ink-soft",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "編號、註記 · 4.9:1",
+                          "fontFamily": "Noto Sans TC",
+                          "fontSize": 13,
+                          "fontWeight": "300"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -9949,6 +14313,58 @@
     "f-ko": {
       "type": "string",
       "value": "Noto Sans KR"
+    },
+    "pk-cream": {
+      "type": "color",
+      "value": "#FDF9F6"
+    },
+    "pk-blush": {
+      "type": "color",
+      "value": "#FCEBE7"
+    },
+    "pk-blush-deep": {
+      "type": "color",
+      "value": "#F9E1DB"
+    },
+    "pk-rose": {
+      "type": "color",
+      "value": "#F2CEC6"
+    },
+    "pk-rose-btn": {
+      "type": "color",
+      "value": "#9E5F63"
+    },
+    "pk-rose-text": {
+      "type": "color",
+      "value": "#8E5257"
+    },
+    "pk-gold": {
+      "type": "color",
+      "value": "#C9A37D"
+    },
+    "pk-gold-text": {
+      "type": "color",
+      "value": "#74533D"
+    },
+    "pk-ink": {
+      "type": "color",
+      "value": "#2B2224"
+    },
+    "pk-ink-soft": {
+      "type": "color",
+      "value": "#4A3C3E"
+    },
+    "pk-ink-faint": {
+      "type": "color",
+      "value": "#665555"
+    },
+    "pk-line": {
+      "type": "color",
+      "value": "#ECD8D0"
+    },
+    "pk-gold-lit": {
+      "type": "color",
+      "value": "#E7C9A0"
     }
   },
   "fileToken": "ec5e36f8-b757-4db7-8196-4e48cb134a33"

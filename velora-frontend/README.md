@@ -1,5 +1,9 @@
-# Vue 3 + Vite
+# velora-frontend
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+維羅拉展示站與後台。說明、指令與硬性規則都在 repo 根目錄的 [CLAUDE.md](../CLAUDE.md)。
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+```bash
+npm run dev           # 展示站（5173），/api 轉給線上 Worker
+npm run dev:admin     # 後台
+npm run build:worker  # 部署用建置（含稽核關卡）
+```

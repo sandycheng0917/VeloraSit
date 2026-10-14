@@ -36,6 +36,7 @@ const JSON_HEADERS = {
   // 商品資料改動不頻繁，但「改了要多久才看得到」得是可預期的。
   // 60 秒是刻意選的上限：後台改完泡杯茶回來就生效，而不是要記得清快取。
   'cache-control': 'public, max-age=60',
+  'x-content-type-options': 'nosniff',
 }
 
 const json = (body, status = 200, extra = {}) =>
@@ -75,8 +76,10 @@ const fileNameOf = (key, img) =>
 
 async function readCatalog(db) {
   const [products, images, houses, categories] = await Promise.all([
-    // 前台只看上架且沒被軟刪除的。後台走 /api/admin 的 list，看得到全部
-    db.prepare('SELECT * FROM products WHERE deleted = 0 ORDER BY "order" ASC, id ASC').all(),
+    // 前台只看上架且沒被軟刪除的。後台走 /api/admin 的 list，看得到全部。
+    // 🔴 listed = 1 要在 SQL 裡篩，不能輸出了再讓前端藏 —— 草稿商品的文案與圖
+    //    會留在網路回應裡（跟價格同一條規則，見 CLAUDE.md 硬性規則 1）
+    db.prepare('SELECT * FROM products WHERE deleted = 0 AND listed = 1 ORDER BY "order" ASC, id ASC').all(),
     db.prepare('SELECT key, mime, alpha, sha256 FROM images').all(),
     db.prepare('SELECT * FROM houses WHERE listed = 1 ORDER BY "order" ASC, key ASC').all(),
     db.prepare('SELECT * FROM categories ORDER BY "order" ASC, key ASC').all(),
@@ -102,7 +105,7 @@ async function readCatalog(db) {
       ...TRI_FIELDS.reduce((o, f) => ({ ...o, [f]: tri(r, f) }), {}),
       notes: { top: tri(r, 'notes_top'), middle: tri(r, 'notes_mid'), base: tri(r, 'notes_base') },
       // 沒有對應影像的鍵直接略過 —— 前台拿到的每個檔名都保證查得到圖，
-      // 不會出現破圖。全都沒有的話 image 是 undefined，走「製版中」空版
+      // 不會出現破圖。全都沒有的話前台拿到空陣列，影像板只留底色
       files: [r.img_main, r.img_2, r.img_3].map(fileFor).filter(Boolean),
       // 🔴 price_public 沒勾就連 price 這個鍵都不輸出。輸出了再讓前端隱藏的話，
       //    價格仍然在網路回應裡，打開 devtools 就看得到。
@@ -197,9 +200,10 @@ export default {
 
       return fail(`沒有這個端點：${path}`, 404)
     } catch (e) {
-      // 訊息原樣回傳。這個 API 只回公開的商品資料，沒有成本也沒有憑證，
-      // 而藏起來的錯誤訊息只會讓人對著 500 猜半天。
-      return fail(String((e && e.message) || e))
+      // 細節進 Worker 日誌（wrangler tail／dashboard 看得到），不回給訪客：
+      // D1 的錯誤訊息會帶出資料表與欄位名稱
+      console.error('api error', e)
+      return fail('伺服器錯誤，請稍後再試')
     }
   },
 }

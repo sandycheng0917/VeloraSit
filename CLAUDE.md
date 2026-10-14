@@ -68,7 +68,7 @@ node tools/compress-images.mjs        # 影像壓縮（產出到 tools/media-src
 # 🔴 一次性遷移，會清空 D1 再重灌。正常情況下永遠不需要跑
 node tools/d1-seed.mjs --force
 
-python design/build-assets.py         # 重建圖庫（改了 sample/ 之後）
+python design/build-assets.py --public  # 重建網站圖庫（不加 --public 會把整套供應商圖放進 public/，不能部署）
 node design/shoot.mjs                 # 產生預覽圖（需先跑 dev）
 ```
 
@@ -135,13 +135,20 @@ HMAC 簽章密鑰（`admin_state`），不要提交，也不要丟進聊天室�
    價格**逐件由 `products.price_public` 決定**。沒勾的商品，
    `/api/catalog` 連 `price` 這個鍵都不會輸出 —— 不是輸出了再讓前端隱藏。
    輸出了再隱藏的話價格仍然在網路回應裡，打開 devtools 就看得到。
-2. **`#C5A880` 不可用於文字**（對比僅 1.9:1）。金色文字一律 `#A8875C`。
+2. **玫瑰金 `--gold` `#C9A37D` 不可用於文字**（對比約 2.2:1，只做線與框）。
+   金色文字一律 `--gold-deep` `#74533D`（最深的玫瑰粉底上仍有 4.7:1）。
+   2026-10-14 起色系是粉紅、金、奶油（設計稿在 `design/pen.pen` 的「粉紅色系」畫板）；
+   舊值 `#C5A880`／`#A8875C` 已不用。另有兩條：`--rose-ink` 粉色字不可放在
+   `--rose` 底上（4.13:1），深玫瑰 `--rose-btn` 只給「用 LINE 詢問」這一個動作。
 3. **不使用 Tailwind。** 設計 token 寫在 `velora-frontend/src/style.css`。
 4. **Excel 的 FOB 出口單價與供應商聯絡資訊不得進入前端。**
    D1 的 schema 裡**沒有 cost 欄位，而且不打算有** —— 不設欄位跟
    「設了但查詢時不 SELECT」是兩回事，後者只要有人寫一次 `SELECT *`
    就外洩，而那行程式碼看起來無害到不會有人在 review 時停下來。
-5. 圖片路徑一律取自 `src/data/media-manifest.js`，不要手寫檔名。
+5. **商品圖一律由 `/api/catalog` 給**（D1 的內容定址檔名），不要手寫。
+   版面固定素材（輪播、品類封面、理念區）在 `public/media/`，
+   新增時要同時加進 `design/build-assets.py` 的 `PUBLIC_SET`，否則下次重建圖庫會被清掉。
+   `media-manifest.js` 2026-10-15 刪除 —— 從來沒有程式 import 它。
 6. **建置素材不要放進 `velora-frontend/public/`。** 那個目錄是原樣複製到
    網站上的，放進去就等於公開，即使沒被引用。影像來源檔放 `tools/media-src/`。
 7. **內容定址的檔名規則有三份拷貝**（`tools/lib/assemble.mjs` 的
@@ -332,9 +339,8 @@ OWASP 建議 31 萬，所以這裡比建議值低三倍 —— 代價是 D1 內�
 實測過的四件事：舊密碼失效、改密碼前發出的令牌被撤銷、新密碼可用、
 商品資料一筆都沒動。
 
-**「發布」鍵已經沒有意義** —— 儲存即生效。`publish` 這個 op 還留著
-（回 `noop: true`）只是為了讓舊的前端不會拿到 `bad-op`；
-UI 上那顆按鈕應該拿掉，不是留著假裝有用。
+**沒有「發布」** —— 儲存即生效。`publish` op 與 UI 按鈕都已移除，
+打它會回 `bad-op`。後台的提示文字也不再叫人「回清單按發布」。
 
 **換圖仍然需要後台上傳**（位元組直接進 D1），不需要重新部署。
 只有改了 `public/media/` 底下的固定素材（品類封面、主視覺輪播）

@@ -116,8 +116,6 @@ async function load() {
      *                       Promise.all 一起完成，那個限制照樣成立。
      *                       （沒有它的話，清單一渲染就算 fast()，
      *                         索引還是空的，十幾張全部排進 API 佇列。）
-     *   status              只餵標頭那行「上次發布」，不擋畫面。
-     *                       發出去就不等了，回來再自己填上。
      */
     const [r, ix] = await Promise.all([
       api.list(session.token.value),
@@ -142,7 +140,7 @@ async function load() {
   }
 }
 
-const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
+const { truthy } = api
 
 function openNew() {
   editing.value = null

@@ -18,7 +18,6 @@ design/build-assets.py — 把 design/sample/ 的原始素材整理成網站可�
 
 原始檔一律保留在 design/sample/，本腳本永不覆寫來源。
 """
-import json
 import os
 import re
 import sys
@@ -43,21 +42,20 @@ MAX_EDGE = 1600
 THUMB = 240
 
 # ── 公開版影像白名單 ────────────────────────────────────────
-# 對外公開的 repo 只放這 16 張。供應商影像放上公開站台等同開放下載，
-# 因此公開版只保留版面實際需要、且已確認可散布的最小集合。
-# 跑 build-assets.py（不加 --public）會產出完整圖庫供本機開發使用。
+# 網站實際用到的固定素材只有這幾張（2026-10-15 盤點）：主視覺輪播與理念區的
+# 照片、三個品類封面。商品圖在 D1，不從這裡出。供應商影像放上公開站台
+# 等同開放下載，所以白名單只留版面真的引用的檔案 —— 加新圖要同時加進來。
+# 跑 build-assets.py（不加 --public）會產出完整圖庫，🔴 那會把整套供應商圖
+# 放進 public/，只能在本機看，不能部署。
 PUBLIC_SET = {
-    # VUCA — 主視覺、情境、商品去背、五款香調意象
-    'vuca/editorial-bw.jpg', 'vuca/bedroom.jpg', 'vuca/set.png',
-    'vuca/ylang.jpg', 'vuca/blackcherry.jpg', 'vuca/aquakiss.jpg',
-    'vuca/flowershop.jpg', 'vuca/aprilfresh.jpg',
-    # SAINTMARI — 三張絲巾編輯照
+    'vuca/editorial-bw.jpg', 'vuca/bedroom.jpg',
     'saintmari/scarf-camel-blazer.jpg', 'saintmari/scarf-mauve-pearl.jpg',
-    'saintmari/scarf-pink-bow.jpg',
-    # SAINTMARI — 每個飾品品項各一張代表作
-    'saintmari/scarfring-01.png', 'saintmari/necklace-01.png',
-    'saintmari/earring-01.png', 'saintmari/ring-01.png', 'saintmari/bracelet-01.png',
+    'saintmari/scarf-pink-bow.jpg', 'saintmari/necklace-01.png',
 }
+
+# public/media/ 底下不是這支腳本產生的目錄。清空舊輸出時要跳過，
+# 否則會刪掉手動放進去的素材（例如首頁輪播的手機包照片）
+KEEP_DIRS = {'phonebag'}
 
 # ── A. VUCA 型錄素材 ────────────────────────────────────────
 # (輸出相對路徑, 來源檔, 遮罩檔或 None, 是否套影調)
@@ -193,6 +191,8 @@ def main():
     if os.path.isdir(OUT):
         locked = 0
         for base, _, files in os.walk(OUT, topdown=False):
+            if os.path.relpath(base, OUT).replace(os.sep, '/').split('/')[0] in KEEP_DIRS:
+                continue
             for f in files:
                 try:
                     os.remove(os.path.join(base, f))
@@ -264,19 +264,8 @@ def main():
                   % (kind, len(have), total_sku,
                      '（缺 %s）' % ', '.join('No.%02d' % s for s in missing) if missing else ''))
 
-    # 輸出對照清單給前端資料層讀取，避免檔名靠猜
-    mpath = os.path.join(ROOT, 'velora-frontend', 'src', 'data', 'media-manifest.js')
-    os.makedirs(os.path.dirname(mpath), exist_ok=True)
-    body = json.dumps({k: {str(s): v for s, v in sorted(d.items())} for k, d in sorted(manifest.items())},
-                      ensure_ascii=False, indent=2)
-    header = (
-        '// 由 design/build-assets.py 產生，請勿手動編輯。\n'
-        '// 結構：{ 品項: { SKU 序號: [圖片路徑, ...] } }\n'
-        '// 缺號代表該 SKU 在來源 Excel 中沒有附照片。\n\n'
-    )
-    with open(mpath, 'w', encoding='utf-8') as f:
-        f.write(header + 'export default ' + body + '\n')
-    print('\n對照清單 → %s' % os.path.relpath(mpath, ROOT))
+    # 2026-10-15 起不再輸出 media-manifest.js：前台從沒 import 過它，
+    # 版面引用的固定素材寫在 ShowcaseView.vue，商品圖由 /api/catalog 給。
 
     total = sum(len(f) for _, _, f in os.walk(OUT))
     print('完成，共 %d 個圖檔。' % total)

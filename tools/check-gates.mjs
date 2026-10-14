@@ -201,7 +201,7 @@ async function main() {
       : pass(3, `監看的字串都沒有出現（${source}）`)
   }
 
-  /* ── 4 ── */
+  /* ── 4　憑證形狀（API 金鑰、私鑰之類）── */
   const creds = await scan(files, [CRED_SHAPES])
   creds.length
     ? fail(4, `輸出裡出現看起來像憑證的字串：${creds.slice(0, 3).join('、')}`)
@@ -238,6 +238,13 @@ async function main() {
         if (needles.some((n) => text.includes(n))) bad.push('機密字串')
         if (COST_SHAPE.test(text)) bad.push('成本欄位')
         if (CRED_SHAPES.test(text)) bad.push('憑證形狀')
+        // 未上架的草稿要在 SQL 就篩掉（worker/index.js），不能送出去再讓前端藏
+        try {
+          const drafts = (JSON.parse(text).products || []).filter((p) => p.listed === false)
+          if (drafts.length) bad.push(`未上架商品 ${drafts.map((p) => p.id).slice(0, 3).join('、')}`)
+        } catch {
+          bad.push('回應不是 JSON')
+        }
         bad.length
           ? fail(6, `API 回應裡出現 ${bad.join('、')} —— 成本或機密正在從資料庫外洩`)
           : pass(6, `API 回應乾淨（${(text.length / 1024).toFixed(1)} KB）`)

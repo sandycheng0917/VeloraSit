@@ -67,6 +67,9 @@ const MESSAGES = {
   server: '伺服器發生未預期的錯誤。',
 }
 
+/** 核取方塊欄位。Worker 回布林；'TRUE' 字串是早期資料的寫法，一併當成真。四個面板共用這一份 */
+export const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
+
 export const describe = (code, fallback) => MESSAGES[code] || fallback || `未預期的錯誤：${code}`
 
 /**

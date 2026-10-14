@@ -32,8 +32,18 @@ const LOCK_MS = 15 * 60 * 1000
 //    實際輪數存在 admin_state.pw_iters（產生密碼時寫入），這裡只是後備值。
 const PW_ITERS_DEFAULT = 100000
 
-const ok = (o = {}) => Response.json({ ok: true, ...o })
-const err = (code, extra = {}) => Response.json({ ok: false, err: code, ...extra })
+// 後台回應絕不能被任何一層快取：裡面有令牌與未上架的商品
+const ADMIN_HEADERS = { 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }
+const ok = (o = {}) => Response.json({ ok: true, ...o }, { headers: ADMIN_HEADERS })
+const err = (code, extra = {}) => Response.json({ ok: false, err: code, ...extra }, { headers: ADMIN_HEADERS })
+
+// 能上傳、能從 /media 回出去的格式。🔴 不收 SVG 與 HTML：/media 跟 /admin/ 同源，
+// 一張 content-type 是 text/html 或 image/svg+xml 的「圖」就是能偷後台令牌的頁面，
+// 而且掛著一年的 immutable 快取，事後刪不掉
+const IMAGE_MIMES = new Set(['image/webp', 'image/jpeg', 'image/png', 'image/gif'])
+// base64 上限約 2 MB 原檔（D1 單列上限約 2 MB）。超過就給看得懂的錯誤，而不是 D1 的 500
+const MAX_B64 = 2_700_000
+const MAX_THUMB = 200_000
 
 /* ── 狀態 ─────────────────────────────────────────────────────────── */
 
@@ -196,39 +206,67 @@ const OPS = {
   },
 
   /**
-   * 密碼 → 令牌。連續失敗五次鎖十五分鐘。
+   * 密碼 → 令牌。同一個 IP 連續失敗五次，該 IP 鎖十五分鐘。
    *
-   * 🔴 鎖定期間直接回，不做密碼比對 —— 省下 PBKDF2 的成本，
-   *    也避免鎖定期間被當成「密碼對不對」的問答機。
+   * 🔴 鎖定以 IP 為單位。原本是全站一個計數器 —— 任何人打五次錯密碼
+   *    就能把業主鎖在外面，每十五分鐘打一輪就能一直鎖著。
+   *
+   * 🔴 先記一次嘗試、再比對密碼，而且計數是單一 SQL 原子遞增。
+   *    原本是「讀 → JS 加一 → 寫回」，同時送出的 N 個請求都讀到 0，
+   *    十五分鐘內能試 N 次而不是 5 次。現在第 6 個以後連 PBKDF2 都不跑。
+   *
+   * 鎖定期間直接回，不做密碼比對 —— 也避免鎖定期間被當成「密碼對不對」的問答機。
    */
-  async login(db, b) {
-    const lockUntil = Number(await state(db, 'lock_until')) || 0
-    if (lockUntil > Date.now()) return err('locked')
+  async login(db, b, ctx) {
+    const ip = ctx.ip
+    const lockKey = `lock:${ip}`
+    const failKey = `fail:${ip}`
+    const now = Date.now()
+
+    const lockUntil = Number(await state(db, lockKey)) || 0
+    if (lockUntil > now) return err('locked')
 
     const salt = await state(db, 'pw_salt')
     const want = await state(db, 'pw_hash')
     if (!salt || !want) return err('not-initialised')
 
+    // 上次失敗超過 LOCK_MS 的計數視為過期，從 1 重算
+    const row = await db
+      .prepare(
+        "INSERT INTO admin_state (key, value, updated) VALUES (?, '1', ?) ON CONFLICT(key) DO UPDATE SET " +
+        "value = CASE WHEN admin_state.updated < ? THEN '1' " +
+        'ELSE CAST(CAST(admin_state.value AS INTEGER) + 1 AS TEXT) END, ' +
+        'updated = excluded.updated RETURNING value'
+      )
+      .bind(failKey, new Date(now).toISOString(), new Date(now - LOCK_MS).toISOString())
+      .first()
+    const tries = Number(row && row.value) || 1
+    if (tries > MAX_FAILS) return err('locked')
+
     const iters = Number(await state(db, 'pw_iters')) || PW_ITERS_DEFAULT
     const got = await pbkdf2(String(b.pw || ''), salt, iters)
 
     if (!ctEq(got, want)) {
-      const fails = (Number(await state(db, 'fail_count')) || 0) + 1
-      await setState(db, 'fail_count', fails)
-      if (fails >= MAX_FAILS) {
-        await setState(db, 'lock_until', Date.now() + LOCK_MS)
-        await setState(db, 'fail_count', 0)
-        await audit(db, 'login', false, `連續 ${MAX_FAILS} 次失敗，鎖定 15 分鐘`)
+      if (tries >= MAX_FAILS) {
+        await setState(db, lockKey, now + LOCK_MS)
+        await db.prepare('DELETE FROM admin_state WHERE key = ?').bind(failKey).run()
+        await audit(db, 'login', false, `${ip} 連續 ${MAX_FAILS} 次失敗，鎖定 15 分鐘`)
         return err('locked')
       }
-      await audit(db, 'login', false, `密碼錯誤（第 ${fails} 次）`)
+      await audit(db, 'login', false, `${ip} 密碼錯誤（第 ${tries} 次）`)
       return err('bad-pw')
     }
 
-    await setState(db, 'fail_count', 0)
-    await setState(db, 'lock_until', 0)
+    // 成功：清掉這個 IP 的紀錄，順便清掉所有已過期的鎖與舊的全站鎖定列，免得表一直長
+    await db
+      .prepare(
+        "DELETE FROM admin_state WHERE key IN (?, ?, 'fail_count', 'lock_until') " +
+        "OR (key LIKE 'lock:%' AND CAST(value AS INTEGER) < ?)"
+      )
+      .bind(failKey, lockKey, now)
+      .run()
     const t = await issue(db)
-    await audit(db, 'login', true, '')
+    await audit(db, 'login', true, ip)
     return ok(t)
   },
 
@@ -438,6 +476,8 @@ const OPS = {
   async saveThumb(db, b) {
     const key = str(b.key)
     if (!key) return err('no-key')
+    if (!KEY_RE.test(key)) return err('bad-key')
+    if (String(b.thumb || '').length > MAX_THUMB) return err('too-big')
     const r = await db
       .prepare('UPDATE images SET thumb = ? WHERE key = ?')
       .bind(new TextEncoder().encode(String(b.thumb || '')), key)
@@ -453,7 +493,12 @@ const OPS = {
     const chunks = Array.isArray(b.chunks) ? b.chunks : b.data ? [b.data] : []
     if (!chunks.length) return err('no-data')
 
+    const mime = str(b.mime) || 'image/webp'
+    if (!IMAGE_MIMES.has(mime)) return err('bad-mime', { detail: `不接受 ${mime}，只收 webp／jpeg／png／gif` })
+
     const b64 = chunks.join('')
+    if (b64.length > MAX_B64) return err('too-big', { detail: '圖片超過 2 MB，請先壓縮' })
+    if (String(b.thumb || '').length > MAX_THUMB) return err('too-big', { detail: '縮圖太大' })
     let bytes
     try {
       bytes = b64ToBytes(b64)
@@ -475,7 +520,7 @@ const OPS = {
         'mime = excluded.mime, alpha = excluded.alpha, sha256 = excluded.sha256, ' +
         'bytes = excluded.bytes, data = excluded.data, thumb = excluded.thumb, updated = excluded.updated'
       )
-      .bind(key, str(b.mime) || 'image/webp', bit(b.alpha), sha, bytes.length, bytes,
+      .bind(key, mime, bit(b.alpha), sha, bytes.length, bytes,
         new TextEncoder().encode(String(b.thumb || '')), new Date().toISOString())
       .run()
 
@@ -500,12 +545,19 @@ export async function handleAdmin(request, env) {
   if (request.method !== 'POST') return err('bad-op', { detail: '只接受 POST' })
   if (!env.DB) return err('server', { detail: 'D1 沒有綁定' })
 
+  // 🔴 只收 application/json。別的網站可以用 <form> 送 text/plain 的 POST 過來
+  //    （不觸發 preflight），而 request.json() 不看 Content-Type 照樣解析
+  if (!(request.headers.get('content-type') || '').includes('application/json')) {
+    return err('bad-json', { detail: 'Content-Type 必須是 application/json' })
+  }
+
   let body
   try {
     body = await request.json()
   } catch {
     return err('bad-json')
   }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return err('bad-json')
 
   const op = String(body.op || '')
   const fn = OPS[op]
@@ -516,8 +568,9 @@ export async function handleAdmin(request, env) {
     if (!p) return err('auth')
   }
 
+  const ctx = { ip: request.headers.get('cf-connecting-ip') || 'unknown' }
   try {
-    return await fn(env.DB, body)
+    return await fn(env.DB, body, ctx)
   } catch (e) {
     // 訊息帶出來。看不懂的錯誤訊息等於沒有錯誤訊息，
     // 而這條路徑上沒有成本也沒有憑證（admin_state 沒有任何讀取端點）。
@@ -538,9 +591,14 @@ export async function handleAdmin(request, env) {
  */
 export async function handleMedia(request, env, url) {
   if (!env.DB) return new Response('no db', { status: 503 })
-  const name = decodeURIComponent(url.pathname.replace(/^\/media\//, ''))
+  let name
+  try {
+    name = decodeURIComponent(url.pathname.replace(/^\/media\//, ''))
+  } catch {
+    return new Response('not found', { status: 404 }) // 殘缺的 %xx，原本會是未處理的 500
+  }
   const m = name.match(/^(.+)-([0-9a-f]{8})(\.cut)?\.(webp|jpg|jpeg|png|gif)$/)
-  if (!m) return new Response('not found', { status: 404 })
+  if (!m || !KEY_RE.test(m[1])) return new Response('not found', { status: 404 })
   const [, key, sha8] = m
 
   const r = await env.DB
@@ -581,7 +639,10 @@ export async function handleMedia(request, env, url) {
 
   return new Response(bytes, {
     headers: {
-      'content-type': r.mime || 'image/webp',
+      // 舊資料若有非圖片的 mime，也不要讓瀏覽器把它當頁面執行
+      'content-type': IMAGE_MIMES.has(r.mime) ? r.mime : 'application/octet-stream',
+      'x-content-type-options': 'nosniff',
+      'content-security-policy': "default-src 'none'; sandbox",
       'content-length': String(bytes.length),
       'cache-control': 'public, max-age=31536000, immutable',
       etag: `"${r.sha256}"`,

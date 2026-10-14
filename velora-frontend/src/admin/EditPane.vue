@@ -74,7 +74,7 @@ const NOTE_FIELDS = [
 /** 資料庫仍是三語欄位，新增時三個都要給初值；畫面只編 zh */
 const DATA_LANGS = ['zh', 'en', 'ko']
 
-const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
+const { truthy } = api
 
 /**
  * 商品編號的規則。跟 worker/admin.js 的 save 與 upload 是同一條 ——
@@ -198,7 +198,7 @@ async function loadImages() {
         preview.value = { ...preview.value, [s.field]: `data:${r.mime};base64,${r.data}` }
         meta.value = { ...meta.value, [s.field]: `${key}　${(r.bytes / 1000).toFixed(1)} KB` }
       } else {
-        meta.value = { ...meta.value, [s.field]: `${key}（Sheet 裡找不到這張圖）` }
+        meta.value = { ...meta.value, [s.field]: `${key}（資料庫裡找不到這張圖）` }
       }
     } catch (e) {
       meta.value = { ...meta.value, [s.field]: `${key}（讀取失敗：${e.message}）` }
@@ -221,7 +221,7 @@ async function onPreviewError(field) {
       preview.value = { ...preview.value, [field]: `data:${r.mime};base64,${r.data}` }
       meta.value = { ...meta.value, [field]: `${key}　${(r.bytes / 1000).toFixed(1)} KB` }
     } else {
-      meta.value = { ...meta.value, [field]: `${key}（Sheet 裡找不到這張圖）` }
+      meta.value = { ...meta.value, [field]: `${key}（資料庫裡找不到這張圖）` }
     }
   } catch (e) {
     meta.value = { ...meta.value, [field]: `${key}（讀取失敗：${e.message}）` }
@@ -339,7 +339,7 @@ async function save() {
   try {
     const r = await api.save(session.token.value, { ...form.value })
     emit('saved', (r.created ? '已新增 ' : '已儲存 ') + form.value.name_zh +
-      '。要讓網站更新，回清單按「發布」。')
+      '。網站約一分鐘內更新。')
   } catch (e) {
     if (e.code === 'invalid' && Array.isArray(e.detail)) fieldErrs.value = e.detail
     else emit('error', e.message + (e.detail ? '　' + JSON.stringify(e.detail) : ''))
@@ -381,7 +381,7 @@ async function doRename() {
 ` +
     `圖片的影像鍵會一起搬（${form.value.id}-main → ${to}-main），` +
     `所以圖片不會失聯。
-改完要按一次「發布」，網站上的圖檔網址才會跟著更新。`
+網站約一分鐘內更新。`
   )) return
   if (!(await session.keepAlive())) { emit('error', '登入已失效，請重新登入。'); return }
 
@@ -391,7 +391,7 @@ async function doRename() {
     renameOpen.value = false
     emit('saved', `商品編號已改成 ${r.to}` +
       (r.keys && r.keys.length ? `（影像鍵搬了 ${r.keys.length} 個）` : '') +
-      '。要讓網站更新，回清單按「發布」。')
+      '。網站約一分鐘內更新。')
   } catch (e) {
     emit('error', e.message + (e.detail ? '　' + e.detail : ''))
   } finally {
@@ -401,12 +401,12 @@ async function doRename() {
 
 const removing = ref(false)
 async function remove() {
-  if (!confirm(`確定要刪除「${form.value.name_zh}」？\n\n這是軟刪除：資料還在 Sheet 上，商品編號永遠不會被重複使用，但前台會看不到它。`)) return
+  if (!confirm(`確定要刪除「${form.value.name_zh}」？\n\n這是軟刪除：資料還在資料庫裡，商品編號永遠不會被重複使用，但前台會看不到它。`)) return
   if (!(await session.keepAlive())) { emit('error', '登入已失效，請重新登入。'); return }
   removing.value = true
   try {
     await api.remove(session.token.value, form.value.id)
-    emit('saved', `已刪除 ${form.value.name_zh}。發布後前台才會消失。`)
+    emit('saved', `已刪除 ${form.value.name_zh}。網站約一分鐘內就看不到它。`)
   } catch (e) {
     emit('error', e.message)
   } finally {
@@ -476,7 +476,7 @@ async function remove() {
               {{ creating
                 ? `慣例是 ${idHint} 這種寫法 —— VL＋品類前綴＋序號。前台的卡片會直接印它，圖片的影像鍵也是用它組的，所以不能有空格或間隔點。`
                 : renameOpen
-                  ? '改完圖片的影像鍵會一起搬，圖不會失聯。之後要按一次「發布」。'
+                  ? '改完圖片的影像鍵會一起搬，圖不會失聯。'
                   : '前台卡片上印的就是它。要改按右邊的「改編號」' }}
             </p>
           </div>

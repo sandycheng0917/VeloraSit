@@ -31,7 +31,7 @@ const thumbs = ref({})
  * 因為 class 只看 thumbs 有沒有值。13 列全部卡在載入中，
  * 跟壞掉長得一模一樣。這是實際發生過的。
  */
-const missingInSheet = ref({})
+const missingInDb = ref({})
 
 /**
  * 一次抓幾張。
@@ -54,9 +54,9 @@ async function pump() {
       .getImage(session.token.value, key)
       .then((r) => {
         if (r.found) thumbs.value = { ...thumbs.value, [key]: `data:${r.mime};base64,${r.data}` }
-        else missingInSheet.value = { ...missingInSheet.value, [key]: 'none' }
+        else missingInDb.value = { ...missingInDb.value, [key]: 'none' }
       })
-      .catch(() => (missingInSheet.value = { ...missingInSheet.value, [key]: 'error' }))
+      .catch(() => (missingInDb.value = { ...missingInDb.value, [key]: 'error' }))
       .finally(() => {
         running--
         pump()
@@ -139,7 +139,7 @@ async function doBackfill() {
 
 function onFastError(key) {
   fastFailed.value = { ...fastFailed.value, [key]: true }
-  if (!thumbs.value[key] && !missingInSheet.value[key] && !queue.includes(key)) {
+  if (!thumbs.value[key] && !missingInDb.value[key] && !queue.includes(key)) {
     queue.push(key)
     pump()
   }
@@ -151,7 +151,7 @@ const q = ref('')
 const per = ref(20)
 const page = ref(0)
 
-const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
+const { truthy } = api
 
 /** 後台頁籤用短名，前台導覽列用長名。舊的 Sheet 沒有 short_* 就退回 name_* */
 const shortName = (c) => c.short_zh || c.name_zh
@@ -182,10 +182,10 @@ watch(
     for (const p of rows) {
       const k = p.img_main
       if (!k) continue
-      if (thumbOf(k)) continue                       // Sheet 裡就有縮圖，最快
+      if (thumbOf(k)) continue                       // 資料庫裡就有縮圖，最快
       // 有公開網址就讓 <img> 自己去載，不必排隊走 API
       if (fast(k) && !fastFailed.value[k]) continue
-      if (!thumbs.value[k] && !missingInSheet.value[k] && !queue.includes(k)) queue.push(k)
+      if (!thumbs.value[k] && !missingInDb.value[k] && !queue.includes(k)) queue.push(k)
     }
     pump()
   },
@@ -220,7 +220,7 @@ function plateState(p) {
   const k = p.img_main
   if (!k) return 'pending'
   if (src(p)) return ''
-  if (missingInSheet.value[k]) return 'notyet'
+  if (missingInDb.value[k]) return 'notyet'
   return 'loading'
 }
 
@@ -283,14 +283,14 @@ const priceText = (p) =>
         <span class="n">{{ String(from + i).padStart(2, '0') }}</span>
         <span class="rule" />
         <!--
-          縮圖是從 Sheet 抓回來的 data URI（op:'image'）。
+          縮圖是從資料庫抓回來的 data URI（op:'image'）。
           img_main 存的是「影像鍵」不是網址，位元組在 images 分頁。
           只抓當前這一頁，並行 3 條，抓到一張畫一張。
         -->
         <!--
           三種狀態，要分得出來：
             無圖片   這件商品連影像鍵都沒有
-            未上傳   有影像鍵，但 Sheet 裡沒有位元組 —— 網站上顯示的是
+            未上傳   有影像鍵，但資料庫裡沒有位元組 —— 網站上顯示的是
                      專案裡既有的素材（遷移用的退路），從後台換一次圖就會接管
             斜紋     正在抓
         -->
@@ -300,8 +300,8 @@ const priceText = (p) =>
           :title="
             !p.img_main
               ? '尚未指定圖片'
-              : missingInSheet[p.img_main]
-                ? `影像鍵 ${p.img_main} 在 Sheet 裡沒有位元組。網站目前顯示的是專案內既有的素材，從這裡上傳一次就會接管。`
+              : missingInDb[p.img_main]
+                ? `影像鍵 ${p.img_main} 在資料庫裡沒有圖檔。網站上這件商品沒有圖，從這裡上傳一次就好。`
                 : p.img_main
           "
         >

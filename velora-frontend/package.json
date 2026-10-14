@@ -9,7 +9,7 @@
     "build": "vite build --mode public",
     "build:admin": "vite build",
     "preview": "vite preview",
-    "build:worker": "vite build --mode public && vite build --outDir dist/admin --base /admin/ && node -e \"require('fs').rmSync('dist/admin/media',{recursive:true,force:true})\" && npm run audit",
+    "build:worker": "vite build --mode public && vite build --outDir dist/admin --base /admin/ && node -e \"const fs=require('fs');fs.rmSync('dist/admin/media',{recursive:true,force:true});fs.rmSync('dist/admin/_headers',{force:true})\" && npm run audit",
     "audit": "node ../tools/check-gates.mjs && node ../check-public.mjs --dist velora-frontend/dist",
     "cf:dev": "wrangler dev",
     "cf:deploy": "wrangler deploy",

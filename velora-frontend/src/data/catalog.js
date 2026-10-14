@@ -12,10 +12,8 @@
  * 現在資料在 D1，改完就生效（Worker 那邊的 cache-control 是 60 秒）。
  *
  * 🔴 沒有種子檔退路。API 掛掉的時候這裡回報錯誤，不會靜默拿
- *    products.generated.js 頂上 —— 那會讓「資料庫壞了」長得跟
+ *    舊資料頂上 —— 那會讓「資料庫壞了」長得跟
  *    「一切正常」一模一樣，而使用者看到的是一份沒人知道有多舊的目錄。
- *    *.generated.js 還留在 repo 裡，但它現在只有一個用途：
- *    當 tools/d1-seed.mjs 的輸入。前台不再 import 它。
  *
  * ── 這裡的 export 就是對外契約 ──────────────────────────────────────
  *
@@ -174,9 +172,8 @@ export const products = computed(() =>
         detail: r.detail,
         notes: notesOf(r.notes),
         origin: origin(r.origin),
-        // 沒有圖的商品 image 是 undefined，版面會走 .plate.pending 的空版樣式
+        // 沒有圖的商品 image 是 undefined，樣板用 v-if 不畫 <img>，只留影像板的底色
         image: gallery[0],
-        thumb: gallery[0],
         gallery,
         listed: r.listed !== false,
         featured: r.featured === true,

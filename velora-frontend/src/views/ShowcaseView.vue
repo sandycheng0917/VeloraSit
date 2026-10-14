@@ -25,10 +25,11 @@ import { num, pick, t } from '@/i18n.js'
  * 以前說明也寫死在這裡，後台改了品名輪播不會跟著變，
  * 而且第一張標成「VL · FRG · 001」，資料庫裡的 001 其實是依蘭。
  *
- * 每張圖掛一個商品 id，或（品牌形象照）一個品牌 key。
+ * 每張圖掛一個商品 id、一個品牌 key，或（還沒有商品的新品類）一個品類 key。
  * 對不到時不顯示說明 —— 寧可空白，也不要印一個資料庫裡不存在的名字。
  */
 const SLIDES = [
+  { img: mediaUrl('/media/phonebag/pink-python.jpg'), category: 'phonebag' },
   { img: mediaUrl('/media/vuca/editorial-bw.jpg'), house: 'vuca' },
   { img: mediaUrl('/media/saintmari/scarf-camel-blazer.jpg'), product: 'scarf-1' },
   { img: mediaUrl('/media/vuca/bedroom.jpg'), product: 'frg-flowershop' },
@@ -43,6 +44,9 @@ const slides = computed(() =>
     } else if (s.house) {
       const h = houses.value[s.house]
       if (h) cap = [h.name, h.tagline].filter(Boolean).join(' — ')
+    } else if (s.category) {
+      const c = findCategory(s.category)
+      if (c) cap = [c.ref, pick(c.name)].filter(Boolean).join(' — ')
     }
     return { img: s.img, cap }
   })
@@ -140,21 +144,28 @@ function askOnLine() {
 
       <div class="hero-l">
         <span class="wm" aria-hidden="true">V</span>
-        <p class="eyebrow rise" style="animation-delay: 0.1s">{{ t('heroEyebrow') }}</p>
+        <p class="eyebrow rise" style="animation-delay: 0.1s"><i class="gem" aria-hidden="true" />{{ t('heroEyebrow') }}</p>
         <h1 class="rise" style="animation-delay: 0.2s">
           <span>Refined</span><span>Elegance,</span>
           <span class="i">Everyday</span><span class="i">Luxury.</span>
         </h1>
+        <span class="h1-rule rise" style="animation-delay: 0.3s" aria-hidden="true" />
         <p class="sub rise" style="animation-delay: 0.35s">
           {{ t('heroSub1') }}<br />{{ t('heroSub2') }}
         </p>
         <div class="cta rise" style="animation-delay: 0.5s">
+          <button class="btn-rose" @click="lineOpen = true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>
+            {{ t('askLine') }}
+          </button>
           <button class="btn-line" @click="select('all')">{{ t('explore') }}</button>
-          <button class="ask" @click="lineOpen = true">{{ t('askOnLine') }}</button>
         </div>
       </div>
 
       <div class="hero-r">
+        <span class="blush" aria-hidden="true" />
+        <span class="gframe" aria-hidden="true"><i /><i /><i /><i /></span>
+        <div class="stage">
         <div
           v-for="(s, i) in slides"
           :key="s.img"
@@ -162,7 +173,7 @@ function askOnLine() {
           :class="{ on: i === slide }"
           :aria-hidden="i !== slide"
         >
-          <img :src="s.img" :alt="s.cap" />
+          <img :src="s.img" :alt="s.cap" :loading="i === 0 ? 'eager' : 'lazy'" decoding="async" />
           <span v-if="s.cap" class="plate-cap">{{ s.cap }}</span>
         </div>
         <span class="veil" aria-hidden="true" />
@@ -180,11 +191,12 @@ function askOnLine() {
             @click="go(i)"
           />
         </div>
+        </div>
       </div>
     </section>
 
     <!-- ═══ 品類區：韓系不對稱格狀（標題與數量由 categories 長度決定） ═══ -->
-    <section class="sec">
+    <section class="sec cats">
       <span class="mark" style="top: 150px" aria-hidden="true"><i /><b>Categories</b></span>
       <div class="wrap">
         <header class="sec-head">
@@ -203,7 +215,7 @@ function askOnLine() {
           @click="select(c.key)"
         >
           <span class="plate" :class="{ 'is-cutout': isCutout(c.cover) }">
-            <img :src="c.cover" :alt="pick(c.name)" />
+            <img :src="c.cover" :alt="pick(c.name)" loading="lazy" decoding="async" />
           </span>
           <span class="meta">
             <span class="en disp">{{ c.code }}</span>
@@ -232,14 +244,14 @@ function askOnLine() {
 
         <article v-for="p in featured" :key="p.id" class="wide">
           <span class="plate" :class="{ 'is-cutout': isCutout(p.image) }">
-            <img :src="p.image" :alt="pick(p.name)" />
+            <img v-if="p.image" :src="p.image" :alt="pick(p.name)" loading="lazy" decoding="async" />
           </span>
           <div class="wide-body">
             <div class="top">
               <span v-if="houses[p.house]" class="pill">{{ houses[p.house].name }}</span>
               <span class="ref">{{ p.ref }}</span>
             </div>
-            <h3 class="disp">{{ p.name.en }}</h3>
+            <h3 v-if="p.name.en" class="disp">{{ p.name.en }}</h3>
             <p class="zh">{{ pick(p.name) }}</p>
             <p class="desc">{{ pick(p.desc) }}</p>
             <div class="attrs">
@@ -254,7 +266,7 @@ function askOnLine() {
     </section>
 
     <!-- ═══ 全品項藝廊 ═══ -->
-    <section ref="gridEl" class="sec">
+    <section ref="gridEl" class="sec gal">
       <span class="mark" style="top: 150px" aria-hidden="true"><i /><b>Catalogue</b></span>
       <div class="wrap">
         <header class="sec-head row">
@@ -304,11 +316,11 @@ function askOnLine() {
         <div v-else-if="shown.length" class="grid">
           <button v-for="p in shown" :key="p.id" class="tile" @click="detail = p">
             <span class="plate" :class="{ 'is-cutout': isCutout(p.image) }">
-              <img :src="p.image" :alt="pick(p.name)" loading="lazy" />
+              <img v-if="p.image" :src="p.image" :alt="pick(p.name)" loading="lazy" decoding="async" />
             </span>
             <span class="t-meta">
               <span class="t-ref">{{ p.ref }}</span>
-              <span class="t-name disp">{{ p.name.en }}</span>
+              <span v-if="p.name.en" class="t-name disp">{{ p.name.en }}</span>
               <span class="t-zh">{{ pick(p.name) }}</span>
             </span>
           </button>
@@ -328,7 +340,7 @@ function askOnLine() {
 
       <div class="phil">
         <span class="wm" aria-hidden="true" style="left: 58%; top: -40px; font-size: 300px">V</span>
-        <span class="plate ph-img"><img :src="mediaUrl('/media/vuca/bedroom.jpg')" alt="VUCA" /></span>
+        <span class="plate ph-img"><img :src="mediaUrl('/media/vuca/bedroom.jpg')" alt="VUCA" loading="lazy" decoding="async" /></span>
         <div class="txt">
           <p class="k">{{ t('philKicker1') }}</p>
           <h3 class="disp">We select,<br />so you don’t have to.</h3>
@@ -340,7 +352,7 @@ function askOnLine() {
       <div class="phil flip">
         <span class="wm" aria-hidden="true" style="left: 4%; top: 20px; font-size: 300px">V</span>
         <span class="plate ph-img">
-          <img :src="mediaUrl('/media/saintmari/scarf-pink-bow.jpg')" alt="SAINTMARI" />
+          <img :src="mediaUrl('/media/saintmari/scarf-pink-bow.jpg')" alt="SAINTMARI" loading="lazy" decoding="async" />
         </span>
         <div class="txt">
           <p class="k">{{ t('philKicker2') }}</p>
@@ -348,6 +360,22 @@ function askOnLine() {
           <hr class="hair" />
           <p>{{ t('philBody2') }}</p>
         </div>
+      </div>
+    </section>
+
+    <!-- ═══ LINE 詢問：整頁唯一的轉換點，放在頁尾前再給一次 ═══ -->
+    <section class="ask-band">
+      <div class="ask-box">
+        <span class="gframe in" aria-hidden="true" />
+        <div class="ask-txt">
+          <p class="k">{{ t('ctaKicker') }}</p>
+          <h2>{{ t('ctaTitle') }}</h2>
+          <p>{{ t('ctaBody') }}</p>
+        </div>
+        <button class="btn-rose" @click="lineOpen = true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>
+          {{ t('ctaBtn') }}
+        </button>
       </div>
     </section>
 
@@ -365,10 +393,12 @@ function askOnLine() {
 }
 
 /* ── HERO ───────────────────────────────────────────────── */
+/* 由淡粉漸到奶油：接住上面的淡粉表頭，表頭與主視覺之間不會切出一條色帶 */
 .hero {
   display: flex;
   height: 720px;
   position: relative;
+  background: linear-gradient(180deg, var(--bg-alt) 0, var(--bg) 70%);
 }
 .hero-l {
   width: 58.3%;
@@ -390,10 +420,28 @@ function askOnLine() {
   font-size: clamp(180px, 26vw, 380px);
   z-index: 0;
 }
+/*
+ * 主視覺圖：照片內縮，後面墊一塊玫瑰粉，外圍 2px 金箔框 + 四角菱形飾釘。
+ * 三層都是絕對定位、各自 inset，照片本身仍是原本的輪播（.stage 裡）。
+ */
 .hero-r {
   flex: 1;
   position: relative;
-  border-left: 1px solid var(--gold);
+}
+.hero-r .blush {
+  position: absolute;
+  inset: 96px 36px 34px 88px;
+  background: var(--rose);
+}
+.hero-r .gframe {
+  inset: 32px 64px 60px 24px;
+  z-index: 5;
+}
+.stage {
+  position: absolute;
+  inset: 48px 80px 76px 40px;
+  overflow: hidden;
+  z-index: 1;
 }
 .hero-r .slide {
   position: absolute;
@@ -419,6 +467,22 @@ function askOnLine() {
   z-index: 4;
 }
 
+.eyebrow .gem {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 14px;
+  vertical-align: 2px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.h1-rule {
+  display: block;
+  width: 96px;
+  height: 1px;
+  margin-top: 30px;
+  background: var(--gold-leaf);
+}
 .eyebrow {
   font-family: var(--f-mono);
   font-weight: 400;
@@ -442,7 +506,7 @@ h1 .i {
   padding-left: clamp(20px, 3.9vw, 56px);
 }
 .sub {
-  margin-top: 34px;
+  margin-top: 26px;
   font-size: clamp(15px, 1.2vw, 17px);
   line-height: 1.9;
   color: var(--ink-soft);
@@ -454,18 +518,6 @@ h1 .i {
   align-items: center;
   gap: 32px;
   flex-wrap: wrap;
-}
-.ask {
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  color: var(--ink-soft);
-  border-bottom: 1px solid var(--line-strong);
-  padding-bottom: 3px;
-  transition: color 0.35s ease, border-color 0.35s ease;
-}
-.ask:hover {
-  color: var(--ink);
-  border-color: var(--gold);
 }
 
 .idx {
@@ -511,12 +563,20 @@ h1 .i {
   height: 680px;
   margin-inline: var(--gutter);
 }
+/* 區塊底色交替：品類淡粉、精選奶油、藝廊淡粉、理念奶油 */
+.cats,
+.gal {
+  background: var(--bg-alt);
+  --ring: var(--bg-alt);
+}
+
+/* 卡片外框：1.5px 金箔漸層（padding-box 疊 border-box 的做法，圓角照樣有效） */
 .cd {
   position: absolute;
   padding: 0;
   text-align: left;
-  background: var(--bg);
-  border: 1px solid var(--line);
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--gold-leaf-d) border-box;
   border-radius: var(--r-md);
   overflow: hidden;
   display: flex;
@@ -524,21 +584,21 @@ h1 .i {
   transition: border-color 0.5s ease, transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .cd:hover {
-  border-color: var(--gold);
   transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(116, 83, 61, 0.12);
 }
 .cd::after {
   content: '';
   position: absolute;
   inset: 7px;
-  border: 1px solid rgba(197, 168, 128, 0.26);
+  border: 1px solid rgba(201, 163, 125, 0.26);
   border-radius: 3px;
   pointer-events: none;
   z-index: 4;
   transition: border-color 0.5s ease;
 }
 .cd:hover::after {
-  border-color: rgba(197, 168, 128, 0.55);
+  border-color: rgba(201, 163, 125, 0.55);
 }
 .cd .plate {
   flex: 1;
@@ -604,13 +664,13 @@ h1 .i {
 
 /* ── 精選寬幅卡 ─────────────────────────────────────────── */
 .feat {
-  background: var(--bg-alt);
-  --ring: #f8f6f0;
+  background: var(--bg);
+  --ring: var(--bg);
 }
 .wide {
   display: flex;
-  background: var(--bg);
-  border: 1px solid var(--line);
+  border: 1.5px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, var(--gold-leaf-d) border-box;
   border-radius: var(--r-md);
   overflow: hidden;
   box-shadow: var(--sh-ambient);
@@ -618,8 +678,7 @@ h1 .i {
   transition: border-color 0.5s ease, box-shadow 0.5s ease;
 }
 .wide:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-raised);
+  box-shadow: 0 12px 34px rgba(116, 83, 61, 0.12);
 }
 .wide .plate {
   width: 40%;
@@ -717,15 +776,15 @@ h1 .i {
 .tile {
   padding: 0;
   text-align: left;
-  background: var(--bg);
-  border: 1px solid var(--line);
+  border: 1px solid transparent;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--gold-leaf-d) border-box;
   border-radius: var(--r-md);
   overflow: hidden;
   transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .tile:hover {
-  border-color: var(--gold);
   transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(116, 83, 61, 0.1);
 }
 .tile .plate {
   aspect-ratio: 4 / 5;
@@ -739,7 +798,7 @@ h1 .i {
   display: block;
   font-family: var(--f-mono);
   font-weight: 400;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   color: var(--ink-faint);
 }
@@ -773,8 +832,8 @@ h1 .i {
   pointer-events: none;
 }
 .tile.skel:hover {
-  border-color: var(--line);
   transform: none;
+  box-shadow: none;
 }
 .tile.skel .plate {
   display: block;
@@ -874,6 +933,59 @@ h1 .i {
   max-width: 480px;
 }
 
+/* ── LINE 詢問帶 ─────────────────────────────────────────
+   玫瑰粉底 + 雙層金框（外 2px 金箔、內 1px 玫瑰金）。
+   🔴 這塊底是 --rose：上面不能放 --rose-ink 的字（4.13:1），小字一律金字或主文字 */
+.ask-band {
+  padding: 0 var(--gutter) clamp(64px, 8vw, 110px);
+}
+.ask-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  padding: clamp(40px, 5vw, 64px) clamp(28px, 5vw, 72px);
+  background: var(--rose);
+  border: 2px solid transparent;
+  border-image: var(--gold-leaf-d) 1;
+  --ring: var(--rose);
+}
+.ask-box .gframe.in {
+  inset: 9px;
+  border: 1px solid var(--gold);
+  border-image: none;
+}
+.ask-txt {
+  position: relative;
+}
+.ask-txt .k {
+  font-family: var(--f-mono);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+}
+.ask-txt h2 {
+  margin: 14px 0 12px;
+  font-family: var(--f-cjk);
+  font-weight: 200;
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: 0.14em;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.ask-txt p:last-child {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.ask-box .btn-rose {
+  position: relative;
+  flex: none;
+}
+
 /* aspect-ratio 是 Safari 15+ / iOS 15+ 才支援。舊機型上這兩個元素會塌成 0 高，
    用經典的 padding-top 撐高當退路 —— .plate > img 本來就絕對定位，直接生效。 */
 @supports not (aspect-ratio: 1 / 1) {
@@ -902,9 +1014,16 @@ h1 .i {
        flex-basis:0 蓋掉 height，而容器沒有固定高度，整欄會塌成 1px。 */
     flex: none;
     width: 100%;
-    height: min(58vh, 440px);
-    border-left: 0;
-    border-top: 1px solid var(--gold);
+    height: min(66vh, 520px);
+  }
+  .hero-r .blush {
+    inset: 52px var(--gutter) 0 calc(var(--gutter) + 36px);
+  }
+  .hero-r .gframe {
+    inset: 12px calc(var(--gutter) + 22px) 22px calc(var(--gutter) - 12px);
+  }
+  .stage {
+    inset: 24px calc(var(--gutter) + 34px) 34px var(--gutter);
   }
   .cat {
     height: auto;
@@ -937,11 +1056,31 @@ h1 .i {
   .idx {
     font-size: 13px;
   }
+  /* 觸控目標至少 44px：篩選鈕原本 30px 高、輪播點 26×16 */
   .chips button {
     font-size: 15px;
+    height: 44px;
   }
-  .ask {
-    font-size: 15px;
+  .dots button {
+    width: 32px;
+    padding: 22px 0;
+  }
+  .dots button::after {
+    inset: auto 0;
+    top: 50%;
+    height: 1px;
+  }
+  .ask-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+  }
+  .ask-box .btn-rose {
+    width: 100%;
+  }
+  .cta .btn-rose,
+  .cta .btn-line {
+    width: 100%;
   }
 
   /* style.css 那批全域手機規則對這些沒用 —— scoped 會編成
@@ -958,13 +1097,21 @@ h1 .i {
     font-size: 13px;
   }
 
-  /* 實測：手機上圖庫是**單欄**、磚寬 313px（不是原本以為的兩欄 167px）。
-     有 313px 的版面卻只放 15px 的字，比例上就是小。照實際寬度放大。 */
+  /* 2026-10-15 手機圖庫改兩欄（業主選定）：單欄時整頁約 16000px 高。
+     兩欄的磚寬約 150–190px，字級照這個寬度訂，品名可換行 */
+  .t-meta {
+    padding: 12px 12px 14px;
+  }
+  /* 0.18em 字距在兩欄磚寬會把「VL · FRG · 003」斷成兩行 */
+  .t-ref {
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
   .t-name {
-    font-size: 20px;
+    font-size: 16px;
   }
   .t-zh {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--ink-soft);
@@ -1009,8 +1156,8 @@ h1 .i {
     max-width: none;
   }
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 18px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 }
 </style>

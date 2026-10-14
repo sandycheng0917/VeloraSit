@@ -25,7 +25,7 @@ const emit = defineEmits(['saved', 'error'])
 /** 跟 worker/admin.js 的 saveHouse 是同一個數字。改一邊就要改另一邊 */
 const MAX = 4
 
-const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
+const { truthy } = api
 
 function blank() {
   return {
@@ -120,7 +120,7 @@ async function save() {
   try {
     const r = await api.saveHouse(session.token.value, { ...form.value })
     close()
-    emit('saved', (r.created ? '已新增品牌 ' : '已儲存品牌 ') + r.key + '。要讓網站更新，回商品清單按「發布」。')
+    emit('saved', (r.created ? '已新增品牌 ' : '已儲存品牌 ') + r.key + '。網站約一分鐘內更新。')
   } catch (e) {
     if (e.code === 'invalid' && Array.isArray(e.detail)) errs.value = e.detail
     else emit('error', e.message + (e.detail ? '　' + e.detail : ''))
@@ -141,7 +141,7 @@ async function remove(h) {
   removing.value = h.key
   try {
     await api.deleteHouse(session.token.value, h.key)
-    emit('saved', `已刪除品牌 ${h.name}。發布後前台才會消失。`)
+    emit('saved', `已刪除品牌 ${h.name}。網站約一分鐘內就看不到它。`)
   } catch (e) {
     emit('error', e.message + (e.detail ? '　' + e.detail : ''))
   } finally {

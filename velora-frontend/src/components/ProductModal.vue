@@ -33,7 +33,7 @@ watch(
     <div v-if="product" class="scrim" @click.self="emit('close')">
       <article class="modal" role="dialog" aria-modal="true" :aria-label="pick(product.name)">
         <div class="pane plate" :class="{ 'is-cutout': cutout }">
-          <img :src="product.gallery[shot]" :alt="pick(product.name)" />
+          <img v-if="product.gallery[shot]" :src="product.gallery[shot]" :alt="pick(product.name)" />
         </div>
 
         <div class="body">
@@ -45,13 +45,13 @@ watch(
           </button>
 
           <div class="top">
-            <span class="pill">{{ cat?.name.en }}</span>
+            <span v-if="cat?.name.en" class="pill">{{ cat.name.en }}</span>
             <span class="ref">{{ product.ref }}</span>
           </div>
 
-          <h3 class="disp">{{ product.name.en }}</h3>
+          <h3 v-if="product.name.en" class="disp">{{ product.name.en }}</h3>
           <p class="zh">{{ pick(product.name) }}</p>
-          <p v-if="product.tagline" class="tag">{{ pick(product.tagline) }}</p>
+          <p v-if="pick(product.tagline)" class="tag">{{ pick(product.tagline) }}</p>
           <p class="desc">{{ pick(product.desc) }}</p>
 
           <dl v-if="product.notes" class="notes">
@@ -120,7 +120,7 @@ watch(
   content: '';
   position: absolute;
   inset: 7px;
-  border: 1px solid rgba(197, 168, 128, 0.42);
+  border: 1px solid rgba(201, 163, 125, 0.42);
   border-radius: 3px;
   pointer-events: none;
   z-index: 6;
@@ -307,11 +307,11 @@ h3 {
     right: 10px;
     top: 10px;
     width: auto;
-    height: 40px;
+    height: 44px;
     gap: 7px;
     padding: 0 15px;
     border-radius: 999px;
-    background: rgba(253, 251, 247, 0.95);
+    background: rgba(253, 249, 246, 0.95);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
     border: 1px solid var(--line-strong);

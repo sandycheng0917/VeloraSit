@@ -9,9 +9,7 @@ import ShowcaseView from '@/views/ShowcaseView.vue'
  * 整個 if 區塊連同 import() 都會被 tree-shaking 移除 ——
  * 公開的 bundle 裡不會有後台的任何一行程式碼或樣式。
  *
- * 後台原始碼不在公開版控裡（見 .gitignore），只存在維護者本機。
- * 檔案不存在時這裡也不會出錯：那個 import 位於永遠為 false 的分支，
- * Rollup 連解析都不會做（已實測）。
+ * 那個 import 位於永遠為 false 的分支，Rollup 連解析都不會做（已實測）。
  *
  * 不要改用 import.meta.glob —— 它會在建置時就把模組表建好，
  * 導致後台被打包進公開版（踩過這個坑）。
@@ -21,7 +19,7 @@ const IS_PUBLIC = import.meta.env.VITE_PUBLIC_BUILD === '1'
 /**
  * 兩種建置產生兩個**獨立站台**，各自的根路由不同：
  *
- *   公開版（npm run build）        /  → 展示頁      部署在 /v1/
+ *   公開版（npm run build）        /  → 展示頁      部署在網站根 /
  *   後台版（npm run build:admin）  /  → 後台        部署在 /admin/
  *
  * 後台不是掛在展示站底下的一個子路徑。原本寫成 path: '/admin' 時，

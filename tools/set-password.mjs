@@ -180,8 +180,7 @@ async function main() {
       `'${now}' WHERE NOT EXISTS (SELECT 1 FROM admin_state WHERE key = 'token_epoch');`,
     '',
     '-- 順便解掉鎖定狀態：改密碼的人通常就是被自己鎖在外面的那個',
-    sqlLine('fail_count', '0', now),
-    sqlLine('lock_until', '0', now),
+    "DELETE FROM admin_state WHERE key LIKE 'fail:%' OR key LIKE 'lock:%' OR key IN ('fail_count', 'lock_until');",
   ]
 
   await mkdir(dirname(OUT), { recursive: true })

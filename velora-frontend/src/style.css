@@ -8,44 +8,53 @@
      Body           Noto Sans TC 300    行距 1.7–1.9
      Index / Data   DM Mono 300         只承載編號與資料
 
-   金色規則
-     #C5A880 只做線與框；金色文字一律 #A8875C（對比 4.6:1，達 WCAG AA）
+   色彩（2026-10-14 改為粉紅色系：奶油鋪底、粉做區塊、金走線與框）
+     #C9A37D 玫瑰金只做線與框；金色文字一律 --gold-deep #74533D（對所有底色 ≥ 4.7:1）
+     深玫瑰 --rose-btn 只留給「用 LINE 詢問」這一個動作
    ============================================================ */
 
 :root {
-  /* 色票 */
-  --bg: #fdfbf7;
-  --bg-alt: #f8f6f0;
-  --surface: #f2efe9;
-  --surface-deep: #ebe7df;
-  --gold: #c5a880;
-  /* 金色文字。註：4.62:1 是對頁面底 --bg 量的，但金字也出現在卡片底
-     --surface-deep #ebe7df 上 —— 那裡只有 3.88:1，不足 AA。
-     改成對「所有背景」都過 AA 的值：最低 4.61:1。 */
-  --gold-deep: #7e6239;
-  --gold-bright: #d4af37;
-  --ink: #1e1e1e;
-  /* 客戶手機實測兩次回報「太淡」。#55514e 雖已過 AA（7.7:1），
-     但小字級的中文在手機上仍偏灰，再壓深一階到 10.6:1。 */
-  --ink-soft: #423e3b;
-  --line: #e8e4dc;
-  --line-soft: #f0ede7;
-  --line-strong: #d9d4c9;
-  /* --line-strong 是線條色（1.43:1），拿來當文字等於看不見。
-     編號、placeholder 這類極淡文字改用這個。同樣以最深的背景為準：4.60:1。 */
-  --ink-faint: #6c665f;
-  --sidebar: #1f1d1b;
-  --sidebar-ink: #948e87;
+  /* 色票。對比全部以最深的底 --surface-deep 為準量過 */
+  --bg: #fdf9f6;
+  --bg-alt: #fcebe7;
+  --surface: #f9e1db;
+  --surface-deep: #f2cec6;
+  --gold: #c9a37d;
+  --gold-lit: #e7c9a0;
+  /* 金色文字：在最深的玫瑰粉 #f2cec6 上 4.73:1，奶油底上 6.58:1 */
+  --gold-deep: #74533d;
+  --ink: #2b2224;
+  --ink-soft: #4a3c3e;
+  --line: #ecd8d0;
+  --line-soft: #f5ece7;
+  --line-strong: #ddc0b5;
+  /* --line-strong 是線條色，拿來當文字等於看不見。編號、placeholder 用這個：最低 4.81:1 */
+  --ink-faint: #665555;
+  /* 粉紅色系的重點色 */
+  --rose: #f2cec6;
+  /* LINE 主按鈕底。上面的奶油字 4.70:1 */
+  --rose-btn: #9e5f63;
+  --rose-btn-hover: #8e5257;
+  /* 粉色文字：奶油底 5.74:1、淡粉 5.20:1。不可放在 --rose 上（4.13:1） */
+  --rose-ink: #8e5257;
   --green: #06c755;
-  /* LINE 品牌綠當文字只有 1.97:1。圖示與外框維持品牌色，
-     文字改用這個壓深版（4.61:1）—— 色相不變，仍讀得出是 LINE。 */
+  /* LINE 品牌綠當文字只有 1.97:1。圖示與外框維持品牌色，文字改用壓深版 */
   --green-deep: #037733;
 
-  /* 金箔：漸層讓 1px 線像金屬反光，而非一條扁平色塊 */
-  --gold-leaf: linear-gradient(90deg, #bc9d71 0%, #d9bd8f 20%, #ead5a8 38%, #c7a66c 52%, #e2c898 70%, #b99a6c 100%);
-  --gold-leaf-v: linear-gradient(180deg, #bc9d71 0%, #d9bd8f 20%, #ead5a8 38%, #c7a66c 52%, #e2c898 70%, #b99a6c 100%);
-  --gold-fill: linear-gradient(135deg, #c09a6c 0%, #dcc194 44%, #b8996b 100%);
-  --ring: #fdfbf7;
+  /* 金箔：漸層讓線像金屬反光，而非一條扁平色塊。偏玫瑰金，跟粉色同一個暖調 */
+  --gold-leaf: linear-gradient(90deg, #b8936e 0%, #e0be99 20%, #f1dcc0 38%, #c49b72 52%, #e7c6a1 70%, #b8936e 100%);
+  --gold-leaf-v: linear-gradient(180deg, #b8936e 0%, #e0be99 20%, #f1dcc0 38%, #c49b72 52%, #e7c6a1 70%, #b8936e 100%);
+  --gold-leaf-d: linear-gradient(135deg, #b8936e 0%, #e9cfa6 30%, #c49b72 50%, #f1dcc0 70%, #b8936e 100%);
+
+  /* 表頭／表尾底色（2026-10-15 業主從五種裡選定「頭尾都深粉」）。
+     試過亮金與玫瑰金漸層，大面積的金跟粉色放在一起偏髒、不協調 ——
+     金色留給線與框。中間各區用較淡的 --bg-alt／--bg，頭尾靠這一階深粉框住。
+     這個底上 --ink-faint 4.81、--gold-deep 4.73 都過，只有 --green-deep 3.91 不夠，
+     所以表頭表尾內把它壓深成 #02612a（5.25）。金箔線在這個底上偏淡，線改用 --band-rule。 */
+  --band: var(--rose);
+  --band-rule: #b98e78;
+  --gold-fill: linear-gradient(135deg, #c79e7a 0%, #e6c4a0 44%, #bf9673 100%);
+  --ring: #fdf9f6;
 
   /* 幾何 */
   --r-sm: 4px;
@@ -58,11 +67,7 @@
   --f-cjk: 'Noto Serif TC', serif;
   --f-body: 'Noto Sans TC', -apple-system, 'Segoe UI', sans-serif;
   /* 中文小字用 500 才立得住，拉丁字用 400 就夠 */
-  --w-label: 500;
   --f-mono: 'DM Mono', ui-monospace, Consolas, monospace;
-  /* display 字仍只用於 26px 以上。更小的英文用這個 ——
-     無襯線 500 在小尺寸的筆畫比任何襯線體都實。 */
-  --f-latin-sm: 'Noto Sans TC', -apple-system, 'Segoe UI', sans-serif;
 
   /* 版面：1440 畫布 / 1200 內容 / 120 留白，隨視窗收斂 */
   --gutter: clamp(20px, 8.33vw, 120px);
@@ -135,12 +140,6 @@ img {
   letter-spacing: 0.08em;
 }
 
-.cjk-disp {
-  font-family: var(--f-cjk);
-  font-weight: 200;
-  letter-spacing: 0.14em;
-}
-
 .wrap {
   padding-inline: var(--gutter);
 }
@@ -203,8 +202,8 @@ img {
   inset: 17px;
   z-index: 3;
   pointer-events: none;
-  border: 1px solid rgba(197, 168, 128, 0.55);
-  outline: 1px solid rgba(197, 168, 128, 0.26);
+  border: 1px solid rgba(201, 163, 125, 0.55);
+  outline: 1px solid rgba(201, 163, 125, 0.26);
   outline-offset: 5px;
 }
 .plate::after {
@@ -240,7 +239,7 @@ img {
   font-weight: 400;
   font-size: 12px;
   letter-spacing: 0.18em;
-  color: rgba(30, 30, 30, 0.5);
+  color: rgba(43, 34, 36, 0.55);
 }
 
 /* ── 按鈕 ───────────────────────────────────────────────── */
@@ -263,49 +262,55 @@ img {
 .btn-line:hover {
   background: var(--gold-fill) border-box;
   color: #fffcf6;
-  box-shadow: 0 4px 18px rgba(197, 168, 128, 0.3);
+  box-shadow: 0 4px 18px rgba(201, 163, 125, 0.3);
 }
 
-.btn-gold {
+/* 主要動作：用 LINE 詢問。整站只有這一種按鈕用深玫瑰 */
+.btn-rose {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 19px;
+  gap: 10px;
+  min-width: 216px;
+  height: 52px;
+  padding: 0 28px;
+  border: 1px solid var(--gold-lit);
   border-radius: var(--r-sm);
-  background: var(--gold-fill);
-  color: #fffcf6;
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  background: var(--rose-btn);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  box-shadow: inset 0 0 0 3px var(--rose-btn), inset 0 0 0 4px rgba(231, 201, 160, 0.45);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
-.btn-gold:hover {
-  background: linear-gradient(135deg, #b08f60 0%, #cbae7c 44%, #a88c5e 100%);
-  box-shadow: 0 4px 16px rgba(168, 135, 92, 0.28);
+.btn-rose:hover {
+  background: var(--rose-btn-hover);
+  box-shadow: inset 0 0 0 3px var(--rose-btn-hover), inset 0 0 0 4px rgba(231, 201, 160, 0.6), 0 6px 20px rgba(158, 95, 99, 0.22);
 }
-.btn-gold.lg {
-  height: 40px;
-  padding: 0 26px;
+.btn-rose svg {
+  flex: none;
 }
 
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  padding: 0 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  color: var(--ink-soft);
-  font-size: 13.5px;
-  letter-spacing: 0.14em;
-  transition: border-color 0.3s ease, color 0.3s ease;
+/* 雙層金框：外框 2px 金箔 + 四角菱形飾釘。給 .gframe 的元素自己要有 position */
+.gframe {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid transparent;
+  border-image: var(--gold-leaf-d) 1;
 }
-.btn-ghost:hover {
-  border-color: var(--ink-faint);
-  color: var(--ink);
+.gframe i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px var(--ring);
+  transform: rotate(45deg);
 }
+.gframe i:nth-child(1) { left: -6px; top: -6px; }
+.gframe i:nth-child(2) { right: -6px; top: -6px; }
+.gframe i:nth-child(3) { left: -6px; bottom: -6px; }
+.gframe i:nth-child(4) { right: -6px; bottom: -6px; }
 
 .link-gold {
   display: inline-block;
@@ -455,85 +460,6 @@ img {
   z-index: 0;
 }
 
-/* ── 表單元件 ───────────────────────────────────────────── */
-.field label {
-  display: block;
-  font-family: var(--f-mono);
-  font-weight: 400;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 9px;
-}
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--f-body);
-  font-size: 14.5px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  padding: 0 13px;
-  height: 40px;
-  transition: border-color 0.3s ease;
-}
-.field textarea {
-  height: 112px;
-  padding: 12px 13px;
-  line-height: 1.75;
-  resize: vertical;
-}
-.field input:hover,
-.field select:hover,
-.field textarea:hover {
-  border-color: var(--ink-faint);
-}
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--gold);
-  outline: none;
-}
-.field input::placeholder,
-.field textarea::placeholder {
-  color: var(--ink-faint);
-}
-
-/* ── 極簡 Toggle ────────────────────────────────────────── */
-.toggle {
-  width: 40px;
-  height: 22px;
-  border-radius: 999px;
-  background: var(--line);
-  position: relative;
-  flex: none;
-  padding: 0;
-  transition: background 0.28s ease;
-}
-.toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--bg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: left 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.toggle[aria-checked='true'] {
-  background: var(--gold);
-}
-.toggle[aria-checked='true']::after {
-  left: 21px;
-}
-
 /* ── 轉場 ───────────────────────────────────────────────── */
 .fade-enter-active,
 .fade-leave-active {
@@ -542,15 +468,6 @@ img {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(100%);
 }
 
 /* 進場：載入時依序浮現，只跑一次 */
@@ -568,13 +485,6 @@ img {
   animation: rise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-/* 小字英文專用：襯線體在這個尺寸讀不動 */
-.latin-sm {
-  font-family: var(--f-latin-sm);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-
 /* ── 手機：字要更實 ───────────────────────────────────────
    多數人用手機看。小螢幕上細字重與大字距會讓中文變得難讀，
    所以在這裡把字級、字重都往上帶一級，字距收窄一點。
@@ -582,9 +492,15 @@ img {
 @media (max-width: 720px) {
   /* 按鈕與連結是轉換路徑上的字，手機上不該比內文還小 */
   .btn-line,
-  .btn-gold,
-  .btn-ghost,
   .link-gold {
+    font-size: 15px;
+  }
+  /* 觸控目標至少 44px（實測原本 33px 高）。底線畫在 padding-box 底部，位置不變 */
+  .link-gold {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+  .btn-rose {
     font-size: 15px;
   }
   .pill {

@@ -24,7 +24,7 @@ const PATH =
     role="img"
     aria-label="LINE 官方帳號 QR Code"
   >
-    <rect :width="MODULES" :height="MODULES" fill="#FDFBF7" />
+    <rect :width="MODULES" :height="MODULES" fill="#FDF9F6" />
     <path :d="PATH" fill="#1E1E1E" />
   </svg>
 </template>

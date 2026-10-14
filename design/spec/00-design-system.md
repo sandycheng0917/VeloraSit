@@ -26,6 +26,11 @@
 
 ## 色票
 
+> **2026-10-14 色系已改為粉紅、金、奶油。** 下表是原本奶油＋金的版本，保留作為歷史；
+> 現行值以 `velora-frontend/src/style.css` 的 `:root` 為準（`--bg #FDF9F6`、`--bg-alt #FCEBE7`、
+> `--surface #F9E1DB`、`--surface-deep/--rose #F2CEC6`、`--gold #C9A37D`、`--gold-deep #74533D`、
+> `--rose-btn #9E5F63`、`--rose-ink #8E5257`），設計稿在 `design/pen.pen` 的「粉紅色系」畫板。
+
 | Token | Hex | Pencil RGBA | 用途 |
 |---|---|---|---|
 | `--bg` | `#FDFBF7` | `#FDFBF7FF` | 頁面主背景 — 柔和暖米白 |

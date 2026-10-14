@@ -1,0 +1,27 @@
+# Cloudflare Workers 靜態資源的回應標頭。只作用在 assets 層直接回的檔案
+# （HTML、/assets、/media 底下的固定素材）；/api 與 D1 的 /media 圖由 worker/ 自己設。
+#
+# CSP 允許的外部來源只有 Google Fonts。img/connect 的 data: 與 blob: 是後台要的：
+# 縮圖是 data URI、上傳前預覽用 createObjectURL、image.js 會 fetch data URI 來壓縮。
+# 加任何外部腳本或圖片之前要先改這裡，否則會被瀏覽器擋掉。
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+# 檔名帶內容雜湊，內容變了檔名就變，可以放心快取一年
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/admin/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 後台頁面不進任何快取，也不要被搜尋引擎收錄。
+# 🔴 不寫成 /admin/*：那會連 /admin/assets/* 一起命中，兩條 Cache-Control 會被合併成互相矛盾的一行
+/admin/
+  Cache-Control: no-store
+  X-Robots-Tag: noindex
+/admin/index.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex

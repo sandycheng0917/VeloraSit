@@ -69,7 +69,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
   align-items: center;
   justify-content: center;
   background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--gold-leaf) border-box;
-  outline: 1px solid rgba(197, 168, 128, 0.3);
+  outline: 1px solid rgba(201, 163, 125, 0.3);
   outline-offset: 4px;
   box-shadow: var(--sh-ambient);
   transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.4s ease;
@@ -89,10 +89,15 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
   border-radius: var(--r-md);
   box-shadow: var(--sh-raised);
 }
+/* 觸控目標 44px（實測原本 25×15）。看得到的 × 不變，可點範圍往外撐 */
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 2px;
+  right: 2px;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
   color: var(--ink-soft);
   display: flex;
 }
@@ -103,7 +108,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
   border: 1px solid transparent;
   border-radius: var(--r-sm);
   background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--gold-leaf) border-box;
-  outline: 1px solid rgba(197, 168, 128, 0.32);
+  outline: 1px solid rgba(201, 163, 125, 0.32);
   outline-offset: 5px;
 }
 h5 {
@@ -129,8 +134,8 @@ h5 {
 .join {
   display: block;
   margin-top: 16px;
-  height: 40px;
-  line-height: 40px;
+  height: 44px;
+  line-height: 44px;
   border-radius: var(--r-sm);
   background: var(--green);
   color: #fff;

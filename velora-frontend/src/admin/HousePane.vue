@@ -4,12 +4,12 @@
  *
  * 為什麼上限是四家：前台的品牌區是一列橫排的格子，四格是桌機一列
  * 還讀得完的極限。第五家不是「再加一格」，是要換一種版面 ——
- * 所以上限寫死在這裡與 Api.gs 的 MAX_HOUSES，兩邊都擋。
+ * 所以上限寫死在這裡與 worker/admin.js 的 saveHouse，兩邊都擋。
  *
  * 刪除只在「沒有商品掛著」時才可能。要停掉一個還有商品的品牌，
  * 正確的動作是關掉「顯示在前台」—— 那是可逆的，而且商品會留在架上，
  * 只是不再掛品牌名。硬刪會讓那些商品指向不存在的代碼，
- * 而 validateProduct_ 會從此擋下每一次儲存。
+ * 而那些商品從此每一次儲存都會失敗。
  */
 import { computed, ref, watch } from 'vue'
 
@@ -22,7 +22,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['saved', 'error'])
 
-/** 跟 Api.gs 的 MAX_HOUSES 是同一個數字。改一邊就要改另一邊 */
+/** 跟 worker/admin.js 的 saveHouse 是同一個數字。改一邊就要改另一邊 */
 const MAX = 4
 
 const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
@@ -92,7 +92,7 @@ function close() {
 }
 
 /**
- * 前端先驗一次，規則跟 Api.gs 的 validateHouse_ 對齊。
+ * 前端先驗一次，規則跟 worker/admin.js 的 saveHouse 對齊。
  * 真正的關卡在伺服器 —— 這一份只是讓錯誤不必等一趟來回。
  */
 function validate() {

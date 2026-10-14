@@ -56,31 +56,18 @@ design/velora_design.ep
 #    把監看清單提交上去，等於把警報器的鑰匙掛在門上。
 .secret-watch.txt
 
-# ── 後台：現在進版控了 ──────────────────────────────────
-#
-# 2026-09-06 改變。原本整個後台排除在版控外，理由是「原始碼留在公開 repo
-# 等於把內部工具的版面攤開」。但後台改成從 Google Sheet 讀資料之後，
-# CI 必須建得出它 —— 建不出來就沒有 /admin/ 可用。
-#
-# 現在的做法是「兩份 bundle 分開產生」而不是「原始碼不存在」：
-#   npm run build        公開版，router 的 IS_PUBLIC 分支讓 Rollup 整段移除後台
-#   npm run build:admin  後台版，輸出到 /admin/
-# deploy.yml 有兩道對稱的關卡驗這件事：後台不得出現在 v1/v2，
-# 且必須出現在 admin —— 只有前者的話，一個空的 admin 目錄會無條件通過。
+# ── 後台：進版控 ────────────────────────────────────────
 #
 # 後台原始碼在 velora-frontend/src/admin/，裡面沒有機密：
-# 端點網址由 VITE_EXEC_URL 於建置時代入，密碼與金鑰都在 Apps Script 的
-# 指令碼屬性裡。已實測現行機密正則對這幾個檔案零命中。
+# 密碼雜湊與 HMAC 金鑰都在 D1 的 admin_state 表，不在原始碼裡。
+# 公開版與後台版是兩份分開的 bundle（router 的 IS_PUBLIC 分支讓 Rollup
+# 把後台整段移除），tools/check-gates.mjs 的關卡 1、2 驗這件事。
 #
 # 寫後台程式碼時有兩個偽陽性陷阱：
 #   · 不要寫 10 位數字面值（用 8 * 3600 * 1000，不要寫展開值）
-#   · 成本欄的標籤寫「成本（FOB）」，不要寫韓文的「단가」
+#   · 不要寫韓文的「단가」
 #
-# 下面這三個是舊的原型，已經沒有任何地方 import 它們（router 指向
-# src/admin/AdminView.vue）。留在本機不影響建置，但也可以直接刪掉。
-velora-frontend/src/views/AdminView.vue
-velora-frontend/src/components/ProductDrawer.vue
-velora-frontend/src/components/ToggleSwitch.vue
+# 後台的設計規格，只留本機。
 design/spec/02-admin-dashboard.md
 #
 # 這兩個檔案光看檔名看不出來，但內容含完整的後台版面：
@@ -90,13 +77,6 @@ design/spec/02-admin-dashboard.md
 design/mockup/
 design/build-ep.py
 design/ep_shapes.py
-
-# ── Apps Script 本機開發 ────────────────────────────────
-# 程式碼本身要進版控（沒有機密：密碼雜湊、HMAC 密鑰、GitHub PAT
-# 全部存在 Apps Script 的 Script Properties，不在原始碼裡）。
-# 但 clasp 的設定檔含 script ID 與 OAuth token，不進版控。
-apps-script/.clasp.json
-apps-script/.clasprc.json
 
 # ── Cloudflare 本機狀態 ─────────────────────────────────
 # 🔴 .wrangler/state/v3/d1/ 是本機 D1 的 SQLite 檔。只要用 --local 跑過一次

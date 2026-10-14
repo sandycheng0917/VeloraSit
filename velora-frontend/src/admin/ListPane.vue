@@ -117,8 +117,8 @@ async function doBackfill() {
   for (const key of keys) {
     backfill.value = `回填縮圖 ${done + 1} / ${keys.length}…`
     try {
-      // 原圖只能從 Sheet 拿。公開網址雖然也有，但那要 CORS 允許
-      // 才能畫進 canvas，而 GitHub Pages 給不給是不保證的
+      // 原圖走後台 API 拿。公開網址雖然也有，但那要 CORS 允許
+      // 才能畫進 canvas，不想依賴那個條件
       const r = await api.getImage(session.token.value, key)
       if (!r.found) { failed++; continue }
       const t = await img.thumbnail(`data:${r.mime};base64,${r.data}`)

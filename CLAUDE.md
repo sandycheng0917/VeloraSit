@@ -52,7 +52,7 @@ npm run dev:admin    # 後台（也是 5173，但根路徑就是後台）
 npm run build        # 公開版建置，必須通過
 npm run build:worker # 部署用：公開版 + 後台疊成一份 dist/（Cloudflare 跑這個）
 
-npm run audit        # 七道稽核關卡 + check-public（build:worker 會自動跑）
+npm run audit        # 六道稽核關卡 + check-public（build:worker 會自動跑）
 npm run set-password # 改後台密碼（互動輸入，不碰任何商品資料）
 npm run d1:migrate   # 套用 migrations/ 到遠端 D1
 npm run cf:deploy    # 手動部署（等同 npx wrangler deploy）
@@ -60,7 +60,7 @@ npm run cf:deploy    # 手動部署（等同 npx wrangler deploy）
 
 ```bash
 node tools/check-admin-css.mjs        # 後台有沒有跟公開版全域樣式撞 class 名
-node tools/check-gates.mjs            # 七道關卡（比對 .secret-watch.txt）
+node tools/check-gates.mjs            # 六道關卡（比對 .secret-watch.txt）
 node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 node check-public.mjs --dist velora-frontend/dist
 node tools/compress-images.mjs        # 影像壓縮（產出到 tools/media-src/）
@@ -241,12 +241,12 @@ velora2），跟現在的單一 Worker 沒有關係，留著只會一直失敗�
 
 ### 稽核關卡
 
-原本寫在那個 workflow 的 `run:` 區塊裡的七道關卡已經抽成
+原本寫在那個 workflow 的 `run:` 區塊裡的關卡已經抽成
 **`tools/check-gates.mjs`**，由 `npm run build:worker` 自動執行 ——
 Cloudflare 跑的就是這個指令，所以關卡真的擋在部署路徑上。
 
 ```bash
-cd velora-frontend && npm run audit     # 七道關卡 + check-public
+cd velora-frontend && npm run audit     # 六道關卡 + check-public
 node tools/check-gates.mjs --api https://velorasit.chenghsuanno1.workers.dev
 ```
 
@@ -285,15 +285,19 @@ git 歷史是永久的，事後刪掉也還在。
 環境 —— 偵測的話，本機哪天少了那個檔案也會被當成 CI 默默放行，
 那正是這道關卡要防的事。
 
-**「未執行」不算「通過」。** 有關卡沒跑的時候，結尾不會說「七道全部通過」，
+**「未執行」不算「通過」。** 有關卡沒跑的時候，結尾不會說「六道全部通過」，
 而是列出哪幾道沒跑。一份看起來乾淨的建置日誌比一份有警告的更危險 ——
 因為沒有人會再去確認。
 
-第 7 道換過了。原本是「velora2 原始檔沒被弄髒」，velora2 退場後改成
+第 6 道（最後一道）換過了。原本是「velora2 原始檔沒被弄髒」，velora2 退場後改成
 **打線上 `/api/catalog` 對回應跑同一套成本檢查**。
-理由：前六道掃的是 `dist/`，而商品資料 2026-09-28 起不在 `dist/` 裡了 ——
+理由：前五道掃的是 `dist/`，而商品資料 2026-09-28 起不在 `dist/` 裡了 ——
 關卡的涵蓋範圍在那天縮水了，而沒有任何東西會提醒你。
 這一道把稽核補回資料真正流出去的那條路。
+
+2026-10-14 刪掉原本的關卡 4（試算表 ID 不得出現在輸出裡）。Google Sheet 退場後
+它永遠是「未執行」，一道永遠不跑的關卡只會訓練人忽略「未執行」這三個字。
+原本的 5、6、7 依序改為 4、5、6。
 
 ### 後台
 

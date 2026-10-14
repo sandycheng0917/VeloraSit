@@ -8,7 +8,7 @@
  *
  * ── 為什麼從 workflow 搬進腳本 ──────────────────────────────────────
  *
- * 原本這七道寫在 .github/workflows/deploy.yml 的 run: 區塊裡。站台搬到
+ * 原本這些關卡寫在 .github/workflows/deploy.yml 的 run: 區塊裡。站台搬到
  * Cloudflare 之後那個檔案刪掉了，關卡跟著一起消失 —— 包括機密比對那道，
  * 也就是 B2B 機密外洩的主防線。
  *
@@ -23,13 +23,12 @@
  * 還是條件寫錯了永遠回傳空。所以：
  *   · 關卡 2 是關卡 1 的反向控制（空的 admin 會讓關卡 1 無條件通過）
  *   · 關卡 3 沒有比對來源時**失敗**，不是跳過
- *   · 關卡 6 是關卡 3 的補網（誘餌列被誤刪時還擋得住）
+ *   · 關卡 5 是關卡 3 的補網（誘餌列被誤刪時還擋得住）
  *
  * ── 機密字串從哪來 ──────────────────────────────────────────────────
  *
  *   .secret-watch.txt   預設　16 個真實機密字串，被 .gitignore 擋住、只存在本機
  *   COST_CANARY         選用　單一誘餌字串，給沒有那個檔案的環境用
- *   SHEET_ID            選用　有給才跑關卡 4
  *
  * 🔴 兩者都沒有就失敗，不是跳過。一道沒有比對來源的關卡會安靜地永遠通過，
  *    那比沒有關卡更糟 —— 你會以為有在保護。
@@ -52,9 +51,9 @@ const API = arg('--api')
 
 let failed = 0
 const skipped = []
-const pass = (n, msg) => console.log(`  ${n}／7　✓ ${msg}`)
+const pass = (n, msg) => console.log(`  ${n}／6　✓ ${msg}`)
 const fail = (n, msg) => {
-  console.error(`  ${n}／7　✗ ${msg}`)
+  console.error(`  ${n}／6　✗ ${msg}`)
   failed++
 }
 /**
@@ -65,8 +64,8 @@ const fail = (n, msg) => {
  *    所以未執行的關卡要記下來，結尾逐一列出。
  */
 const skip = (n, why) => {
-  console.log(`  ${n}／7　－ 未執行：${why}`)
-  skipped.push(`${n}／7 ${why}`)
+  console.log(`  ${n}／6　－ 未執行：${why}`)
+  skipped.push(`${n}／6 ${why}`)
 }
 
 /** 列出目錄下所有檔案的相對路徑（正斜線） */
@@ -202,39 +201,30 @@ async function main() {
       : pass(3, `監看的字串都沒有出現（${source}）`)
   }
 
-  /* ── 4 ── 選用。沒設 SHEET_ID 就跳過，而且要說出來 ——
-             靜悄悄跳過的關卡會被誤記成「通過了」 */
-  if (process.env.SHEET_ID) {
-    const hit = await scan(files, [process.env.SHEET_ID])
-    hit.length ? fail(4, `試算表 ID 出現在輸出裡：${hit[0]}`) : pass(4, '試算表 ID 沒有出現')
-  } else {
-    skip(4, '沒有設定 SHEET_ID（選用）')
-  }
-
-  /* ── 5 ── */
+  /* ── 4 ── */
   const creds = await scan(files, [CRED_SHAPES])
   creds.length
-    ? fail(5, `輸出裡出現看起來像憑證的字串：${creds.slice(0, 3).join('、')}`)
-    : pass(5, '沒有憑證形狀的字串')
+    ? fail(4, `輸出裡出現看起來像憑證的字串：${creds.slice(0, 3).join('、')}`)
+    : pass(4, '沒有憑證形狀的字串')
 
-  /* ── 6 ── 關卡 3 的補網：監看清單漏列了某個欄位名時，這一關還擋得住 */
+  /* ── 5 ── 關卡 3 的補網：監看清單漏列了某個欄位名時，這一關還擋得住 */
   const costs = await scan(files, [COST_SHAPE], { exclude: ['admin'] })
   costs.length
-    ? fail(6, `輸出裡出現成本欄位：${costs.slice(0, 3).join('、')}`)
-    : pass(6, '沒有成本欄位')
+    ? fail(5, `輸出裡出現成本欄位：${costs.slice(0, 3).join('、')}`)
+    : pass(5, '沒有成本欄位')
 
-  /* ── 7 ── 取代已退場的「velora2 原始檔沒被弄髒」。
+  /* ── 6 ── 取代已退場的「velora2 原始檔沒被弄髒」。
    *
    * 🔴 那道關卡在的時候，商品資料是建置時烤進輸出的，所以掃靜態檔就等於
    *    掃了使用者會看到的全部內容。2026-09-28 資料改成執行時從 D1 取 ——
-   *    關卡 1～6 掃 dist/ 再也看不到商品資料了。
+   *    關卡 1～5 掃 dist/ 再也看不到商品資料了。
    *
-   *    換句話說，前六道關卡的涵蓋範圍在那天縮水了，而沒有任何東西會提醒你。
+   *    換句話說，前五道關卡的涵蓋範圍在那天縮水了，而沒有任何東西會提醒你。
    *    這一道把稽核補回資料真正流出去的那條路：打線上的 API，
    *    對回應本身跑同一套成本檢查。
    */
   if (!API) {
-    skip(7, '沒有給 --api —— 發布後請補跑 node tools/check-gates.mjs --api <網址>')
+    skip(6, '沒有給 --api —— 發布後請補跑 node tools/check-gates.mjs --api <網址>')
   } else {
     try {
       const res = await fetch(`${API.replace(/\/$/, '')}/api/catalog`, {
@@ -242,19 +232,18 @@ async function main() {
       })
       const text = await res.text()
       if (!res.ok) {
-        fail(7, `API 回 HTTP ${res.status}：${text.slice(0, 200)}`)
+        fail(6, `API 回 HTTP ${res.status}：${text.slice(0, 200)}`)
       } else {
         const bad = []
         if (needles.some((n) => text.includes(n))) bad.push('機密字串')
         if (COST_SHAPE.test(text)) bad.push('成本欄位')
         if (CRED_SHAPES.test(text)) bad.push('憑證形狀')
-        if (process.env.SHEET_ID && text.includes(process.env.SHEET_ID)) bad.push('試算表 ID')
         bad.length
-          ? fail(7, `API 回應裡出現 ${bad.join('、')} —— 成本或機密正在從資料庫外洩`)
-          : pass(7, `API 回應乾淨（${(text.length / 1024).toFixed(1)} KB）`)
+          ? fail(6, `API 回應裡出現 ${bad.join('、')} —— 成本或機密正在從資料庫外洩`)
+          : pass(6, `API 回應乾淨（${(text.length / 1024).toFixed(1)} KB）`)
       }
     } catch (e) {
-      fail(7, `打不到 API：${(e && e.message) || e}`)
+      fail(6, `打不到 API：${(e && e.message) || e}`)
     }
   }
 
@@ -275,7 +264,7 @@ async function main() {
     for (const s of skipped) console.log(`    · ${s.split('\n')[0]}`)
     console.log('')
   } else {
-    console.log('\n✓ 七道全部通過\n')
+    console.log('\n✓ 六道全部通過\n')
   }
 }
 

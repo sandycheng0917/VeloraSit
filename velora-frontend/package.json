@@ -14,13 +14,9 @@
     "cf:dev": "wrangler dev",
     "cf:deploy": "wrangler deploy",
     "set-password": "node ../tools/set-password.mjs",
-    "d1:migrate": "wrangler d1 migrations apply veloradb_sit --remote",
-    "d1:seed": "node ../tools/d1-seed.mjs && wrangler d1 execute veloradb_sit --remote --file ../build/d1-seed.sql"
+    "d1:migrate": "wrangler d1 migrations apply veloradb_sit --remote"
   },
   "dependencies": {
-    "@lucide/vue": "^1.37.0",
-    "axios": "^1.20.0",
-    "pinia": "^4.0.3",
     "vue": "^3.5.41",
     "vue-router": "^5.3.0"
   },
@@ -28,7 +24,6 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "autoprefixer": "^10.5.4",
     "postcss": "^8.5.26",
-    "tailwindcss": "^4.3.3",
     "vite": "^8.2.2",
     "wrangler": "^3.114.0"
   }

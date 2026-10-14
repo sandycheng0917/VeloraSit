@@ -33,9 +33,8 @@ binding = "ASSETS"
 # ── D1 ──────────────────────────────────────────────────────────────
 # 套用 schema：
 #   npx wrangler d1 migrations apply veloradb_sit --remote
-# 灌資料：
-#   node ../tools/d1-seed.mjs
-#   npx wrangler d1 execute veloradb_sit --remote --file ../build/d1-seed.sql
+# 資料由後台（/api/admin）維護。tools/d1-seed.mjs 是已經跑過的一次性遷移，
+# 再跑會清空 D1 —— 不要把它當成同步工具。
 [[d1_databases]]
 binding = "DB"
 database_name = "veloradb_sit"

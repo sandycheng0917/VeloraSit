@@ -78,18 +78,23 @@ const LANGS = [
 const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
 
 /**
- * 商品編號的規則。跟 Api.gs 的 validateProduct_ 與 opUpload_ 是同一條 ——
+ * 商品編號的規則。跟 worker/admin.js 的 save 與 upload 是同一條 ——
  * 影像鍵是用編號組的（`<編號>-main`），所以編號不合法時，
- * 上傳會被 opUpload_ 以 bad-key 擋下來，而那個錯誤看起來跟編號無關。
+ * 上傳會被 upload 以 bad-key 擋下來，而那個錯誤看起來跟編號無關。
  */
-const ID_RE = /^[A-Za-z0-9_-]{3,40}$/
+const ID_RE = /^[a-z0-9-]{3,40}$/
+/** 後端會轉小寫再驗，影像鍵卻不轉 —— 所以前端先轉，兩條路才會拿到同一個值 */
+const normId = (v) => String(v || '').trim().toLowerCase()
 
 /**
- * 新增時的編號提示：VL_<品類前綴>_<下一個序號>。
+ * 新增時的編號提示：vl-<品類前綴>-<下一個序號>。
  *
  * 前綴取自 categories 分頁的 ref（FRG / SLK / JWL / BAG），跟前台
  * 主視覺那一排代號、以及卡片上印的編號是同一套 —— 讀者看到
- * 「香氛 FRG」再看到「VL_FRG_001」，系統就自己解釋了自己。
+ * 「香氛 FRG」再看到「vl-frg-001」，系統就自己解釋了自己。
+ *
+ * 🔴 用小寫與連字號，不用 VL_FRG_001 —— 後端只收 [a-z0-9-]。
+ *    以前的提示含底線與大寫，照著打的人儲存會被拒、上傳也會被拒。
  *
  * 序號是該品類目前的最大號碼加一，不是「總共幾件」：刪掉一件之後
  * 那個號碼不會回收（軟刪除的商品仍然佔著它的影像鍵），
@@ -98,15 +103,15 @@ const ID_RE = /^[A-Za-z0-9_-]{3,40}$/
  * 這只是提示不是預設值 —— 編號建立後不可更改，值得讓人自己打一次。
  */
 const idHint = computed(() => {
-  const prefix = String(catRow.value.ref || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
-  if (!prefix) return 'VL_XXX_001'
+  const prefix = String(catRow.value.ref || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '')
+  if (!prefix) return 'vl-xxx-001'
   const re = new RegExp('^VL[_-]' + prefix + '[_-]([0-9]+)$', 'i')
   let max = 0
   for (const p of props.products) {
     const m = re.exec(String(p.id || '').trim())
     if (m) max = Math.max(max, Number(m[1]) || 0)
   }
-  return 'VL_' + prefix + '_' + String(max + 1).padStart(3, '0')
+  return 'vl-' + prefix + '-' + String(max + 1).padStart(3, '0')
 })
 
 function blank() {
@@ -233,10 +238,10 @@ async function pickFile(field, ev) {
    * 兩個字，看到的人不會想到要去改上面那一格。尾端多一個空白就會中，
    * 而空白在畫面上完全看不出來，所以順手 trim 回去。
    */
-  const id = String(form.value.id || '').trim()
+  const id = normId(form.value.id)
   if (!id) { emit('error', '先填好商品編號再上傳圖片 —— 影像鍵是用它組的。'); bad.value = { ...bad.value, id: true }; return }
   if (!ID_RE.test(id)) {
-    emit('error', `商品編號「${id}」不能拿來組影像鍵：只接受 3–40 個英數、連字號與底線，不能有空格或間隔點。先把編號改好再上傳。`)
+    emit('error', `商品編號「${id}」不能拿來組影像鍵：只接受 3–40 個小寫英數與連字號，不能有底線、空格或間隔點。先把編號改好再上傳。`)
     bad.value = { ...bad.value, id: true }
     return
   }
@@ -285,11 +290,11 @@ const fieldErrs = ref([])
 /**
  * 送出前先在這裡驗一次。
  *
- * 伺服器仍然會驗（validateProduct_），這裡不是取代它 —— 前端的驗證
+ * 伺服器仍然會驗（worker/admin.js 的 save），這裡不是取代它 —— 前端的驗證
  * 任何人都繞得過，真正的關卡在後端。這一份的用途只有一個：
  * 讓「哪一格要修」不必等一趟來回才知道，而且能指到那一格上。
  *
- * 規則刻意跟 Api.gs 的 validateProduct_ 一一對應。兩邊不一致的話，
+ * 規則刻意跟 worker/admin.js 的 save 一一對應。兩邊不一致的話，
  * 會出現「前端說可以、伺服器說不行」，那比沒有前端驗證更糟。
  */
 function validate() {
@@ -298,9 +303,10 @@ function validate() {
   const marks = {}
   const num = (v) => String(v).trim() !== '' && isNaN(Number(v))
 
-  const id = String(f.id || '').trim()
+  const id = normId(f.id)
+  f.id = id
   if (!ID_RE.test(id)) {
-    errs.push('商品編號要 3–40 個英數、連字號或底線' + (id ? `，收到「${id}」` : '（必填）'))
+    errs.push('商品編號要 3–40 個小寫英數或連字號' + (id ? `，收到「${id}」` : '（必填）'))
     marks.id = true
   }
   if (!String(f.name_zh || '').trim()) {
@@ -360,10 +366,10 @@ function openRename() {
 }
 
 async function doRename() {
-  const to = String(newId.value || '').trim()
+  const to = normId(newId.value)
   if (to === form.value.id) { renameOpen.value = false; return }
   if (!ID_RE.test(to)) {
-    emit('error', `新編號「${to}」不合法：要 3–40 個英數、連字號或底線，不能有空格或間隔點。`)
+    emit('error', `新編號「${to}」不合法：要 3–40 個小寫英數或連字號，不能有底線、空格或間隔點。`)
     return
   }
   if (!confirm(
@@ -456,7 +462,7 @@ async function remove() {
                 <button class="link" style="font-size: 13px" @click="openRename">改編號</button>
               </div>
               <div v-else style="display: flex; align-items: center; gap: 12px">
-                <input v-model.trim="newId" type="text" placeholder="VL_FRG_001" style="flex: 1" />
+                <input v-model.trim="newId" type="text" placeholder="vl-frg-001" style="flex: 1" />
                 <button class="link" :disabled="renaming" @click="doRename">
                   {{ renaming ? '搬移中…' : '確定' }}
                 </button>

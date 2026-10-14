@@ -105,7 +105,7 @@ async function load() {
     /*
      * 🔴 三支端點的先後關係，決定了畫面要空白多久。
      *
-     * Apps Script 的 /exec 一定會 302 轉到 script.googleusercontent.com，
+     * 以前 Apps Script 的 /exec 一定會 302 轉到 script.googleusercontent.com，
      * 所以每一次呼叫實際上是兩個來回。串著等三次 = 六個來回的空白畫面，
      * 而這還在任何一張圖開始載之前 —— 這是後台「感覺很慢」的主因，
      * 不是縮圖。
@@ -228,13 +228,14 @@ onMounted(async () => {
         🔴 ready 這個狀態以前被宣告、被維護，但模板裡一次都沒有用到 ——
            所以取資料那幾秒，標頭寫著「共 0 件商品」、清單寫著「沒有符合
            的商品」。那不是空白，那是在說謊：使用者會以為東西被清光了。
-           Apps Script 一次呼叫就要一兩秒，這段時間一定看得到。
+           以前 Apps Script 一次呼叫就要一兩秒；換成 Worker 後短了很多，
+           但慢網路下仍然看得到。
       -->
       <div v-if="!ready" class="boot">
         <header class="head">
           <div>
             <h1>商品清單</h1>
-            <p class="sub">正在向 Google Sheet 取資料…</p>
+            <p class="sub">正在向資料庫取資料…</p>
           </div>
         </header>
         <div class="row hd">
@@ -293,7 +294,7 @@ onMounted(async () => {
           <div>
             <h1>品類與品牌</h1>
             <p class="sub">
-              品類決定前台的分區與商品編號的前綴（VL_<strong>FRG</strong>_001），要新增或改名請直接編輯 Google Sheet 的 categories 分頁。
+              品類決定前台的分區與商品編號的前綴（vl-<strong>frg</strong>-001），要新增或改名請由維護者在資料庫的 categories 表修改。
               品牌可以在這一頁直接維護。
             </p>
           </div>
@@ -334,14 +335,14 @@ onMounted(async () => {
           <div>
             <h1>操作紀錄</h1>
             <p class="sub">
-              紀錄寫在 Google Sheet 的 audit 分頁，這裡不重複做一份。
-              查看成本、發布、登入失敗都會留下紀錄。
+              紀錄寫在資料庫的 audit 表，這裡不重複做一份。
+              登入、儲存、改編號、上傳、刪除都會留下紀錄。
             </p>
           </div>
         </header>
         <p class="hint" style="padding-top: 30px">
-          直接開試算表的 <b>audit</b> 分頁看最完整 —— 它可以排序、篩選、匯出，
-          而在這裡再做一次那些功能只是把 Google Sheets 重寫一遍。
+          到 Cloudflare → D1 → <b>veloradb_sit</b> 的 Console 分頁執行
+          <code>SELECT * FROM audit ORDER BY at DESC LIMIT 100</code> 看最近的紀錄。
         </p>
       </div>
     </main>

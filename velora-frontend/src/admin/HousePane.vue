@@ -27,15 +27,9 @@ const MAX = 4
 
 const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
 
-/** 三語欄位在表單上並排，跟商品編輯頁同一個規矩 */
-const LANGS = [
-  { k: 'zh', label: '中文' },
-  { k: 'en', label: 'ENGLISH' },
-  { k: 'ko', label: '한국어' },
-]
-
 function blank() {
   return {
+    // 只編中文；_en／_ko 與 name_ko 仍是資料庫欄位，給初值、原樣送回
     key: '', name: '', name_ko: '',
     country_zh: '韓國', country_en: 'Korea', country_ko: '한국',
     tagline: '', intro_zh: '', intro_en: '', intro_ko: '',
@@ -168,7 +162,7 @@ async function remove(h) {
     <p class="hint" style="padding-bottom: 20px">
       前台的品牌區最多排四格，所以上限是 {{ MAX }} 家。
       要暫停一個品牌請關掉「顯示在前台」—— 它的商品會留在架上，只是不再掛品牌名，
-      這是可逆的；刪除則會把 houses 分頁那一列真的移除。
+      這是可逆的；刪除則會把資料庫裡那個品牌真的移除。
     </p>
 
     <!-- ── 編輯／新增 ────────────────────────────────────────── -->
@@ -202,35 +196,24 @@ async function remove(h) {
             <input v-model="form.name" type="text" placeholder="VUCA" :class="{ bad: bad.name }" />
             <p class="hint">前台用拉丁字體排版，通常是全大寫的原名</p>
           </div>
-          <div class="ko">
-            <label>韓文名（選填）</label>
-            <input v-model="form.name_ko" type="text" placeholder="부카" />
-          </div>
+          <div />
         </div>
 
         <div class="fld">
           <label>國別（選填）</label>
-          <div class="tri">
-            <div v-for="l in LANGS" :key="l.k" :class="{ ko: l.k === 'ko' }">
-              <label>{{ l.label }}</label>
-              <input v-model="form[`country_${l.k}`]" type="text" />
-            </div>
-          </div>
+          <input v-model="form.country_zh" type="text" placeholder="韓國" />
         </div>
 
         <div class="fld">
-          <label>英文標語（選填）</label>
+          <label>品牌標語（選填）</label>
           <input v-model="form.tagline" type="text" placeholder="Always be with you." />
-          <p class="hint">品牌自己的那一句。目前只在後台顯示，前台的品牌格排的是下面的簡介。</p>
+          <p class="hint">品牌自己的那一句，通常是原文。首頁輪播的品牌形象照下方會顯示「品牌名稱 — 標語」。</p>
         </div>
 
-        <div class="fld stack">
+        <div class="fld">
           <label>簡介（選填）</label>
-          <div v-for="l in LANGS" :key="l.k" :class="{ ko: l.k === 'ko' }">
-            <label>{{ l.label }}</label>
-            <textarea v-model="form[`intro_${l.k}`]" rows="3" />
-          </div>
-          <p class="hint">前台品牌格裡的那段話。缺英文或韓文時前台會回退中文。</p>
+          <textarea v-model="form.intro_zh" rows="3" />
+          <p class="hint">前台品牌格裡的那段話。</p>
         </div>
 
         <div class="sw" style="padding-top: 4px">
@@ -266,7 +249,6 @@ async function remove(h) {
       <span class="nm">
         <b style="font-family: var(--f-disp); letter-spacing: 0.16em">{{ h.name }}</b>
         <span class="alt">
-          <span>{{ h.name_ko || '—' }}</span><i />
           <span>{{ h.country_zh || '—' }}</span><i />
           <span :class="{ miss: !h.intro_zh }">{{ h.intro_zh || '簡介尚未填寫' }}</span>
         </span>

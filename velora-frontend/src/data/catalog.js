@@ -163,6 +163,7 @@ export const products = computed(() =>
       const gallery = (r.files || []).map((f) => url('/media/' + f))
       return {
         id: r.id,
+        ref: r.ref || '',
         category: r.category,
         house: r.house,
         name: r.name,

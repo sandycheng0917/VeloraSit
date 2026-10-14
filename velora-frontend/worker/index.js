@@ -91,6 +91,7 @@ async function readCatalog(db) {
   return {
     products: products.results.map((r) => ({
       id: r.id,
+      ref: r.ref || '',
       category: r.category,
       house: r.house || '',
       origin: r.origin || '',

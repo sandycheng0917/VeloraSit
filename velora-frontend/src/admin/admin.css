@@ -431,18 +431,17 @@
   color: var(--ink-faint);
 }
 /*
- * 英名與韓名各自截斷。
+ * 副行各段各自截斷。
  *
  * 不截的話 flex item 的 min-width: auto 會讓它們硬撐到 min-content，
  * 1280 左右副行就折成兩行 —— 13 列裡有 8 列高度不一樣，那就是跑版。
- * 分隔線與「缺英文」不參與收縮，它們是必須看得見的訊號。
+ * 分隔線不參與收縮。
  */
 .vadmin .nm .alt > span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.vadmin .nm .alt .en { font-family: var(--f-disp); letter-spacing: 0.12em; }
 .vadmin .nm .alt i { flex: none; width: 1px; height: 10px; background: var(--line-strong); }
 .vadmin .nm .alt .miss { flex: none; color: var(--gold-deep); }
 .vadmin .star { font-size: 11px; color: var(--gold-deep); margin-left: 8px; }
@@ -500,8 +499,8 @@
   white-space: nowrap;
 }
 .vadmin .hrow .rule { width: 1px; height: 100%; background: var(--gold); }
-/* 韓文名與國別是短標籤，不參與收縮 —— 讓長度不定的簡介去讓步。
-   不加這條的話 flex 會按比例縮，結果是「부…｜韓…｜簡介…」三個都被截 */
+/* 國別是短標籤，不參與收縮 —— 讓長度不定的簡介去讓步。
+   不加這條的話 flex 會按比例縮，結果是「韓…｜簡介…」兩個都被截 */
 .vadmin .hrow .alt > span:not(:last-child) { flex: none; }
 .vadmin .hrow .acts { display: flex; gap: 16px; justify-content: flex-end; }
 .vadmin .hrow .acts button:disabled { color: var(--line-strong); cursor: default; }
@@ -591,8 +590,7 @@
 }
 .vadmin .tri { display: flex; gap: 18px; }
 .vadmin .tri > div { flex: 1; min-width: 0; }
-.vadmin .tri label,
-.vadmin .stack label {
+.vadmin .tri label {
   display: block;
   font-family: var(--f-mono);
   font-size: 11px;
@@ -648,9 +646,6 @@
      還是長得一樣。:focus 沒有底色，有底色的就是沒過檢查的那幾格。 */
   background: linear-gradient(var(--flag-bg), var(--flag-bg));
 }
-.vadmin .ko input,
-.vadmin .ko textarea { font-family: 'Noto Sans KR', var(--f-body); word-break: keep-all; }
-.vadmin .stack > div { padding-bottom: 16px; }
 .vadmin .ro {
   display: flex;
   align-items: center;

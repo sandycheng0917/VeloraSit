@@ -162,7 +162,7 @@ const filtered = computed(() => {
     .filter((p) => !cat.value || p.category === cat.value)
     .filter((p) => {
       if (!needle) return true
-      return [p.name_zh, p.name_en, p.name_ko, p.id]
+      return [p.name_zh, p.id]
         .some((s) => String(s || '').toLowerCase().includes(needle))
     })
     .slice()
@@ -224,14 +224,6 @@ function plateState(p) {
   return 'loading'
 }
 
-
-/** 缺譯要看得見。前台缺譯會自動回退中文，所以在前台反而看不出來 */
-function missing(p) {
-  const out = []
-  if (!String(p.name_en || '').trim()) out.push('英')
-  if (!String(p.name_ko || '').trim()) out.push('韓')
-  return out
-}
 
 /*
  * 只有兩種狀態了。
@@ -327,14 +319,7 @@ const priceText = (p) =>
         </span>
         <span class="nm">
           <b>{{ p.name_zh }}<em v-if="p.featured === true || String(p.featured).toUpperCase() === 'TRUE'" class="star">◆</em></b>
-          <span class="alt">
-            <span class="en">{{ p.name_en || '—' }}</span>
-            <i />
-            <span>{{ p.name_ko || '—' }}</span>
-            <template v-if="missing(p).length">
-              <i /><span class="miss">缺{{ missing(p).join('、') }}文</span>
-            </template>
-          </span>
+          <span v-if="p.tagline_zh" class="alt"><span>{{ p.tagline_zh }}</span></span>
         </span>
         <span class="cell hideNarrow">{{ (categories.find((c) => c.key === p.category) || {}).short_zh || p.category }}</span>
         <span class="cell mono hideNarrow">{{ p.id }}</span>

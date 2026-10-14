@@ -20,12 +20,33 @@ import {
 import { num, pick, t } from '@/i18n.js'
 
 /* ── 主視覺輪播 ────────────────────────────────────────── */
+/*
+ * 圖是寫死的靜態檔（首屏不等資料），但說明文字取自資料庫 ——
+ * 以前說明也寫死在這裡，後台改了品名輪播不會跟著變，
+ * 而且第一張標成「VL · FRG · 001」，資料庫裡的 001 其實是依蘭。
+ *
+ * 每張圖掛一個商品 id，或（品牌形象照）一個品牌 key。
+ * 對不到時不顯示說明 —— 寧可空白，也不要印一個資料庫裡不存在的名字。
+ */
 const SLIDES = [
-  { img: mediaUrl('/media/vuca/editorial-bw.jpg'), cap: 'VL · FRG · 001 — VUCA Classic Diffuser' },
-  { img: mediaUrl('/media/saintmari/scarf-camel-blazer.jpg'), cap: 'VL · SLK · 001 — Ivory Twilly Scarf' },
-  { img: mediaUrl('/media/vuca/bedroom.jpg'), cap: 'VL · FRG · 004 — Flower Shop, 260ml' },
-  { img: mediaUrl('/media/saintmari/scarf-mauve-pearl.jpg'), cap: 'VL · SLK · 003 — Mauve Twilly Scarf' },
+  { img: mediaUrl('/media/vuca/editorial-bw.jpg'), house: 'vuca' },
+  { img: mediaUrl('/media/saintmari/scarf-camel-blazer.jpg'), product: 'scarf-1' },
+  { img: mediaUrl('/media/vuca/bedroom.jpg'), product: 'frg-flowershop' },
+  { img: mediaUrl('/media/saintmari/scarf-mauve-pearl.jpg'), product: 'scarf-3' },
 ]
+const slides = computed(() =>
+  SLIDES.map((s) => {
+    let cap = ''
+    if (s.product) {
+      const p = products.value.find((x) => x.id === s.product && x.listed)
+      if (p) cap = [p.ref, pick(p.name)].filter(Boolean).join(' — ')
+    } else if (s.house) {
+      const h = houses.value[s.house]
+      if (h) cap = [h.name, h.tagline].filter(Boolean).join(' — ')
+    }
+    return { img: s.img, cap }
+  })
+)
 const slide = ref(0)
 let timer = null
 function go(i) {
@@ -135,14 +156,14 @@ function askOnLine() {
 
       <div class="hero-r">
         <div
-          v-for="(s, i) in SLIDES"
+          v-for="(s, i) in slides"
           :key="s.img"
           class="plate slide"
           :class="{ on: i === slide }"
           :aria-hidden="i !== slide"
         >
           <img :src="s.img" :alt="s.cap" />
-          <span class="plate-cap">{{ s.cap }}</span>
+          <span v-if="s.cap" class="plate-cap">{{ s.cap }}</span>
         </div>
         <span class="veil" aria-hidden="true" />
         <span class="idx">

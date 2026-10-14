@@ -6,8 +6,8 @@
  * 各自去打 API 的話，改完商品回到清單會看到舊資料，而那種不一致
  * 沒有錯誤訊息，只會讓人反覆重整。
  *
- * 後台維持中文，不做三語。內部工具的多語只增加維護面，
- * 而商品資料本身的三語是在編輯頁裡填的 —— 那是資料，不是介面。
+ * 後台只有中文。2026-10-14 連商品與品牌的英韓欄位也從畫面拿掉了 ——
+ * 全站單語，填了也不會出現在前台。資料庫欄位保留，見 EditPane.vue 開頭。
  */
 import { computed, onMounted, ref } from 'vue'
 
@@ -310,9 +310,6 @@ onMounted(async () => {
             <span />
             <span class="nm">
               <b>{{ c.name_zh }}</b>
-              <span class="alt">
-                <span class="en">{{ c.name_en }}</span><i /><span>{{ c.name_ko }}</span>
-              </span>
             </span>
             <span class="cell mono">{{ products.filter((p) => p.category === c.key).length }} 件</span>
             <span class="hideNarrow" /><span class="hideNarrow" /><span class="hideNarrow" /><span />

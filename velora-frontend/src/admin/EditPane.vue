@@ -2,8 +2,10 @@
 /**
  * 編輯／新增商品。
  *
- * 三語欄位並排而不是分頁籤 —— 分頁籤會讓「缺哪一格」需要點三次才知道，
- * 而缺譯在前台會自動回退中文，你在前台反而看不出來。並排就一眼看到。
+ * 只編中文。2026-10-14 拿掉英文與韓文欄位 —— 全站單語（見 CLAUDE.md「語言」），
+ * 前台的 pick() 一律回中文，填了英韓也不會出現在任何地方。
+ * 資料庫的 _en／_ko 欄位沒有砍：表單載入時整列帶進來、儲存時原樣送回，
+ * 既有的英韓內容不會被這個畫面洗掉。
  *
  * 必填只有三項：商品編號、品類、中文品名。標題帶 * 的就是這三個，
  * 其餘全部可以留空 —— 一個什麼都要填的表單，實際結果是被填進假資料。
@@ -69,11 +71,8 @@ const NOTE_FIELDS = [
   { key: 'notes_mid', label: '中調' },
   { key: 'notes_base', label: '後調' },
 ]
-const LANGS = [
-  { k: 'zh', label: '中文' },
-  { k: 'en', label: 'ENGLISH' },
-  { k: 'ko', label: '한국어' },
-]
+/** 資料庫仍是三語欄位，新增時三個都要給初值；畫面只編 zh */
+const DATA_LANGS = ['zh', 'en', 'ko']
 
 const truthy = (v) => v === true || String(v).toUpperCase() === 'TRUE'
 
@@ -117,13 +116,17 @@ const idHint = computed(() => {
 function blank() {
   const o = {
     id: '', category: props.categories[0]?.key || '', house: '',
+    // ref（VL · FRG · 001）與 hs 畫面上不編，但一定要在這裡 ——
+    // 後端的 save 是整列覆寫，表單沒帶的欄位會被寫成空字串。
+    // 2026-10-14 之前這兩個不在表單裡，後台每存一次就清掉一件商品的編號。
+    ref: '', hs: '',
     origin: 'KR', price: '', price_public: false,
     listed: true, featured: false, order: 0,
     img_main: '', img_2: '', img_3: '',
   }
   for (const f of [{ key: 'name' }, { key: 'tagline' }, { key: 'material' },
                    { key: 'spec' }, { key: 'detail' }, { key: 'desc' }, ...NOTE_FIELDS]) {
-    for (const l of LANGS) o[`${f.key}_${l.k}`] = ''
+    for (const l of DATA_LANGS) o[`${f.key}_${l}`] = ''
   }
   return o
 }
@@ -310,7 +313,7 @@ function validate() {
     marks.id = true
   }
   if (!String(f.name_zh || '').trim()) {
-    errs.push('中文品名不能空白 —— 前台缺其他語言會回退中文，中文缺了就沒有東西可退')
+    errs.push('品名不能空白')
     marks.name_zh = true
   }
   if (!f.category) {
@@ -499,42 +502,29 @@ async function remove() {
         </div>
 
         <div class="secline" style="padding-top: 16px">
-          <b>文字內容　只有中文品名必填，缺的語言前台會自動回退中文</b><hr />
+          <b>文字內容　只有品名必填</b><hr />
         </div>
 
         <div v-for="f in TEXT_FIELDS" :key="f.key" class="fld">
           <label>{{ f.label }}<template v-if="f.key === 'name'"> <em class="req">*</em></template></label>
-          <div class="tri">
-            <div v-for="l in LANGS" :key="l.k" :class="{ ko: l.k === 'ko' }">
-              <label>{{ l.label }}<template v-if="f.key === 'name' && l.k === 'zh'"> <em class="req">*</em></template></label>
-              <textarea
-                v-model="form[`${f.key}_${l.k}`]"
-                :rows="f.rows"
-                :placeholder="l.k === 'zh' ? f.ph : ''"
-                :class="{ bad: f.key === 'name' && l.k === 'zh' && bad.name_zh }"
-              />
-            </div>
-          </div>
+          <textarea
+            v-model="form[`${f.key}_zh`]"
+            :rows="f.rows"
+            :placeholder="f.ph"
+            :class="{ bad: f.key === 'name' && bad.name_zh }"
+          />
         </div>
 
-        <div class="fld stack">
+        <div class="fld">
           <label>描述</label>
-          <div v-for="l in LANGS" :key="l.k" :class="{ ko: l.k === 'ko' }">
-            <label>{{ l.label }}</label>
-            <textarea v-model="form[`desc_${l.k}`]" rows="4" />
-          </div>
+          <textarea v-model="form.desc_zh" rows="4" />
         </div>
 
         <template v-if="isFragrance">
           <div class="secline" style="padding-top: 10px"><b>香調　僅香氛品類　以分號分隔</b><hr /></div>
           <div v-for="f in NOTE_FIELDS" :key="f.key" class="fld">
             <label>{{ f.label }}</label>
-            <div class="tri">
-              <div v-for="l in LANGS" :key="l.k" :class="{ ko: l.k === 'ko' }">
-                <label>{{ l.label }}</label>
-                <input v-model="form[`${f.key}_${l.k}`]" type="text" placeholder="水蜜桃;綠意;葡萄柚" />
-              </div>
-            </div>
+            <input v-model="form[`${f.key}_zh`]" type="text" placeholder="水蜜桃;綠意;葡萄柚" />
           </div>
         </template>
       </div>

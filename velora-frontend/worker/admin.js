@@ -490,8 +490,12 @@ const OPS = {
     const key = str(b.key)
     if (!key) return err('no-key')
     if (!KEY_RE.test(key)) return err('bad-key')
-    const chunks = Array.isArray(b.chunks) ? b.chunks : b.data ? [b.data] : []
-    if (!chunks.length) return err('no-data')
+    // 🔴 前端 image.js 的 chunk() 送的是 [{ data: '...' }]（Sheet 時代一格一個物件的形狀），
+    //    不是字串陣列。2026-09-28 搬到 Worker 時這裡直接 join，物件被字串化成
+    //    "[object Object]"，base64 解不開 —— 每一次上傳都回 incomplete。兩種形狀都收
+    const chunks = (Array.isArray(b.chunks) ? b.chunks : b.data ? [b.data] : [])
+      .map((c) => (typeof c === 'string' ? c : c && typeof c.data === 'string' ? c.data : ''))
+    if (!chunks.some(Boolean)) return err('no-data')
 
     const mime = str(b.mime) || 'image/webp'
     if (!IMAGE_MIMES.has(mime)) return err('bad-mime', { detail: `不接受 ${mime}，只收 webp／jpeg／png／gif` })
